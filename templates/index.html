@@ -2,15 +2,17 @@
 <!DOCTYPE html>
 <html lang="uk">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <title>PASUE Club - Grand Opening Party</title>
     <meta
       name="description"
-      content="Перша закрита подія PASUE Club - це більше, ніж вечірка. Це святкування відкриття нового жіночого комʼюніті"
+      content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
     <link rel="stylesheet" href="{% static 'css/global.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
   </head>
   <body>
     <main class="landing-PASUE">
@@ -18,41 +20,35 @@
         <header class="overlap">
           <div class="overlap-group">
             <section class="overlap-2">
-              <img class="rectangle" src="{% static 'images/rectangle-1.png' %}" alt="PASUE Club hero image" />
-              <nav class="frame" role="navigation" aria-label="Social media links">
-                <a href="#" class="ph-instagram-logo" aria-label="Instagram">
-                  <img class="vector" src="{% static 'images/vector-4.png' %}" alt="Instagram icon" />
-                </a>
-                <a href="#" class="jam-telegram" aria-label="Telegram"> </a>
-              </nav>
+              <img class="rectangle" src="{% static 'images/rectangle-1.png' %}" alt="Декоративне зображення для заголовка" />
               <p class="text-wrapper">закрите жіноче комʼюніті</p>
               <div class="rectangle-2" aria-hidden="true"></div>
-              <img class="img" src="{% static 'images/rectangle-19.png' %}" alt="Event atmosphere" />
+              <img class="img" src="{% static 'images/rectangle-19.png' %}" alt="Атмосферне зображення події" />
               <p class="p">Сюрпризи. Знайомства. Спікерка. Тепла атмосфера.</p>
             </section>
-            <section class="hero-content">
-              <p class="PASUE-club">
-                Перша закрита подія PASUE Club - це більше, ніж вечірка<br />Це святкування відкриття нового жіночого
-                комʼюніті
-              </p>
-              <p class="text-wrapper-2">Це твій вхід в унікальний простір, який створений спеціально для тебе</p>
-              <button class="frame-2" type="button" aria-describedby="cta-description">
+            <p class="PASUE-club">
+              Перша подія від PASUE Club - це більше, ніж вечірка<br />Це святкування відкриття нового жіночого
+              комʼюніті
+            </p>
+            <p class="text-wrapper-2">Це твій вхід в унікальний простір,<br />який створений спеціально для тебе</p>
+            <a href="#registration-form" class="frame" role="button" aria-label="Стати учасницею події">
+              <div class="overlap-group-2">
                 <span class="text-wrapper-3">Стати учасницею події</span>
-                <span class="fa-key" aria-hidden="true"></span>
-              </button>
-              <h1 class="text-wrapper-4">Grand Opening Party</h1>
-            </section>
+                <div class="fa-key" aria-hidden="true"></div>
+              </div>
+            </a>
+            <h1 class="text-wrapper-4">Grand Opening Party</h1>
           </div>
-          <button class="iwwa-menu" type="button" aria-label="Open menu">
-            <img class="vector-2" src="{% static 'images/vector-3.png' %}" alt="Menu icon" />
-          </button>
+          <nav class="iwwa-menu" aria-label="Головне меню">
+            <img class="vector" src="{% static 'images/vector-3.png' %}" alt="PASUE Club логотип" />
+          </nav>
         </header>
         <section class="overlap-3">
-          <img class="rectangle-3" src="{% static 'images/rectangle-24.png' %}" alt="Decorative element" />
+          <img class="rectangle-3" src="{% static 'images/rectangle-24.png' %}" alt="Декоративний елемент" />
           <h2 class="text-wrapper-5">Що таке</h2>
         </section>
         <div class="rectangle-4" aria-hidden="true"></div>
-        <section class="features-section">
+        <section class="community-features">
           <article class="feature-item">
             <h3 class="text-wrapper-7">Закрите комʼюніті</h3>
             <p class="text-wrapper-6">
@@ -68,93 +64,98 @@
           <article class="feature-item">
             <h3 class="text-wrapper-9">Події з атмосферою</h3>
             <p class="text-wrapper-8">
-              Камерні вечори, ретрити і тематичні зустрічі, де ти зможеш відпочити та перезавантажитись
+              Камерні вечори, ретрити і тематичні зустрічі, де ти зможеш відпочити та по-справжньому перезавантажитись
             </p>
           </article>
         </section>
         <aside class="overlap-4">
-          <img class="rectangle-5" src="{% static 'images/rectangle-16.png' %}" alt="Inspirational quote background" />
-          <blockquote class="text-wrapper-13">
-            P.S. Ти знайшла місце натхнення, де будеш почутою, побаченою, важливою і потрібною
-          </blockquote>
+          <img class="rectangle-5" src="{% static 'images/rectangle-16.png' %}" alt="Декоративне зображення" />
+          <p class="p-s">
+            P.S. Ти знайшла місце натхнення,<br />де будеш почутою, побаченою,<br />важливою і потрібною
+          </p>
         </aside>
-        <section class="gallery-section">
-          <figure class="overlap-5">
+        <section class="community-images">
+          <div class="overlap-5">
             <div class="ellipse" aria-hidden="true"></div>
-            <img class="rectangle-6" src="{% static 'images/rectangle-45.png' %}" alt="Community event photo 1" />
-          </figure>
-          <figure class="overlap-6">
+            <img class="rectangle-6" src="{% static 'images/rectangle-45.png' %}" alt="Учасниці комʼюніті" />
+          </div>
+          <div class="overlap-6">
             <div class="ellipse-2" aria-hidden="true"></div>
-            <img class="rectangle-7" src="{% static 'images/rectangle-43.png' %}" alt="Community event photo 2" />
-          </figure>
-          <figure class="overlap-7">
+            <img class="rectangle-7" src="{% static 'images/rectangle-43.png' %}" alt="Атмосфера подій" />
+          </div>
+          <div class="overlap-7">
             <div class="ellipse-3" aria-hidden="true"></div>
-            <img class="rectangle-8" src="{% static 'images/rectangle-44.png' %}" alt="Community event photo 3" />
-          </figure>
+            <img class="rectangle-8" src="{% static 'images/rectangle-44.png' %}" alt="Спілкування учасниць" />
+          </div>
         </section>
         <section class="overlap-9">
           <div class="overlap-10">
-            <div class="rectangle-12" aria-hidden="true"></div>
-            <div class="div-2">
+            <p class="div-2">
               <span class="span">Жива розмова без фільтрів:</span>
-              <span class="text-wrapper-18">
-                <br />спікерка, яку знають і люблять за чесність, глибину та тонкий гумор<br />
-              </span>
-              <span class="text-wrapper-19"><br /></span>
-              <span class="text-wrapper-20">Турбота у деталях:<br /></span>
-              <span class="text-wrapper-19">
-                ексклюзивні подарунки для кожної, створені з думкою про твій настрій<br />
-              </span>
-            </div>
+              <span class="text-wrapper-17">
+                <br />спікерка, яку знають і люблять за чесність, глибину та тонкий гумор</span
+              >
+            </p>
           </div>
           <div class="overlap-11">
-            <div class="rectangle-13" aria-hidden="true"></div>
-            <div class="PASUE-club-2">
-              <span class="text-wrapper-20">Візуальна терапія:<br /></span>
-              <span class="text-wrapper-19">
-                атмосфера PASUE Club продумана до дрібниць, щоб ти відчула задоволення<br /><br />
-              </span>
+            <p class="div-3">
               <span class="span">Моменти, які хочеться зупинити:<br /></span>
-              <span class="text-wrapper-18">
-                фотозона, легка музика, частування, живе спілкування та щирі емоції<br />
-              </span>
-              <span class="text-wrapper-19"><br /></span>
-            </div>
-          </div>
-          <div class="overlap-group-2">
-            <h2 class="text-wrapper-21">Event Highlights</h2>
-            <p class="text-wrapper-22">
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Що на тебе чекає
+              <span class="text-wrapper-17"
+                >фотозона, легка музика, частування, живе спілкування та щирі емоції<br
+              /></span>
+              <span class="text-wrapper-18"><br /></span>
             </p>
-            <img class="rectangle-14" src="{% static 'images/rectangle-22.png' %}" alt="Event highlights illustration" />
+          </div>
+          <div class="overlap-12">
+            <h2 class="text-wrapper-19">Event Highlights</h2>
+            <p class="text-wrapper-20">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Що
+              на тебе чекає
+            </p>
+            <img class="rectangle-12" src="{% static 'images/rectangle-22.png' %}" alt="Основне зображення події" />
+          </div>
+          <p class="PASUE-club-2">
+            <span class="text-wrapper-21">Візуальна терапія:<br /></span>
+            <span class="text-wrapper-22"
+              >атмосфера PASUE Club продумана<br />до дрібниць, щоб ти відчула задоволення</span
+            >
+          </p>
+          <p class="div-4">
+            <span class="text-wrapper-23">Турбота у деталях:<br /></span>
+            <span class="text-wrapper-18"
+              >ексклюзивні подарунки для кожної, створені з думкою про твій настрій<br
+            /></span>
+          </p>
+        </section>
+        <p class="PASUE">
+          <span class="text-wrapper-21">І головне — перше знайомство з комʼюніті PASUE</span>
+          <span class="text-wrapper-22">
+            Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</span
+          >
+        </p>
+        <a href="#registration-form" class="overlap-wrapper" role="button" aria-label="Приєднатися до вечора">
+          <div class="overlap-group-2">
+            <span class="text-wrapper-3">Приєднатися до вечора</span>
+            <div class="fa-key-2" aria-hidden="true"></div>
+          </div>
+        </a>
+        <section class="overlap-13">
+          <h2 class="text-wrapper-24">Get your ticket</h2>
+          <div class="overlap-14">
+            <h3 class="text-wrapper-25">Спікерка вечора:</h3>
+            <img class="rectangle-13" src="{% static 'images/rectangle-26.png' %}" alt="Інформація про спікерку" />
+            <div class="ellipse-4" aria-hidden="true"></div>
+            <img class="rectangle-14" src="{% static 'images/rectangle-27.png' %}" alt="Фото спікерки" />
+            <img class="ellipse-5" src="{% static 'images/ellipse-5.png' %}" alt="Додаткове фото спікерки" />
           </div>
         </section>
-        <section class="community-intro">
-          <h2 class="text-wrapper-23">Get your ticket</h2>
-          <p class="PASUE">
-            <span class="text-wrapper-24">І головне — перше знайомство з комʼюніті PASUE</span>
-            <span class="text-wrapper-25">
-              Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися
-            </span>
-          </p>
-          <button class="overlap-12" type="button">
-            <span class="text-wrapper-26">Приєднатися до вечора</span>
-            <img class="vector-3" src="{% static 'images/vector.png' %}" alt="Arrow icon" />
-          </button>
-        </section>
-        <section class="overlap-13">
-          <h3 class="text-wrapper-27">Спікерка вечора:</h3>
-          <img class="rectangle-15" src="{% static 'images/rectangle-26.png' %}" alt="Speaker name banner" />
-          <div class="ellipse-4" aria-hidden="true"></div>
-          <img class="rectangle-16" src="{% static 'images/rectangle-27.png' %}" alt="Speaker photo" />
-          <img class="ellipse-5" src="{% static 'images/ellipse-5.png' %}" alt="Decorative element" />
-        </section>
-        <section class="registration-form">
-          <p class="text-wrapper-12">Заповни форму і отримай свій квиток:</p>
-          <form class="overlap-8" novalidate>
-            <img class="rectangle-9" src="{% static 'images/rectangle-48.png' %}" alt="Form background decoration" />
-            <div class="form-group">
-              <label for="name" class="text-wrapper-16">Імʼя:</label>
+        <p class="text-wrapper-12">Заповни форму і отримай свій квиток:</p>
+        <section class="overlap-8" id="registration-form">
+          <img class="rectangle-9" src="{% static 'images/rectangle-48.png' %}" alt="Декоративний елемент форми" />
+          <form class="registration-form" action="#" method="post">
+            <fieldset>
+              <legend class="visually-hidden">Реєстраційна форма</legend>
+              <label for="name" class="text-wrapper-15">Імʼя:</label>
               <input
                 type="text"
                 id="name"
@@ -164,9 +165,7 @@
                 aria-describedby="name-error"
                 autocomplete="given-name"
               />
-            </div>
-            <div class="form-group">
-              <label for="phone" class="text-wrapper-17">Номер телефону:</label>
+              <label for="phone" class="text-wrapper-16">Номер телефону:</label>
               <input
                 type="tel"
                 id="phone"
@@ -176,13 +175,13 @@
                 aria-describedby="phone-error"
                 autocomplete="tel"
               />
-            </div>
-            <div class="price-section">
-              <span class="text-wrapper-14">Ціна:</span>
-            </div>
-            <button type="submit" class="div-wrapper">
-              <span class="text-wrapper-15">Отримати</span>
-            </button>
+              <div class="price-section">
+                <span class="text-wrapper-13">Ціна:</span>
+              </div>
+              <button type="submit" class="div-wrapper">
+                <span class="text-wrapper-14">Отримати</span>
+              </button>
+            </fieldset>
           </form>
         </section>
       </div>
