@@ -3,22 +3,25 @@
   display: grid;
   justify-items: center;
   align-items: start;
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
 }
 
 .landing-PASUE .div {
   background-color: #fffcf9;
-  width: 1728px;
-  height: 4041px;
+  width: 100%;
+  max-width: 1728px;
+  height: auto;
   position: relative;
+  margin: 0 auto;
 }
 
 .landing-PASUE .overlap {
   position: absolute;
-  width: 1496px;
+  width: 80%;
   height: 810px;
   top: 0;
-  left: 168px;
+  left: 10%;
 }
 
 .landing-PASUE .overlap-group {
@@ -128,8 +131,7 @@
   position: absolute;
   height: 103px;
   border-radius: 50px;
-  border: 1px dashed;
-  border-color: #000000;
+  border: 1px dashed #000000;
 }
 
 .landing-PASUE .overlap-group-2 {
@@ -161,7 +163,7 @@
   top: 0;
   left: 0;
   aspect-ratio: 1.06;
-  background-image: url(/static/images/vector-2.png);
+  background-image: url(/static/images/key-2.png);
   background-size: 100% 100%;
 }
 
@@ -231,10 +233,10 @@
 
 .landing-PASUE .rectangle-4 {
   position: absolute;
-  width: 1728px;
+  width: 2045px;
   height: 282px;
   top: 3759px;
-  left: 0;
+  left: -169px;
   background-color: #282828;
 }
 
@@ -490,13 +492,42 @@
   height: 53px;
   top: 294px;
   left: 491px;
+
+  display: flex;                /* flex-контейнер */
+  justify-content: center;      /* по горизонталі */
+  align-items: center;          /* по вертикалі */
+
   background-color: #8d3648;
   border-radius: 20px;
+  border: 3px solid transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* hover */
+.landing-PASUE .div-wrapper:hover {
+  background-color: transparent;
+  border-color: #8d3648;
+}
+
+.landing-PASUE .div-wrapper:hover .text-wrapper-14 {
+  color: #8d3648;
+}
+
+/* click */
+.landing-PASUE .div-wrapper:active {
+  background-color: #8d3648;
+  border-color: #8d3648;
+}
+
+.landing-PASUE .div-wrapper:active .text-wrapper-14 {
+  color: #edac4c;
 }
 
 .landing-PASUE .text-wrapper-14 {
   width: 155px;
-  top: 13px;
+  top: 9px;
   left: 45px;
   font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 600;
