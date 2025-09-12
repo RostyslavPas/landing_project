@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "replace_with_your_secret_key"
 DEBUG = True
 
-ALLOWED_HOSTS = ['pasue.com.ua', 'www.pasue.com.ua']
+ALLOWED_HOSTS = ['pasue.com.ua', 'www.pasue.com.ua', 'landing-project-8gew.onrender.com']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
