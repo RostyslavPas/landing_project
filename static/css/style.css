@@ -124,38 +124,6 @@
   line-height: normal;
 }
 
-.landing-PASUE .frame {
-  width: 648px;
-  top: 600px;
-  left: 32px;
-  position: absolute;
-  height: 103px;
-  border-radius: 50px;
-  border: 1px dashed #000000;
-}
-
-.landing-PASUE .overlap-group-2 {
-  position: relative;
-  width: 399px;
-  height: 53px;
-  top: 25px;
-  left: 112px;
-}
-
-.landing-PASUE .text-wrapper-3 {
-  position: absolute;
-  width: 371px;
-  top: 11px;
-  left: 28px;
-  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 600;
-  color: #000000;
-  font-size: 24px;
-  text-align: right;
-  letter-spacing: 0;
-  line-height: normal;
-}
-
 .landing-PASUE .fa-key {
   position: absolute;
   width: 56px;
@@ -165,6 +133,14 @@
   aspect-ratio: 1.06;
   background-image: url(/static/images/key-2.png);
   background-size: 100% 100%;
+}
+
+.landing-PASUE .overlap-group-2 {
+  position: relative;
+  width: 399px;
+  height: 53px;
+  top: 25px;
+  left: 112px;
 }
 
 .landing-PASUE .text-wrapper-4 {
@@ -546,8 +522,7 @@
   top: 109px;
   left: 339px;
   border-radius: 50px;
-  border: 1px solid;
-  border-color: #000000;
+  border: 1px solid #000000;
 }
 
 .landing-PASUE .rectangle-11 {
@@ -836,6 +811,18 @@
   line-height: normal;
 }
 
+/* Кнопка "Стати учасницею події" */
+.landing-PASUE .frame {
+  width: 648px;
+  top: 600px;
+  left: 32px;
+  position: absolute;
+  height: 103px;
+  border-radius: 50px;
+  border: 1px dashed #000000;
+}
+
+/* Кнопка "Приєднатися до вечора" */
 .landing-PASUE .overlap-wrapper {
   width: 639px;
   top: 2370px;
@@ -843,10 +830,13 @@
   position: absolute;
   height: 103px;
   border-radius: 50px;
-  border: 1px dashed;
-  border-color: #000000;
+  border: 1px dashed #000000;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
+/* Іконка кнопки "Приєднатися до вечора" */
 .landing-PASUE .fa-key-2 {
   position: absolute;
   width: 56px;
@@ -857,6 +847,67 @@
   background-image: url(/static/images/key-2.png);
   background-size: 100% 100%;
 }
+
+.landing-PASUE .text-wrapper-3 {
+  position: absolute;
+  width: 371px;
+  top: 11px;
+  left: 28px;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 24px;
+  text-align: right;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+/* Hover */
+.landing-PASUE .frame:hover {
+  background-color: #fffdfa;
+  border: 1px solid #000000;
+}
+
+.landing-PASUE .overlap-wrapper:hover {
+  background-color: #fffdfa;
+  border: 1px solid #000000;
+}
+
+.landing-PASUE .frame:hover .fa-key {
+  background-image: url(/static/images/key-gold.png);
+}
+
+.landing-PASUE .overlap-wrapper:hover .fa-key-2 {
+  background-image: url(/static/images/key-gold.png);
+}
+
+/* Click */
+.landing-PASUE .frame:active {
+  background-color: #fffdfa;
+  border: 1px solid #edac4c;
+}
+
+.landing-PASUE .overlap-wrapper:active {
+  background-color: #fffdfa;
+  border: 1px solid #edac4c;
+}
+
+.landing-PASUE .frame:active .fa-key {
+  background-image: url(/static/images/key-gold.png);
+}
+
+.landing-PASUE .overlap-wrapper:active .fa-key-2 {
+  background-image: url(/static/images/key-gold.png);
+}
+
+.landing-PASUE .frame:active .text-wrapper-3 {
+  color: #edac4c;
+}
+
+.landing-PASUE .overlap-wrapper:active .text-wrapper-3 {
+  color: #edac4c;
+}
+
 /* Original CSS code should be injected here */
 
 /* Additional styles for semantic improvements and accessibility */
@@ -944,16 +995,16 @@
 }
 
 /* Ensure buttons and links have proper focus states */
-.frame:focus,
-.overlap-wrapper:focus {
-  outline: 2px solid #8d3648;
-  outline-offset: 2px;
-}
-
-.frame:hover,
-.overlap-wrapper:hover {
-  opacity: 0.9;
-}
+/*.frame:focus,*/
+/*.overlap-wrapper:focus {*/
+/*  outline: 2px solid #8d3648;*/
+/*  outline-offset: 2px;*/
+/*}*/
+/**/
+/*.frame:hover,*/
+/*.overlap-wrapper:hover {*/
+/*  opacity: 0.9;*/
+/*}*/
 
 /* Improve text contrast for better accessibility */
 .div-3 {
