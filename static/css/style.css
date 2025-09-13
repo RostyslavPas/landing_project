@@ -1146,3 +1146,124 @@
 .landing-PASUE .social-link:active img {
   filter: brightness(0) invert(1);
 }
+
+/* Футер стилі */
+.landing-PASUE .rectangle-4 {
+  position: absolute;
+  width: 2045px;
+  height: 282px;
+  top: 3759px;
+  left: -169px;
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-PASUE .footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 40px;
+}
+
+.landing-PASUE .footer-social {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.landing-PASUE .footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.landing-PASUE .footer-social-link img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Default стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link {
+  background-color: #070707;
+  transform: scale(1);
+}
+
+/* Hover стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link:hover {
+  background-color: #8d3648;
+  transform: scale(1.1);
+}
+
+.landing-PASUE .footer-social-link:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* Pressed стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link:active {
+  background-color: #edac4c;
+  transform: scale(0.95);
+}
+
+.landing-PASUE .footer-social-link:active img {
+  filter: brightness(0) invert(1);
+}
+
+.landing-PASUE .footer-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.landing-PASUE .footer-link {
+  color: #ffffff;
+  text-decoration: underline;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Default стиль футер посилань */
+.landing-PASUE .footer-link {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Hover стиль футер посилань */
+.landing-PASUE .footer-link:hover {
+  color: #edac4c;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Pressed стиль футер посилань */
+.landing-PASUE .footer-link:active {
+  color: #8d3648;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.landing-PASUE .footer-copyright {
+  text-align: center;
+}
+
+.landing-PASUE .footer-copyright p {
+  color: #ffffff;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.8;
+}
