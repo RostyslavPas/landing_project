@@ -40,10 +40,29 @@
             <h1 class="text-wrapper-4">Grand Opening Party</h1>
           </div>
           <nav class="iwwa-menu" aria-label="Головне меню">
-            <img class="vector" src="{% static 'images/vector-3.png' %}" alt="PASUE Club логотип" />
+            <div class="menu-container">
+              <img class="vector menu-toggle" src="{% static 'images/vector-3.png' %}" alt="PASUE Club логотип" />
+              <div class="dropdown-menu" id="dropdown-menu">
+                <a href="#what-is-section" class="menu-item">Про PASUE Club</a>
+                <a href="#event-highlights" class="menu-item">Про івент Grand Opening Party</a>
+                <a href="#speaker-section" class="menu-item">Особлива гостя вечора</a>
+                <a href="#registration-form" class="menu-item">Купити квиток</a>
+                <div class="social-links">
+                  <a href="https://instagram.com/" class="social-link" target="_blank" aria-label="Instagram">
+                    <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" />
+                  </a>
+                  <a href="https://t.me/" class="social-link" target="_blank" aria-label="Telegram">
+                    <img src="{% static 'images/telegram-icon.png' %}" alt="Telegram" />
+                  </a>
+                  <a href="mailto:info@pasueclub.com" class="social-link" aria-label="Email">
+                    <img src="{% static 'images/email-icon.png' %}" alt="Email" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </nav>
         </header>
-        <section class="overlap-3">
+        <section class="overlap-3" id="what-is-section">
           <img class="rectangle-3" src="{% static 'images/rectangle-24.png' %}" alt="Декоративний елемент" />
           <h2 class="text-wrapper-5">Що таке</h2>
         </section>
@@ -106,7 +125,7 @@
               <span class="text-wrapper-18"><br /></span>
             </p>
           </div>
-          <div class="overlap-12">
+          <div class="overlap-12" id="event-highlights">
             <h2 class="text-wrapper-19">Event Highlights</h2>
             <p class="text-wrapper-20">
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Що
@@ -141,7 +160,7 @@
         </a>
         <section class="overlap-13">
           <h2 class="text-wrapper-24">Get your ticket</h2>
-          <div class="overlap-14">
+          <div class="overlap-14" id="speaker-section">
             <h3 class="text-wrapper-25">Спікерка вечора:</h3>
             <img class="rectangle-13" src="{% static 'images/rectangle-26.png' %}" alt="Інформація про спікерку" />
             <div class="ellipse-4" aria-hidden="true"></div>
@@ -155,16 +174,16 @@
           <form class="registration-form" action="#" method="post">
             <fieldset>
               <legend class="visually-hidden">Реєстраційна форма</legend>
-              <label for="name" class="text-wrapper-15">Імʼя:</label>
+              <label for="email" class="text-wrapper-15">E-mail:</label>
               <input
-                type="text"
-                id="name"
-                name="name"
+                type="email"
+                id="email"
+                name="email"
                 class="rectangle-10"
                 required
-                aria-describedby="name-error"
-                autocomplete="given-name"
-                placeholder="Ім'я"
+                aria-describedby="email-error"
+                autocomplete="given-email"
+                placeholder="user@example.com"
               />
               <label for="phone" class="text-wrapper-16">Номер телефону:</label>
               <input
@@ -188,5 +207,45 @@
         </section>
       </div>
     </main>
+
+    <script>
+      // JavaScript for dropdown menu functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        // Toggle dropdown menu
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!e.target.closest('.menu-container')) {
+            dropdownMenu.classList.remove('active');
+          }
+        });
+
+        // Close menu after clicking menu item and smooth scroll
+        menuItems.forEach(item => {
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
+            dropdownMenu.classList.remove('active');
+
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+              targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
