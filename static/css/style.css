@@ -994,18 +994,6 @@
   position: relative;
 }
 
-/* Ensure buttons and links have proper focus states */
-/*.frame:focus,*/
-/*.overlap-wrapper:focus {*/
-/*  outline: 2px solid #8d3648;*/
-/*  outline-offset: 2px;*/
-/*}*/
-/**/
-/*.frame:hover,*/
-/*.overlap-wrapper:hover {*/
-/*  opacity: 0.9;*/
-/*}*/
-
 /* Improve text contrast for better accessibility */
 .div-3 {
   color: #ffffff;
@@ -1032,4 +1020,250 @@
     width: 100%;
     text-align: center;
   }
+}
+
+/* Випадаюче меню */
+.landing-PASUE .menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.landing-PASUE .menu-toggle {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.landing-PASUE .menu-toggle:hover {
+  opacity: 0.7;
+}
+
+.landing-PASUE .dropdown-menu {
+  position: absolute;
+  top: 50px;
+  left: -50%;
+  min-width: 400px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
+  opacity: 0;
+  visibility: hidden;
+  /*transform: translateY(-10px);*/
+  /*transition: all 0.3s ease;*/
+  z-index: 1000;
+  border: 1px solid #e0e0e0;
+}
+
+.landing-PASUE .dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.landing-PASUE .menu-item {
+  display: block;
+  padding: 12px 24px;
+  color: #000000;
+  text-decoration: none;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.4;
+  /*transition: all 0.3s ease;*/
+  /*border-bottom: 1px solid transparent;*/
+}
+
+/* Default стиль посилань */
+.landing-PASUE .menu-item {
+  background-color: transparent;
+}
+
+/* Hover стиль посилань */
+.landing-PASUE .menu-item:hover {
+  background-color: #f5f5f5;
+  color: #8d3648;
+  border-bottom-color: #8d3648;
+  font-weight: 600;
+}
+
+/* Pressed стиль посилань */
+.landing-PASUE .menu-item:active {
+  background-color: #8d3648;
+  color: #ffffff;
+  border-bottom-color: #8d3648;
+  font-weight: 600;
+}
+
+.landing-PASUE .social-links {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 20px 24px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.landing-PASUE .social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.landing-PASUE .social-link img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Default стиль соціальних іконок */
+.landing-PASUE .social-link {
+  background-color: #000000;
+  transform: scale(1);
+}
+
+/* Hover стиль соціальних іконок */
+.landing-PASUE .social-link:hover {
+  background-color: #8d3648;
+  transform: scale(1.1);
+}
+
+.landing-PASUE .social-link:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* Pressed стиль соціальних іконок */
+.landing-PASUE .social-link:active {
+  background-color: #edac4c;
+  transform: scale(0.95);
+}
+
+.landing-PASUE .social-link:active img {
+  filter: brightness(0) invert(1);
+}
+
+/* Футер стилі */
+.landing-PASUE .rectangle-4 {
+  position: absolute;
+  width: 2045px;
+  height: 282px;
+  top: 3759px;
+  left: -169px;
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-PASUE .footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 40px;
+}
+
+.landing-PASUE .footer-social {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.landing-PASUE .footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.landing-PASUE .footer-social-link img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Default стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link {
+  background-color: #070707;
+  transform: scale(1);
+}
+
+/* Hover стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link:hover {
+  background-color: #8d3648;
+  transform: scale(1.1);
+}
+
+.landing-PASUE .footer-social-link:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* Pressed стиль футер соціальних іконок */
+.landing-PASUE .footer-social-link:active {
+  background-color: #edac4c;
+  transform: scale(0.95);
+}
+
+.landing-PASUE .footer-social-link:active img {
+  filter: brightness(0) invert(1);
+}
+
+.landing-PASUE .footer-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.landing-PASUE .footer-link {
+  color: #ffffff;
+  text-decoration: underline;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Default стиль футер посилань */
+.landing-PASUE .footer-link {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Hover стиль футер посилань */
+.landing-PASUE .footer-link:hover {
+  color: #edac4c;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Pressed стиль футер посилань */
+.landing-PASUE .footer-link:active {
+  color: #8d3648;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.landing-PASUE .footer-copyright {
+  text-align: center;
+}
+
+.landing-PASUE .footer-copyright p {
+  color: #ffffff;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.8;
 }
