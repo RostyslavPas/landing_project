@@ -1,4 +1,4 @@
-:root {
+ :root {
   --primary-color: #8d3648;
   --dark-bg: #282828;
   --text-dark: #000000;
@@ -786,8 +786,8 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .ticket-form-wrapper {
   position: absolute;
-  width: 1199px;
-  height: 424px;
+  width: 1150px;
+  height: 395px;
 }
 .ticket-bg {
   position: absolute;
