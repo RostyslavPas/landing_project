@@ -11,8 +11,8 @@
     />
     <link rel="stylesheet" href="{% static 'css/global.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
   </head>
   <body>
     <section id="section-header" class="header-section">
@@ -37,7 +37,6 @@
                 </div>
               </div>
             </div>
-{#        </nav>#}
         <div class="logo">
           <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
           <span class="logo-text">закрите жіноче комʼюніті</span>
@@ -116,26 +115,16 @@
         <div class="highlights-container">
             <div class="highlights-content-wrapper">
                 <img src="{% static 'images/lamp.png' %}" alt="Chandelier" class="highlights-bg-image">
-{#                <div class="highlights-cards">#}
                     <div class="highlight-card-1 left-top"><p><strong>Жива розмова без фільтрів:</strong><br>спікерка, яку знають і люблять за чесність, глибину та тонкий гумор</p>
                     </div>
-{#                </div>#}
-{#                <div class="highlights-cards">#}
                     <div class="highlight-card-2 left-bottom"><p><strong>Турбота у деталях:</strong><br>ексклюзивні подарунки для кожної, створені з думкою про твій настрій</p>
                     </div>
-{#                </div>#}
-{#                <div class="highlights-cards">#}
                     <div class="highlight-card-3 right-top"><p><strong>Візуальна терапія:</strong><br>атмосфера PASUE Club продумана до дрібниць, щоб ти відчула задоволення</p>
                     </div>
-{#                </div>#}
-{#                <div class="highlights-cards">#}
                     <div class="highlight-card-4 right-bottom"><p><strong>Моменти, які хочеться зупинити:</strong><br>фотозона, легка музика, частування, живе спілкування та щирі емоції</p>
                     </div>
-{#                </div>#}
-{#                <div class="highlights-cards">#}
                     <div class="highlights-summary"><p><strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</p>
                     </div>
-{#                </div>#}
                 <a href="#section-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
                     <div class="cta-button-2-key-2" aria-hidden="true"></div></a>
             </div>
@@ -254,6 +243,17 @@
           });
         });
       });
+    </script>
+    <script>
+      function checkScreenSize() {
+          if (window.innerWidth <= 768) {
+            if (!window.location.pathname.includes("/mobile/")) {
+              window.location.href = "{% url 'mobile' %}";
+            }
+          }
+        }
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
     </script>
   </body>
 </html>

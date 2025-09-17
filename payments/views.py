@@ -5,6 +5,16 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .models import Order
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def mobile(request):
+    return render(request, 'mobile.html')
+
 
 def generate_signature(params: dict) -> str:
     signature_str = ";".join(str(params[k]) for k in [
@@ -21,6 +31,7 @@ def generate_signature(params: dict) -> str:
     return base64.b64encode(
         hashlib.sha1((signature_str + settings.WAYFORPAY_SECRET).encode("utf-8")).digest()
     ).decode("utf-8")
+
 
 def create_payment(request):
     order = Order.objects.create(
@@ -44,6 +55,7 @@ def create_payment(request):
 
     params["merchantSignature"] = generate_signature(params)
     return JsonResponse(params)
+
 
 @csrf_exempt
 def payment_callback(request):
