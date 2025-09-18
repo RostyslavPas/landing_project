@@ -1,6 +1,7 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.shortcuts import render
+from payments.views import index, mobile
 
 
 def home(request):
@@ -10,5 +11,6 @@ def home(request):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home, name="home"),
-    path("payments/", include("payments.urls")),
+    path("", index, name="index"),
+    path("mobile/", mobile, name="mobile")
 ]
