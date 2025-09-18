@@ -495,138 +495,99 @@ img {
   margin-top: 10px;
 }
 
-.dropdown-menu {
-  display: none; /* або transform: translateY(-100%) */
-}
-
-.dropdown-menu.open {
-  display: block; /* або transform: translateY(0) */
-}
-
-/* Мобільні стилі для дропдаун меню */
 .menu-container {
   position: relative;
   display: inline-block;
 }
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0; /* Вирівняти по правому краю для мобільного */
-  width: calc(100vw - 40px); /* Майже на всю ширину екрану з відступами */
-  max-width: 320px; /* Максимальна ширина для планшетів */
-  background-color: #ffffff;
-  border-radius: 16px; /* Трохи менший радіус для мобільного */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  padding: 20px 0; /* Менший padding */
+/*********************Styles for dropdown menu******************************/
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px); /* Невелика анімація появи */
   transition: all 0.3s ease;
-  z-index: 1000;
-  border: 1px solid #e0e0e0;
+  z-index: 998;
 }
-
-.dropdown-menu.active {
+.menu-overlay.active {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
 }
-
-.menu-item {
-  display: block;
-  padding: 16px 20px; /* Збільшений padding для кращого натискання на мобільному */
-  color: #000000;
-  text-decoration: none;
-  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 500;
-  font-size: 16px; /* Зменшений розмір шрифту для мобільного */
-  line-height: 1.4;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid transparent;
-  background-color: transparent;
-  /* Мінімальна висота для кращого UX на дотик */
-  min-height: 48px;
+.dropdown-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  max-height: 90vh;
+  background-color: #fff;
+  border-radius: 0 0 16px 16px;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 999;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-top: 80px;
+  padding-bottom: 20px;
 }
-
-/* Активний стан для дотику (замість hover на мобільному) */
+.dropdown-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+.menu-item {
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
 .menu-item:active,
 .menu-item:focus {
   background-color: #f5f5f5;
-  color: #8d3648;
-  font-weight: 600;
-  outline: none;
+  color: var(--brand-color);
 }
-
-/* Pressed стиль */
-.menu-item:active {
-  background-color: #8d3648;
-  color: #ffffff;
-  border-bottom-color: #8d3648;
-  transform: scale(0.98); /* Невелике стиснення при натисканні */
-}
-
 .social_links {
   display: flex;
-  justify-content: center; /* Центрувати іконки на мобільному */
-  gap: 16px; /* Менший gap */
-  margin-top: 16px;
-  padding: 16px 20px 0;
-  border-top: 1px solid #e0e0e0;
+  justify-content: center;
+  gap: 16px;
+  margin-top: auto;
+  padding: 10px 0 0;
 }
-
 .social_link {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px; /* Трохи більше для кращого натискання */
-  height: 44px;
   border-radius: 50%;
-  transition: all 0.2s ease; /* Швидша анімація для мобільного */
-  text-decoration: none;
-  /* Додаємо фон для кращої видимості області натискання */
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0,0,0,0.05);
 }
-
 .social_link img {
-  width: 24px; /* Фіксований розмір іконок */
+  width: 24px;
   height: 24px;
-  object-fit: contain;
 }
-
-/* Активний стан для соціальних посилань */
 .social_link:active {
   background-color: #edac4c;
   transform: scale(0.9);
 }
-
 .social_link:active img {
   filter: brightness(0) invert(1);
 }
-
-.dropdown-menu {
-  width: calc(100vw - 20px);
-  right: 10px;
-  border-radius: 12px;
-}
-
 .menu-item {
   font-size: 15px;
   padding: 14px 16px;
 }
-
 .social_links {
   gap: 12px;
   padding: 12px 16px 0;
 }
-
 .social_link {
   width: 40px;
   height: 40px;
 }
-
 .social_link img {
   width: 20px;
   height: 20px;

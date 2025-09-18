@@ -16,25 +16,28 @@
 <body>
     <header class="site-header">
       <div class="container header-container">
-        <button class="menu-button" aria-label="Open menu">
-          <img src="{% static 'images/logo_burger_mob.png' %}" alt="Menu Icon">
-        </button>
-        <div class="dropdown-menu" id="dropdown-menu">
-            <a href="#about" class="menu-item">Про PASUE Club</a>
-            <a href="#highlights" class="menu-item">Про івент Grand Opening Party</a>
-            <a href="#ticket" class="menu-item">Особлива гостя вечора</a>
-            <a href="#ticket" class="menu-item">Купити квиток</a>
-            <div class="social_links">
-              <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
-                <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
-              </a>
-              <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
-                <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
-              </a>
-              <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
-                <img src="{% static 'images/email.png' %}" alt="Email" />
-              </a>
-            </div>
+        <div class="menu-container"> <!-- доданий контейнер -->
+          <button class="menu-button" aria-label="Open menu">
+            <img src="{% static 'images/logo_burger_mob.png' %}" alt="Menu Icon">
+          </button>
+          <div class="menu-overlay"></div>
+          <div class="dropdown-menu" id="dropdown-menu">
+              <a href="#about" class="menu-item">Про PASUE Club</a>
+              <a href="#highlights" class="menu-item">Про івент Grand Opening Party</a>
+              <a href="#ticket" class="menu-item">Особлива гостя вечора</a>
+              <a href="#ticket" class="menu-item">Купити квиток</a>
+              <div class="social_links">
+                <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
+                  <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
+                </a>
+                <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
+                  <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
+                </a>
+                <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
+                  <img src="{% static 'images/email.png' %}" alt="Email" />
+                </a>
+              </div>
+          </div>
         </div>
         <a href="#hero" class="logo">
           <img src="{% static 'images/main_logo_mob.png' %}" alt="PASUE Club Logo">
@@ -208,30 +211,35 @@
         window.addEventListener("resize", checkScreenSize);
     </script>
     <script>
-        const menuButton = document.querySelector('.menu-button');
-        const dropdownMenu = document.querySelector('.dropdown-menu');
+        document.addEventListener('DOMContentLoaded', () => {
+          const menuButton = document.querySelector('.menu-button');
+          const dropdownMenu = document.querySelector('.dropdown-menu');
+          const overlay = document.querySelector('.menu-overlay');
 
-        menuButton.addEventListener('click', () => {
-            const isOpen = dropdownMenu.classList.contains('open');
+          if (!menuButton || !dropdownMenu || !overlay) return;
 
-            if (isOpen) {
-                dropdownMenu.classList.remove('open');
-                menuButton.setAttribute('aria-expanded', 'false');
-                dropdownMenu.setAttribute('aria-hidden', 'true');
-            } else {
-                dropdownMenu.classList.add('open');
-                menuButton.setAttribute('aria-expanded', 'true');
-                dropdownMenu.setAttribute('aria-hidden', 'false');
-            }
-        });
-    </script>
-    <script>
-        document.addEventListener('click', (e) => {
-          if (!e.target.closest('.menu-button') && !e.target.closest('.dropdown-menu')) {
-            dropdownMenu.classList.remove('open');
-            menuButton.setAttribute('aria-expanded', 'false');
-            dropdownMenu.setAttribute('aria-hidden', 'true');
+          function openMenu() {
+            dropdownMenu.classList.add('open');
+            overlay.classList.add('active');
+            menuButton.setAttribute('aria-expanded', 'true');
           }
+
+          function closeMenu() {
+            dropdownMenu.classList.remove('open');
+            overlay.classList.remove('active');
+            menuButton.setAttribute('aria-expanded', 'false');
+          }
+
+          menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.contains('open') ? closeMenu() : openMenu();
+          });
+
+          overlay.addEventListener('click', closeMenu);
+
+          dropdownMenu.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', closeMenu);
+          });
         });
     </script>
 </body>
