@@ -7,6 +7,10 @@
   --font-heading: 'New Rocker', cursive;
   --font-body: 'Montserrat Alternates', sans-serif;
 }
+html, body {
+  overflow-x: hidden;   /* забороняє горизонтальний скрол */
+  width: 100%;          /* гарантує, що тіло не ширше за екран */
+}
 
 body {
   margin: 0;
@@ -102,6 +106,7 @@ img {
   border: none;
   padding: 0;
   cursor: pointer;
+  margin-top: -25px;
 }
 .menu-button img {
   width: 60px;
@@ -134,24 +139,24 @@ img {
 }
 .title-grand {
   position: relative;
-  top: -56px;
-  left: 42px;
+  top: -58px;
+  left: 60px;
   display: block;
   font-size: 48px;
   margin-bottom: -15px;
 }
 .title-main {
   position: relative;
-  top: -54px;
-  left: 4px;
+  top: -58px;
+  left: -8px;
   display: block;
   font-size: 48px;
   margin-bottom: -15px;
 }
 .hero-subtitle {
   position: relative;
-  top: 33px;
-  left: 4px;
+  top: 15px;
+  right: 1px;
   font-size: 14px;
   line-height: 1.2;
   margin-top: 24px;
@@ -384,7 +389,7 @@ img {
   width: 67px;
   height: 73px;
   top: 29px;
-  left: 67%;
+  left: 66%;
   transform: translateX(-130%) rotate(-7.9deg);
 }
 .ticket-form-container {
@@ -409,7 +414,7 @@ img {
 }
 .ticket-form {
   position: relative;
-  left: 13%;
+  left: 10%;
   top: -81%;
   max-width: 231px;
   /*margin: 0 auto;*/
@@ -520,7 +525,7 @@ img {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   max-height: 90vh;
   background-color: #fff;
   border-radius: 0 0 16px 16px;
@@ -537,6 +542,18 @@ img {
   transform: translateY(0);
   opacity: 1;
 }
+/*.menu-logo {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  padding: 16px 0;*/
+/*  border-bottom: 1px solid #e0e0e0;*/
+/*  background-color: #ffffff;*/
+/*}*/
+/*.menu-logo img {*/
+/*  max-width: 140px;*/
+/*  height: auto;*/
+/*}*/
 .menu-item {
   padding: 16px 20px;
   font-size: 16px;
