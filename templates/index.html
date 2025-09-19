@@ -29,7 +29,7 @@
                     <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
                   </a>
                   <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
-                    <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
+                    <img src="{% static 'images/tel_header.png' %}" alt="Telegram" />
                   </a>
                   <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
                     <img src="{% static 'images/email.png' %}" alt="Email" />
@@ -179,7 +179,8 @@
             />
           </div>
           <div class="form-group price-group">
-            <label>Ціна:</label>
+            <span class="price-label">1789</span>
+            <span class="price-label-2">UAH</span>
             <button type="submit" class="submit-ticket-btn"><span class="text-wrapper-14">Отримати</span></button>
           </div>
         </form>
@@ -188,19 +189,61 @@
     <section id="section-footer">
       <footer class="site-footer">
         <div class="social-links">
-          <a href="https://instagram.com/" class="footer-social-link" target="_blank" aria-label="Instagram">
+          <a href="https://instagram.com/pasue.club" class="footer-social-link" target="_blank" aria-label="Instagram">
               <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" />
+              <span>@pasue.club</span>
+          </a>
+          <a href="mailto:pasue.club@gmail.com" class="footer-social-link" aria-label="Email">
+              <img src="{% static 'images/email-icon.png' %}" alt="Email" />
+              <span>pasue.club@gmail.com</span>
           </a>
           <a href="https://t.me/" class="footer-social-link" target="_blank" aria-label="Telegram">
-              <img src="{% static 'images/telegram-icon.png' %}" alt="Telegram" />
-          </a>
-          <a href="mailto:info@pasueclub.com" class="footer-social-link" aria-label="Email">
-              <img src="{% static 'images/email-icon.png' %}" alt="Email" />
+              <img src="{% static 'images/tel_footer.png' %}" alt="Telegram" />
+              <span>+38 068 443 78 82</span>
           </a>
         </div>
         <div class="footer-legal-links">
-          <a href="#">Договір публічної оферти</a>
-          <a href="#">Політика конфіденційності</a>
+          <a href="#" data-popup="offer">Правила та умови</a>
+          <a href="#" data-popup="privacy">Політика повернення коштів</a>
+        </div>
+        <div class="popup" id="popup-privacy">
+          <div class="popup-content desktop">
+            <span class="popup-close">&times;</span>
+            <h2>Політика повернення коштів</h2>
+            <ol>
+              <li>Повернення коштів за електронні квитки на події<br> не передбачене, окрім випадків скасування заходу з<br> ініціативи організатора.</li>
+              <li>Якщо подія перенесена, квиток залишається<br> дійсним. У разі неможливості відвідування —<br> прохання повідомити на email.</li>
+              <li>Замовлення можна скасувати до моменту оплати.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Правила та умови -->
+        <div class="popup" id="popup-offer">
+          <div class="popup-content desktop">
+            <span class="popup-close">&times;</span>
+            <h2>Правила та умови</h2>
+
+            <p><b>Опис послуги:</b></p>
+            <p>Цей сайт є офіційною онлайн-платформою PASUE Club,<br> де Ви можете придбати квитки на заходи клубу.</p>
+
+            <p><b>Умови замовлення:</b></p>
+            <ul>
+                <li>Покупець зобов'язується надати достовірну<br> контактну інформацію.</li>
+                <li>Замовлення вважається дійсним лише після<br> підтвердження успішної оплати на email покупця.</li>
+            </ul>
+
+            <p><b>Оплата:</b></p>
+            <ul>
+                <li>Оплата здійснюється онлайн за допомогою<br> платіжної системи WayForPay.</li>
+                <li>Валюта платежу — гривня (UAH).</li>
+            </ul>
+
+            <p><b>Доставка:</b></p>
+            <ul>
+                <li>Електронні квитки надсилаються на email одразу<br> після підтвердження оплати.</li>
+            </ul>
+          </div>
         </div>
         <p class="copyright">Всі права захищені</p>
       </footer>
@@ -255,5 +298,27 @@
         checkScreenSize();
         window.addEventListener("resize", checkScreenSize);
     </script>
+    <script>
+        document.querySelectorAll('[data-popup]').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            let popupId = "popup-" + this.dataset.popup;
+            document.getElementById(popupId).style.display = "flex";
+          });
+        });
+
+        document.querySelectorAll('.popup-close').forEach(btn => {
+          btn.addEventListener('click', function() {
+            this.closest('.popup').style.display = "none";
+          });
+        });
+
+        window.addEventListener('click', function(e) {
+          if (e.target.classList.contains('popup')) {
+            e.target.style.display = "none";
+          }
+        });
+    </script>
+
   </body>
 </html>

@@ -73,7 +73,7 @@ img {
   position: relative;
   border: 1px solid transparent; /* Placeholder for alignment */
 }
-
+/**/
 .cta-button::before {
   content: '';
   position: absolute;
@@ -292,7 +292,6 @@ img {
 .highlights-list {
   list-style: none;
   padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 26px;
@@ -404,10 +403,10 @@ img {
   font-size: 14px;
 }
 .ticket-form-wrapper {
-  margin-top: -67px;
-  padding: 58px 0 0;
+  margin-top: -65px;
+  padding: 61px 0 69px;
   background-size: contain;
-  height: 200px;
+  height: 218px;
   position: relative;
   left: -3%;
   width: 112%;
@@ -415,7 +414,7 @@ img {
 .ticket-form {
   position: relative;
   left: 10%;
-  top: -81%;
+  top: -110%;
   max-width: 231px;
   /*margin: 0 auto;*/
 }
@@ -444,22 +443,57 @@ img {
   justify-content: space-between;
   align-items: center;
   margin-top: 30px;
+  gap: 10%;
 }
 .price-label {
-  font-weight: 500;
-  font-size: 14px;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  position: relative;
+  left: 45%;
+
 }
+.price-label-2 {
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  position: relative;
+  left: 36%;
+  top: 3px;
+}
+/***************************button version 2********************************/
 .submit-button {
-  background-color: var(--brand-color);
-  color: var(--text-light);
+  background: linear-gradient(90deg, #ff8c00, #ff0080);
+  color: #fff;
   border: none;
   border-radius: 40px;
-  padding: 12px 30px;
-  font-weight: 600;
-  font-size: 21px;
+  padding: 14px 83px;
+  font-size: 20px;
+  font-weight: 700;
   cursor: pointer;
   position: relative;
-  left: 35%;
+  left: -11%;
+  top: 50px;
+  margin-bottom: 10px;
+  transform: translateX(-50%);
+  animation: pulse 2s infinite;
+  transition: transform 0.2s ease;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(255, 0, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0); }
+}
+
+.submit-button:hover {
+  transform: translateX(-50%) scale(1.07);
 }
 
 /* CSS from section:footer */
@@ -472,7 +506,6 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
   text-align: center;
 }
 .social-links {
@@ -542,18 +575,7 @@ img {
   transform: translateY(0);
   opacity: 1;
 }
-/*.menu-logo {*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*  padding: 16px 0;*/
-/*  border-bottom: 1px solid #e0e0e0;*/
-/*  background-color: #ffffff;*/
-/*}*/
-/*.menu-logo img {*/
-/*  max-width: 140px;*/
-/*  height: auto;*/
-/*}*/
+
 .menu-item {
   padding: 16px 20px;
   font-size: 16px;
@@ -608,4 +630,87 @@ img {
 .social_link img {
   width: 20px;
   height: 20px;
+}
+/**************************footer-link***********************/
+ .footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 14px;
+  margin: 20px 0;
+}
+.footer-nav a {
+  color: #f3ecec;
+  text-decoration: underline;
+  opacity: .3;
+}
+/************************popup_for_rules_and_conditions*********************/
+/***************style_popup_for_policy_and_refund*********************/
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content.mobile {
+  background: #D9D9D9;
+  padding: 10px;
+  border-radius: 24px;
+  max-width: 90%;
+  font-size: 14px;
+  line-height: 1.5;
+  position: relative;
+  color: #000000;
+}
+.popup-content.mobile h2 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 16px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 100%;
+  color: #000000;
+}
+.popup-content.mobile li {
+  text-align: left;
+  color: #000000;
+  position: relative;
+  left: 40px;
+}
+.popup-content.mobile ol li {
+  text-align: left;
+  color: #000000;
+  position: relative;
+  left: -9px;
+}
+.popup-content.mobile ul {
+  text-align: left;
+  color: #000000;
+  position: relative;
+  right: 13px;
+  top: -5px;
+}
+.popup-content.mobile p {
+  text-align: left;
+  color: #000000;
+  padding: 2%;
+}
+.popup-content.mobile b {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.popup-close {
+  display: block;
+  margin: 20px auto 0;
+  font-size: 28px;
+  cursor: pointer;
+  text-align: center;
+  color: #000;
 }
