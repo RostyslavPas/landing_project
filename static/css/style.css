@@ -140,25 +140,6 @@ h1, h2, h3, h4, h5, h6, p {
   color: #edac4c;
 }
 
-/*@media (max-width: 1024px) {*/
-/*  section {*/
-/*    padding: 40px 20px;*/
-/*  }*/
-/*  .cta-button {*/
-/*    font-size: 20px;*/
-/*    padding: 15px 25px;*/
-/*  }*/
-/*}*/
-/**/
-/*@media (max-width: 768px) {*/
-/*  section {*/
-/*    padding: 30px 15px;*/
-/*  }*/
-/*  .cta-button {*/
-/*    font-size: 18px;*/
-/*  }*/
-/*}*/
-
 /* CSS from section:header */
 .header-section {
   padding-top: 40px;
@@ -203,24 +184,6 @@ h1, h2, h3, h4, h5, h6, p {
   margin-left: -179px;
   display: block;
 }
-
-/*@media (max-width: 768px) {*/
-/*  .site-header {*/
-/*    justify-content: center;*/
-/*  }*/
-/*  .menu-toggle {*/
-/*    position: absolute;*/
-/*    left: 20px;*/
-/*    top: 50%;*/
-/*    transform: translateY(-50%);*/
-/*  }*/
-/*  .logo-bg {*/
-/*    width: 200px;*/
-/*  }*/
-/*  .logo-text {*/
-/*    font-size: 18px;*/
-/*  }*/
-/*}*/
 
 /* CSS from section:hero */
 #section-hero {
@@ -350,49 +313,6 @@ h1, h2, h3, h4, h5, h6, p {
   line-height: 1.3;
 }
 
-/*@media (max-width: 1200px) {*/
-/*  .hero-container {*/
-/*    flex-direction: column;*/
-/*    align-items: center;*/
-/*    text-align: center;*/
-/*  }*/
-/*  .hero-content {*/
-/*    align-items: center;*/
-/*    padding-left: 0;*/
-/*  }*/
-/*  .hero-subtitle, .hero-description {*/
-/*    text-align: center;*/
-/*  }*/
-/*  .hero-visual {*/
-/*    margin-top: 20px;*/
-/*    width: 80%;*/
-/*  }*/
-/*  .hero-ps {*/
-/*    margin-left: 0;*/
-/*    justify-content: center;*/
-/*    margin-top: 20px;*/
-/*  }*/
-/*}*/
-/*@media (max-width: 768px) {*/
-/*  .hero-title {*/
-/*    font-size: 56px;*/
-/*  }*/
-/*  .hero-subtitle, .hero-description, .hero-info-box p {*/
-/*    font-size: 18px;*/
-/*  }*/
-/*  .hero-cta {*/
-/*    width: 100%;*/
-/*    justify-content: center;*/
-/*  }*/
-/*  .hero-visual {*/
-/*    width: 100%;*/
-/*  }*/
-/*  .hero-ps {*/
-/*    flex-direction: column;*/
-/*    text-align: center;*/
-/*  }*/
-/*}*/
-
 /* CSS from section:about */
 #section-about {
   padding-top: 0;
@@ -427,16 +347,6 @@ h1, h2, h3, h4, h5, h6, p {
   left: 72px;
   object-fit: cover;
 }
-
-/*@media (max-width: 768px) {*/
-/*  #section-about {*/
-/*    padding-top: 60px;*/
-/*    padding-bottom: 60px;*/
-/*  }*/
-/*  .about-logo {*/
-/*    width: 80%;*/
-/*  }*/
-/*}*/
 
 /* CSS from section:features */
 .features-grid {
@@ -484,13 +394,6 @@ h1, h2, h3, h4, h5, h6, p {
   line-height: 1.4;
   max-width: 512px;
 }
-
-/*@media (max-width: 1200px) {*/
-/*  .features-grid {*/
-/*    grid-template-columns: 1fr;*/
-/*    gap: 80px;*/
-/*  }*/
-/*}*/
 
 /* CSS from section:highlights */
 #section-highlights {
@@ -646,19 +549,6 @@ h1, h2, h3, h4, h5, h6, p {
   font-weight: 600;
 }
 
-/*@media (max-width: 1200px) {*/
-/*  .highlights-content-wrapper { min-height: auto; }*/
-/*  .highlights-bg-image { display: none; }*/
-/*  .highlights-cards { position: static; height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }*/
-/*  .highlight-card { position: static; width: auto; }*/
-/*}*/
-/*@media (max-width: 768px) {*/
-/*  .highlights-title { font-size: 56px; }*/
-/*  .highlights-cards { grid-template-columns: 1fr; }*/
-/*  .highlight-card { font-size: 18px; }*/
-/*  .highlights-summary p { font-size: 18px; }*/
-/*}*/
-
 /* CSS from section:guest */
 #section-guest {
   padding-top: 100px;
@@ -727,26 +617,6 @@ h1, h2, h3, h4, h5, h6, p {
   letter-spacing: 0;
   line-height: normal;
 }
-
-/*@media (max-width: 1200px) {*/
-/*  .guest-container {*/
-/*    flex-direction: column;*/
-/*    gap: 40px;*/
-/*  }*/
-/*  .guest-visual {*/
-/*    width: 100%;*/
-/*    max-width: 500px;*/
-/*    height: 450px;*/
-/*  }*/
-/*  .guest-info {*/
-/*    align-items: center;*/
-/*    text-align: center;*/
-/*  }*/
-/*  .guest-title-image {*/
-/*    width: 100%;*/
-/*    max-width: 500px;*/
-/*  }*/
-/*}*/
 
 /* CSS from section:ticket */
 #section-ticket {
@@ -823,10 +693,13 @@ h1, h2, h3, h4, h5, h6, p {
   display: flex;
   flex-direction: column;
 }
+
 .form-group label {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 8px;
+  position: relative;
+  left: 7%;
 }
 .form-group input {
   border: 1px solid var(--text-dark);
@@ -841,20 +714,37 @@ h1, h2, h3, h4, h5, h6, p {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: right;
+}
+.price-label {
+  position: relative;
+  left: 75%;
+  top: -20px;
+  font-size: 45px;
+}
+.price-label-2 {
+  position: relative;
+  left: 55%;
+  top: 10px;
+  font-size: 24px;
 }
 .submit-ticket-btn {
   position: absolute;
   width: 64%;
   height: 53px;
-  top: 87%;
-  left: 35%;
+  top: 82%;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
   background-color: #8d3648;
-  border-radius: 20px;
+  border-radius: 50px;
   border: 3px solid transparent;
   box-sizing: border-box;
   cursor: pointer;
@@ -892,43 +782,12 @@ h1, h2, h3, h4, h5, h6, p {
   color: #edac4c;
 }
 
-/*@media (max-width: 1200px) {*/
-/*  .ticket-form-wrapper {*/
-/*    width: 90vw;*/
-/*    height: auto;*/
-/*    aspect-ratio: 1199 / 424;*/
-/*  }*/
-/*  .ticket-form {*/
-/*    width: 50%;*/
-/*    padding-top: 8%;*/
-/*  }*/
-/*}*/
-/*@media (max-width: 768px) {*/
-/*  .ticket-title { font-size: 56px; }*/
-/*  .ticket-subtitle { font-size: 18px; }*/
-/*  .ticket-form-wrapper {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    background-size: contain;*/
-/*    background-repeat: no-repeat;*/
-/*    background-position: center;*/
-/*    padding: 20px;*/
-/*  }*/
-/*  .ticket-bg { display: none; }*/
-/*  .ticket-form {*/
-/*    position: static;*/
-/*    width: 100%;*/
-/*    padding-top: 0;*/
-/*    background: rgba(255, 253, 250, 0.8);*/
-/*    border-radius: 20px;*/
-/*  }*/
-/*}*/
-
 /* CSS from section:footer */
 #section-footer {
   background-color: var(--dark-bg);
-  color: var(--text-light);
+  /*color: var(--text-light);*/
   padding: 50px 20px;
+
 }
 .site-footer {
   display: flex;
@@ -939,16 +798,41 @@ h1, h2, h3, h4, h5, h6, p {
 .social-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 150px;
+  position: relative;
+  left: 1%;
 }
-.social-links img {
+
+.footer-social-link {
+  display: flex;
+  flex-direction: column; /* іконка зверху, текст знизу */
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-light); /* щоб співпадало з футером */
+  font-size: 16px;
+  font-weight: 500;
+  gap: 8px; /* відстань між іконкою і текстом */
+}
+
+.footer-social-link img {
   height: 48px;
   width: auto;
   transition: transform 0.3s;
 }
-.social-links a:hover img {
+
+.footer-social-link:hover img {
   transform: scale(1.1);
 }
+
+.footer-social-link span {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+
+/* решта твої стилі лишаються */
 .footer-legal-links {
   display: flex;
   flex-direction: column;
@@ -960,18 +844,16 @@ h1, h2, h3, h4, h5, h6, p {
 .footer-legal-links a {
   text-decoration: underline;
   text-underline-offset: 4px;
+  color: var(--text-light);
+  opacity: .3;
 }
 .copyright {
+  color: var(--text-light);
   font-size: 12px;
   font-weight: 400;
   margin-top: 20px;
 }
 
-/*@media (max-width: 768px) {*/
-/*  .footer-legal-links {*/
-/*    font-size: 18px;*/
-/*  }*/
-/*}*/
 /* Випадаюче меню */
 .menu-container {
   position: relative;
@@ -1061,4 +943,142 @@ h1, h2, h3, h4, h5, h6, p {
 /* Hover стиль футер соціальних іконок */
 .footer-social-link:hover {
   transform: scale(1.1);
+}
+
+/*************************popup_for_privacy_policy**********************/
+/* Загальні стилі для попапів */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.active {
+  display: flex;
+}
+
+.popup-content.desktop {
+  background: #D9D9D9;
+  border-radius: 20px;
+  padding: 25px 50px;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  font-family: var(--font-body);
+  color: #000000;
+}
+
+/* Заголовок */
+.popup-content.desktop h2 {
+  margin-top: 20px;
+  margin-bottom: 40px; /* Збільшено відступ після заголовка */
+  font-size: 20px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 100%;
+  color: #000000;
+}
+
+/* Секційні заголовки (жирний текст) */
+.popup-content.desktop p b,
+.popup-content.desktop p strong {
+  font-weight: 700;
+  display: block;
+  margin-top: 20px; /* Відступ зверху перед новою секцією */
+  margin-bottom: 0; /* Прибрано відступ після секційного заголовка */
+}
+
+/* Перша секція без верхнього відступу */
+.popup-content.desktop p:first-of-type b,
+.popup-content.desktop p:first-of-type strong {
+  margin-top: 0;
+}
+
+/* Основний текст параграфів */
+.popup-content.desktop p {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 0; /* Прибрано нижній відступ */
+  color: #000000;
+  text-align: left;
+}
+
+/* Списки елементів */
+.popup-content.desktop li {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 8px; /* Відступ між пунктами списку */
+  margin-top: 0; /* Прибрано верхній відступ */
+  color: #000000;
+  text-align: left;
+  display: list-item;
+}
+
+/* Окремо для ul (з маркерами-крапками) */
+.popup-content.desktop ul li {
+  list-style-type: disc;
+  margin-left: 0;
+}
+
+/* Окремо для ol (з нумерацією) */
+.popup-content.desktop ol li {
+  list-style-type: decimal;
+  margin-left: 0;
+}
+
+/* Останній елемент списку з більшим відступом */
+.popup-content.desktop li:last-child {
+  margin-bottom: 20px;
+}
+
+/* Контейнери списків */
+.popup-content.desktop ul {
+  margin-left: 0;
+  margin-top: 0; /* Прибрано верхній відступ */
+  margin-bottom: 0;
+  list-style-type: disc; /* Повертаємо маркери для ul */
+  padding-left: 20px; /* Відступ для маркерів */
+}
+
+.popup-content.desktop ol {
+  margin-left: 0;
+  margin-top: 0; /* Прибрано верхній відступ */
+  margin-bottom: 0;
+  list-style: decimal; /* Повертаємо нумерацію */
+  padding-left: 20px; /* Відступ для нумерації */
+}
+
+/* Хрестик */
+.popup-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+  color: #8d3648;
+}
+
+/* Додаткові стилі для кращого вигляду */
+.popup-content.desktop {
+  line-height: 1.5; /* Загальна висота рядка */
+}
+
+/* Якщо потрібно більше повітря між секціями */
+.popup-content.desktop p:not(:first-of-type) {
+  margin-top: 25px;
 }
