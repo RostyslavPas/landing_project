@@ -3,7 +3,7 @@ requests>=2.31
 psycopg2-binary>=2.9
 gunicorn~=23.0.0
 whitenoise~=6.10.0
-
+greenlet==2.3.4
 pip~=23.2.1
 configparser~=5.3.0
 attrs~=24.3.0
