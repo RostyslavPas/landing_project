@@ -9,204 +9,213 @@
       name="description"
       content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
+    <link rel="icon" type="image/png" href="{% static 'images/mask.png' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
   </head>
   <body>
-    <section id="section-header" class="header-section">
-      <header class="site-header">
-          <div class="menu-container">
-              <img class="menu-toggle" src="{% static 'images/logo_burger.png' %}" alt="PASUE Club логотип" />
-              <div class="dropdown-menu" id="dropdown-menu">
-                <a href="#section-about" class="menu-item">Про PASUE Club</a>
-                <a href="#section-highlights" class="menu-item">Про івент Grand Opening Party</a>
-                <a href="#section-guest" class="menu-item">Особлива гостя вечора</a>
-                <a href="#section-ticket" class="menu-item">Купити квиток</a>
-                <div class="social_links">
-                  <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
-                    <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
-                  </a>
-                  <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
-                    <img src="{% static 'images/tel_header.png' %}" alt="Telegram" />
-                  </a>
-                  <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
-                    <img src="{% static 'images/email.png' %}" alt="Email" />
-                  </a>
+    <div class="scale-wrapper">
+        <section id="section-header" class="header-section">
+          <header class="site-header">
+              <div class="menu-container">
+                  <img class="menu-toggle" src="{% static 'images/logo_burger.png' %}" alt="PASUE Club логотип" />
+                  <div class="dropdown-menu" id="dropdown-menu">
+                    <a href="#section-about" class="menu-item">Про PASUE Club</a>
+                    <a href="#section-highlights" class="menu-item">Про івент Grand Opening Party</a>
+                    <a href="#section-guest" class="menu-item">Особлива гостя вечора</a>
+                    <a href="#section-ticket" class="menu-item">Купити квиток</a>
+                    <div class="social_links">
+                      <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
+                        <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
+                      </a>
+                      <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
+                        <img src="{% static 'images/tel_header.png' %}" alt="Telegram" />
+                      </a>
+                      <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
+                        <img src="{% static 'images/email.png' %}" alt="Email" />
+                      </a>
+                    </div>
+                  </div>
                 </div>
+            <div class="logo">
+              <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
+              <span class="logo-text">закрите жіноче комʼюніті</span>
+            </div>
+          </header>
+        </section>
+        <section id="section-hero">
+          <div class="hero-container">
+            <div class="hero-content">
+              <h1 class="hero-title">Grand Opening Party</h1>
+              <p class="hero-subtitle">Перша подія від PASUE Club - це більше, ніж вечірка<br>Це святкування відкриття нового жіночого комʼюніті</p>
+              <a href="#section-ticket" class="cta-button hero-cta">
+                <span class="cta-button-text">Стати учасницею події</span>
+                <div class="cta-button-key-1" aria-hidden="true"></div>
+              </a>
+              <p class="hero-description">Це твій вхід в унікальний простір,<br>який створений спеціально для тебе</p>
+            </div>
+            <div class="hero-visual">
+              <!--merged image-->
+              <div class="hero-image-wrapper">
+                <img src="{% static 'images/logo_rabbit.png' %}" alt="A rabbit in a whimsical costume reading a scroll" class="hero-main-image">
+                <div class="hero-info-box"></div>
+                  <p class="hero-p">Сюрпризи. Знайомства. Спікерка. Тепла атмосфера.</p>
               </div>
             </div>
-        <div class="logo">
-          <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
-          <span class="logo-text">закрите жіноче комʼюніті</span>
-        </div>
-      </header>
-    </section>
-    <section id="section-hero">
-      <div class="hero-container">
-        <div class="hero-content">
-          <h1 class="hero-title">Grand Opening Party</h1>
-          <p class="hero-subtitle">Перша подія від PASUE Club - це більше, ніж вечірка<br>Це святкування відкриття нового жіночого комʼюніті</p>
-          <a href="#section-ticket" class="cta-button hero-cta">
-            <span class="cta-button-text">Стати учасницею події</span>
-            <div class="cta-button-key-1" aria-hidden="true"></div>
-          </a>
-          <p class="hero-description">Це твій вхід в унікальний простір,<br>який створений спеціально для тебе</p>
-        </div>
-        <div class="hero-visual">
-          <!--merged image-->
-          <div class="hero-image-wrapper">
-            <img src="{% static 'images/logo_rabbit.png' %}" alt="A rabbit in a whimsical costume reading a scroll" class="hero-main-image">
-            <div class="hero-info-box"></div>
-              <p class="hero-p">Сюрпризи. Знайомства. Спікерка. Тепла атмосфера.</p>
           </div>
-        </div>
-      </div>
-      <div class="hero-ps">
-        <img src="{% static 'images/letter.png' %}" alt="Envelope with a seal" class="hero-ps-envelope">
-        <p class="hero-ps-text">P.S. Ти знайшла місце натхнення,<br>де будеш почутою, побаченою,<br>важливою і потрібною</p>
-      </div>
-    </section>
-    <section id="section-about">
-      <div class="about-container">
-        <h2 class="about-title">Що таке</h2>
-        <img src="{% static 'images/main_logo_2.png' %}" alt="PASUE Club Logo" class="about-logo">
-      </div>
-    </section>
-    <section id="section-features">
-      <div class="features-grid">
-        <div class="feature-card">
-          <!--merged image-->
-          <div class="feature-image-container">
-            <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-            <img src="{% static 'images/heart.png' %}" alt="Heart with wings" class="feature-icon-image">
+          <div class="hero-ps">
+            <img src="{% static 'images/letter.png' %}" alt="Envelope with a seal" class="hero-ps-envelope">
+            <p class="hero-ps-text">P.S. Ти знайшла місце натхнення,<br>де будеш почутою, побаченою,<br>важливою і потрібною</p>
           </div>
-          <h3 class="feature-title">Закрите комʼюніті</h3>
-          <p class="feature-description">Тут ти знайдеш підтримку, сестринство та безпечний простір без порівнянь, конкуренції чи осуду</p>
-        </div>
-        <div class="feature-card">
-          <!--merged image-->
-          <div class="feature-image-container">
-            <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-            <img src="{% static 'images/castle.png' %}" alt="Pink castle" class="feature-icon-image">
+        </section>
+        <section id="section-about">
+          <div class="about-container">
+            <h2 class="about-title">Що таке</h2>
+            <img src="{% static 'images/main_logo_2.png' %}" alt="PASUE Club Logo" class="about-logo">
           </div>
-          <h3 class="feature-title">PASUE City онлайн</h3>
-          <p class="feature-description">Віртуальне місто у Telegram - це територія спілкування, щоденних ритуалів та інсайтів від експертів</p>
-        </div>
-        <div class="feature-card">
-          <!--merged image-->
-          <div class="feature-image-container">
-            <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-            <img src="{% static 'images/mask.png' %}" alt="Venetian mask" class="feature-icon-image">
-          </div>
-          <h3 class="feature-title">Події з атмосферою</h3>
-          <p class="feature-description">Камерні вечори, ретрити і тематичні зустрічі, де ти зможеш відпочити та по-справжньому перезавантажитись</p>
-        </div>
-      </div>
-    </section>
-    <section>
-        <div>
-            <h2 class="highlights-title">Event Highlights</h2>
-            <p class="highlights-subtitle">Що на тебе чекає</p>
-        </div>
-    </section>
-    <section id="section-highlights">
-        <div class="highlights-container">
-            <div class="highlights-content-wrapper">
-                <img src="{% static 'images/lamp.png' %}" alt="Chandelier" class="highlights-bg-image">
-                    <div class="highlight-card-1 left-top"><p><strong>Жива розмова без фільтрів:</strong><br>спікерка, яку знають і люблять за чесність, глибину та тонкий гумор</p>
-                    </div>
-                    <div class="highlight-card-2 left-bottom"><p><strong>Турбота у деталях:</strong><br>ексклюзивні подарунки для кожної, створені з думкою про твій настрій</p>
-                    </div>
-                    <div class="highlight-card-3 right-top"><p><strong>Візуальна терапія:</strong><br>атмосфера PASUE Club продумана до дрібниць, щоб ти відчула задоволення</p>
-                    </div>
-                    <div class="highlight-card-4 right-bottom"><p><strong>Моменти, які хочеться зупинити:</strong><br>фотозона, легка музика, частування, живе спілкування та щирі емоції</p>
-                    </div>
-                    <div class="highlights-summary"><p><strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</p>
-                    </div>
-                <a href="#section-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
-                    <div class="cta-button-2-key-2" aria-hidden="true"></div></a>
+        </section>
+        <section id="section-features">
+          <div class="features-grid">
+            <div class="feature-card">
+              <!--merged image-->
+              <div class="feature-image-container">
+                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
+                <img src="{% static 'images/heart.png' %}" alt="Heart with wings" class="feature-icon-image">
+              </div>
+              <h3 class="feature-title">Закрите комʼюніті</h3>
+              <p class="feature-description">Тут ти знайдеш підтримку, сестринство та безпечний простір без порівнянь, конкуренції чи осуду</p>
             </div>
-        </div>
-    </section>
-    <section id="section-guest">
-      <div class="guest-container">
-        <!--merged image-->
-        <div class="guest-visual">
-          <img src="{% static 'images/ellipse_guest.png' %}" alt="background shape" class="guest-bg-shape-1">
-          <img src="{% static 'images/special_guest_logo.png' %}" alt="Silhouette of a woman" class="guest-silhouette">
-          <img src="{% static 'images/mirror.png' %}" alt="Ornate mirror" class="guest-mirror">
-        </div>
-        <div class="guest-info">
-          <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image">
-          <p class="guest-subtitle">Спікерка вечора:</p>
-        </div>
-      </div>
-    </section>
-    <section id="section-ticket">
-      <div class="ticket-header">
-        <h2 class="ticket-title">Get your ticket</h2>
-        <p class="ticket-subtitle">Заповни форму і отримай свій квиток:</p>
-      </div>
-      <div class="ticket-form-wrapper">
-        <!--merged image-->
-        <div class="ticket-bg">
-          <img src="{% static 'images/ticket.png' %}" alt="Ticket background" class="ticket-bg-image">
-          <img src="{% static 'images/ticket_logo.png' %}" alt="PASUE Club logo" class="ticket-side-logo">
-        </div>
-        <form class="ticket-form">
-          <div class="form-group">
-            <label for="email">E-mail:</label>
-            <input type="email"
-                   id="email"
-                   name="email"
-                   required
-                   aria-describedby="email-error"
-                   autocomplete="given-email"
-                   placeholder="user@example.com"
-            />
+            <div class="feature-card">
+              <!--merged image-->
+              <div class="feature-image-container">
+                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
+                <img src="{% static 'images/castle.png' %}" alt="Pink castle" class="feature-icon-image">
+              </div>
+              <h3 class="feature-title">PASUE City онлайн</h3>
+              <p class="feature-description">Віртуальне місто у Telegram - це територія спілкування, щоденних ритуалів та інсайтів від експертів</p>
+            </div>
+            <div class="feature-card">
+              <!--merged image-->
+              <div class="feature-image-container">
+                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
+                <img src="{% static 'images/mask.png' %}" alt="Venetian mask" class="feature-icon-image">
+              </div>
+              <h3 class="feature-title">Події з атмосферою</h3>
+              <p class="feature-description">Камерні вечори, ретрити і тематичні зустрічі, де ти зможеш відпочити та по-справжньому перезавантажитись</p>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="phone">Номер телефону:</label>
-            <input type="tel"
-                   id="phone"
-                   name="phone"
-                   required
-                   aria-describedby="phone-error"
-                   autocomplete="tel"
-                   placeholder="+38(xxx)xxx-xx-xx"
-            />
+        </section>
+        <section>
+            <div>
+                <h2 class="highlights-title">Event Highlights</h2>
+                <p class="highlights-subtitle">Що на тебе чекає</p>
+            </div>
+        </section>
+        <section id="section-highlights">
+            <div class="highlights-container">
+                <div class="highlights-content-wrapper">
+                    <img src="{% static 'images/lamp.png' %}" alt="Chandelier" class="highlights-bg-image">
+                        <div class="highlight-card-1 left-top"><p><strong>Жива розмова без фільтрів:</strong><br>спікерка, яку знають і люблять за чесність, глибину та тонкий гумор</p>
+                        </div>
+                        <div class="highlight-card-2 left-bottom"><p><strong>Турбота у деталях:</strong><br>ексклюзивні подарунки для кожної, створені з думкою про твій настрій</p>
+                        </div>
+                        <div class="highlight-card-3 right-top"><p><strong>Візуальна терапія:</strong><br>атмосфера PASUE Club продумана до дрібниць, щоб ти відчула задоволення</p>
+                        </div>
+                        <div class="highlight-card-4 right-bottom"><p><strong>Моменти, які хочеться зупинити:</strong><br>фотозона, легка музика, частування, живе спілкування та щирі емоції</p>
+                        </div>
+                        <div class="highlights-summary"><p><strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</p>
+                        </div>
+                    <a href="#section-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
+                        <div class="cta-button-2-key-2" aria-hidden="true"></div></a>
+                </div>
+            </div>
+        </section>
+        <section id="section-guest">
+          <div class="guest-container">
+            <!--merged image-->
+            <div class="guest-visual">
+              <img src="{% static 'images/ellipse_guest.png' %}" alt="background shape" class="guest-bg-shape-1">
+              <img src="{% static 'images/special_guest_logo.png' %}" alt="Silhouette of a woman" class="guest-silhouette">
+              <img src="{% static 'images/mirror.png' %}" alt="Ornate mirror" class="guest-mirror">
+            </div>
+            <div class="guest-info">
+              <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image">
+              <p class="guest-subtitle">Спікерка вечора:</p>
+            </div>
           </div>
-          <div class="form-group price-group">
-            <span class="price-label">1789</span>
-            <span class="price-label-2">UAH</span>
-            <button type="submit" class="submit-ticket-btn"><span class="text-wrapper-14">Отримати</span></button>
+        </section>
+        <section id="section-ticket">
+          <div class="ticket-header">
+            <h2 class="ticket-title">Get your ticket</h2>
+            <p class="ticket-subtitle">Заповни форму і отримай свій квиток:</p>
           </div>
-        </form>
-      </div>
-    </section>
-    <section id="section-footer">
-      <footer class="site-footer">
-        <div class="social-links">
-          <a href="https://instagram.com/pasue.club" class="footer-social-link" target="_blank" aria-label="Instagram">
-              <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" />
-              <span>@pasue.club</span>
-          </a>
-          <a href="mailto:pasue.club@gmail.com" class="footer-social-link" aria-label="Email">
-              <img src="{% static 'images/email-icon.png' %}" alt="Email" />
-              <span>pasue.club@gmail.com</span>
-          </a>
-          <a href="https://t.me/" class="footer-social-link" target="_blank" aria-label="Telegram">
-              <img src="{% static 'images/tel_footer.png' %}" alt="Telegram" />
-              <span>+38 068 443 78 82</span>
-          </a>
-        </div>
-        <div class="footer-legal-links">
-          <a href="#" data-popup="offer">Правила та умови</a>
-          <a href="#" data-popup="privacy">Політика повернення коштів</a>
-        </div>
-        <div class="popup" id="popup-privacy">
+          <div class="ticket-form-wrapper">
+            <!--merged image-->
+            <div class="ticket-bg">
+              <img src="{% static 'images/ticket.png' %}" alt="Ticket background" class="ticket-bg-image">
+              <img src="{% static 'images/ticket_logo.png' %}" alt="PASUE Club logo" class="ticket-side-logo">
+            </div>
+            <form class="ticket-form">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       required
+                       placeholder="user@example.com"
+                       autocomplete="email"
+                />
+                <div class="error-message" id="email-error" style="display: none;"></div>
+              </div>
+              <div class="form-group">
+                <label for="phone">Номер телефону:</label>
+                <input type="tel"
+                       id="phone"
+                       name="phone"
+                       required
+                       placeholder="+38(xxx)xxx-xx-xx"
+                       autocomplete="tel"
+                />
+                <div class="error-message" id="phone-error" style="display: none;"></div>
+              </div>
+              <div class="form-group price-group">
+                <span class="price-label">1789</span>
+                <span class="price-label-2">UAH</span>
+                <button type="submit" class="submit-ticket-btn">
+                  <span class="text-wrapper-14">Отримати</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <section id="section-footer">
+          <footer class="site-footer">
+            <div class="social-links">
+              <a href="https://instagram.com/pasue.club" class="footer-social-link" target="_blank" aria-label="Instagram">
+                  <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" />
+                  <span>@pasue.club</span>
+              </a>
+              <a href="mailto:pasue.club@gmail.com" class="footer-social-link" aria-label="Email">
+                  <img src="{% static 'images/email-icon.png' %}" alt="Email" />
+                  <span>pasue.club@gmail.com</span>
+              </a>
+              <a href="https://t.me/" class="footer-social-link" target="_blank" aria-label="Telegram">
+                  <img src="{% static 'images/tel_footer.png' %}" alt="Telegram" />
+                  <span>+38 068 443 78 82</span>
+              </a>
+            </div>
+            <div class="footer-legal-links">
+              <a href="#" data-popup="offer">Правила та умови</a>
+              <a href="#" data-popup="privacy">Політика повернення коштів</a>
+            </div>
+            <p class="copyright">Всі права захищені</p>
+          </footer>
+        </section>
+    </div>
+    <div class="popup" id="popup-privacy">
           <div class="popup-content desktop">
             <span class="popup-close">&times;</span>
             <h2>Політика повернення коштів</h2>
@@ -216,7 +225,7 @@
               <li>Замовлення можна скасувати до моменту оплати.</li>
             </ol>
           </div>
-        </div>
+    </div>
 
         <!-- Правила та умови -->
         <div class="popup" id="popup-offer">
@@ -245,80 +254,255 @@
             </ul>
           </div>
         </div>
-        <p class="copyright">Всі права захищені</p>
-      </footer>
-    </section>
-    <script>
-      // JavaScript for dropdown menu functionality
-      document.addEventListener('DOMContentLoaded', function() {
-        const menuToggle = document.querySelector('.menu-toggle');
-        const dropdownMenu = document.getElementById('dropdown-menu');
-        const menuItems = document.querySelectorAll('.menu-item');
+        <script>
+          // JavaScript for dropdown menu functionality
+          document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const menuItems = document.querySelectorAll('.menu-item');
 
-        // Toggle dropdown menu
-        menuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-        });
+            // Toggle dropdown menu
+            menuToggle.addEventListener('click', function(e) {
+              e.stopPropagation();
+              dropdownMenu.classList.toggle('active');
+            });
 
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-          if (!e.target.closest('.menu-container')) {
-            dropdownMenu.classList.remove('active');
-          }
-        });
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+              if (!e.target.closest('.menu-container')) {
+                dropdownMenu.classList.remove('active');
+              }
+            });
 
-        // Close menu after clicking menu item and smooth scroll
-        menuItems.forEach(item => {
-          item.addEventListener('click', function(e) {
-            e.preventDefault();
-            dropdownMenu.classList.remove('active');
+            // Close menu after clicking menu item and smooth scroll
+            menuItems.forEach(item => {
+              item.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdownMenu.classList.remove('active');
 
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
 
-            if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+                if (targetElement) {
+                  targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
               });
-            }
+            });
           });
-        });
-      });
-    </script>
-    <script>
-      function checkScreenSize() {
-          if (window.innerWidth <= 768) {
-            if (!window.location.pathname.includes("/mobile/")) {
-              window.location.href = "{% url 'mobile' %}";
+        </script>
+        <script>
+          function checkScreenSize() {
+              if (window.innerWidth <= 768) {
+                if (!window.location.pathname.includes("/mobile/")) {
+                  window.location.href = "{% url 'mobile' %}";
+                }
+              }
             }
-          }
+            checkScreenSize();
+            window.addEventListener("resize", checkScreenSize);
+        </script>
+        <script>
+            document.querySelectorAll('[data-popup]').forEach(link => {
+              link.addEventListener('click', function(e) {
+                e.preventDefault();
+                let popupId = "popup-" + this.dataset.popup;
+                document.getElementById(popupId).style.display = "flex";
+              });
+            });
+
+            document.querySelectorAll('.popup-close').forEach(btn => {
+              btn.addEventListener('click', function() {
+                this.closest('.popup').style.display = "none";
+              });
+            });
+
+            window.addEventListener('click', function(e) {
+              if (e.target.classList.contains('popup')) {
+                e.target.style.display = "none";
+              }
+            });
+        </script>
+    {#    скрипт для форми реєстрації #}
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.ticket-form');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+
+            // Форматування номера телефону під час введення
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+
+                // Якщо повністю стерли — залишаємо пустим
+                if (value === "") {
+                    e.target.value = "";
+                    return;
+                }
+
+                // Якщо користувач починає вводити не з 38 — підставимо +38
+                if (!value.startsWith("38")) {
+                    value = "38" + value;
+                }
+
+                value = "+" + value;
+
+                // Форматування: +38(0XX)XXX-XX-XX
+                if (value.length >= 4) {
+                    value = value.replace(/(\+38)(\d{3})/, '$1($2)');
+                }
+                if (value.length >= 9) {
+                    value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
+                }
+                if (value.length >= 13) {
+                    value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
+                }
+
+                e.target.value = value.substring(0, 17); // обмежуємо довжину
+            });
+
+            // Додаємо підтримку видалення
+            phoneInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    let pos = this.selectionStart;
+                    let val = this.value;
+
+                    // Якщо перед курсором спецсимвол – видаляємо його теж
+                    if (pos > 0 && /[\-\(\)\s]/.test(val[pos-1])) {
+                        e.preventDefault();
+                        this.value = val.slice(0, pos-1) + val.slice(pos);
+                        this.setSelectionRange(pos-1, pos-1);
+                    }
+
+                    // Якщо залишився тільки +38 і далі видаляють — очистити поле
+                    if (this.value === "+38") {
+                        e.preventDefault();
+                        this.value = "";
+                    }
+                }
+            });
+
+            // Обробка відправки форми
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData();
+                formData.append('email', emailInput.value);
+                formData.append('phone', phoneInput.value);
+                formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+                const submitBtn = form.querySelector('.submit-ticket-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Обробка...';
+                submitBtn.disabled = true;
+
+                fetch('/submit-ticket/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        redirectToWayForPay(data.wayforpay_params);
+                    } else {
+                        showValidationErrors(data.errors);
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Виникла помилка. Спробуйте ще раз.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
-        checkScreenSize();
-        window.addEventListener("resize", checkScreenSize);
-    </script>
-    <script>
-        document.querySelectorAll('[data-popup]').forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            let popupId = "popup-" + this.dataset.popup;
-            document.getElementById(popupId).style.display = "flex";
-          });
-        });
 
-        document.querySelectorAll('.popup-close').forEach(btn => {
-          btn.addEventListener('click', function() {
-            this.closest('.popup').style.display = "none";
-          });
-        });
+        function showValidationErrors(errors) {
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
 
-        window.addEventListener('click', function(e) {
-          if (e.target.classList.contains('popup')) {
-            e.target.style.display = "none";
-          }
-        });
-    </script>
+            Object.keys(errors).forEach(field => {
+                const input = document.getElementById(field);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.style.color = 'red';
+                errorDiv.style.fontSize = '12px';
+                errorDiv.style.marginTop = '5px';
+                errorDiv.textContent = errors[field][0];
 
+                input.parentNode.appendChild(errorDiv);
+                input.style.borderColor = 'red';
+            });
+        }
+
+        function redirectToWayForPay(params) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://secure.wayforpay.com/pay';
+
+            Object.keys(params).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+        </script>
+        <script>
+        function scalePage() {
+            const baseWidth = 1800;
+            const wrapper = document.querySelector('.scale-wrapper');
+
+            // обчислюємо масштаб пропорційно ширині вікна
+            let scale = window.innerWidth / baseWidth;
+
+            // застосовуємо масштаб
+            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.transformOrigin = 'top left';
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '0';
+            wrapper.style.left = '50%';
+            wrapper.style.transform += ' translateX(-50%)'; // центр по горизонталі
+
+            // встановлюємо body розміри, щоб уникнути білого відступу
+            const wrapperHeight = wrapper.offsetHeight * scale;
+            document.body.style.height = wrapperHeight + 'px';
+            document.body.style.width = '100%';
+            document.body.style.margin = '0';
+            document.body.style.padding = '0';
+            document.body.style.overflowX = 'hidden'; // прибираємо горизонтальний скрол
+        }
+
+        // запуск тільки на desktop
+        if(window.innerWidth > 1024){
+            window.addEventListener('resize', scalePage);
+            window.addEventListener('load', scalePage);
+        }
+        </script>
   </body>
 </html>

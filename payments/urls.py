@@ -3,6 +3,10 @@ from . import views
 
 
 urlpatterns = [
-    path("create/", views.create_payment, name="create_payment"),
-    path("callback/", views.payment_callback, name="payment_callback"),
+    path('', views.index, name='index'),
+    path('mobile/', views.mobile, name='mobile'),
+    path('submit-ticket/', views.submit_ticket_form, name='submit_ticket'),
+    path('wayforpay/callback/', views.wayforpay_callback, name='wayforpay_callback'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/failed/', views.payment_failed, name='payment_failed'),
 ]
