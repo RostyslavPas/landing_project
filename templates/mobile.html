@@ -16,17 +16,12 @@
 <body>
     <header class="site-header">
       <div class="container header-container">
-        <div class="menu-container"> <!-- доданий контейнер -->
+        <div class="menu-container">
           <button class="menu-button" aria-label="Open menu">
             <img src="{% static 'images/logo_burger_mob.png' %}" alt="Menu Icon">
           </button>
           <div class="menu-overlay"></div>
           <div class="dropdown-menu" id="dropdown-menu">
-              <!-- Логотип зверху -->
-{#              <a href="#hero" class="menu-logo">#}
-{#                  <img src="{% static 'images/main_logo_v2_mob.png' %}" alt="PASUE Club Logo">#}
-{#              </a>#}
-                <!-- Пункти меню -->
               <a href="#about" class="menu-item">Про PASUE Club</a>
               <a href="#highlights" class="menu-item">Про івент Grand Opening Party</a>
               <a href="#ticket" class="menu-item">Особлива гостя вечора</a>
@@ -60,7 +55,6 @@
           <p class="hero-subtitle">Це святкування відкриття<br>нового жіночого комʼюніті</p>
         </div>
         <img class="hero-image" src="{% static 'images/logo_rabbit_mob.png' %}" alt="A rabbit in a red jacket reading a scroll">
-
         <div class="hero-cta-wrapper">
           <a href="#ticket" class="cta-button">
             <img src="{% static 'images/key-1-mob.png' %}" alt="Key Icon" width="41" height="39">
@@ -68,7 +62,6 @@
           </a>
           <p class="cta-subtext">Це твій вхід в унікальний простір, який створений спеціально для тебе</p>
         </div>
-
         <div class="ps-note">
           <img class="ps-image" src="{% static 'images/letter_mob.png' %}" alt="Envelope with a wax seal">
           <p class="ps-text">P.S. Ти знайшла місце натхнення, де будеш почутою, побаченою, важливою і потрібною</p>
@@ -83,7 +76,6 @@
         </div>
         <div class="features-list">
           <div class="feature-item">
-            <!--merged image-->
             <div class="feature-image-wrapper">
               <img src="{% static 'images/heart_mob.png' %}" alt="Decorative shield" class="feature-bg-img">
               <img src="{% static 'images/black_ellipse_mob.png' %}" alt="" class="feature-icon-svg">
@@ -94,7 +86,6 @@
             </div>
           </div>
           <div class="feature-item">
-            <!--merged image-->
             <div class="feature-image-wrapper">
               <img src="{% static 'images/castle_mob.png' %}" alt="Pink castle" class="feature-bg-img">
               <img src="{% static 'images/black_ellipse_mob.png' %}" alt="" class="feature-icon-svg">
@@ -105,7 +96,6 @@
             </div>
           </div>
           <div class="feature-item">
-            <!--merged image-->
             <div class="feature-image-wrapper">
               <img src="{% static 'images/mask_mob.png' %}" alt="Venetian mask" class="feature-bg-img">
               <img src="{% static 'images/black_ellipse_mob.png' %}" alt="" class="feature-icon-svg">
@@ -141,11 +131,9 @@
             <p><strong>Візуальна терапія:</strong><br>атмосфера PASUE Club продумана до дрібниць, щоб ти відчула задоволення</p>
           </li>
         </ul>
-
         <p class="highlights-summary">
           <strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися
         </p>
-
         <a href="#ticket" class="cta-button">
           <img src="{% static 'images/key-2-mob.png' %}" alt="Key Icon" width="41" height="39">
           <span>Приєднатися до вечора</span>
@@ -158,18 +146,14 @@
           <img src="{% static 'images/special_guest_mob.png' %}" alt="Special Guest decorative text">
           <p>Спікерка вечора:</p>
         </div>
-
-        <!--merged image-->
         <div class="guest-image-wrapper">
           <img class="guest-img-bg" src="{% static 'images/ellipse_guest_mob.png' %}" alt="">
           <img class="guest-img-main" src="{% static 'images/special_guest_logo_mob.png' %}" alt="Silhouette of the special guest">
           <img class="guest-img-mirror" src="{% static 'images/mirror_mob.png' %}" alt="Golden mirror">
         </div>
-
         <div class="ticket-form-container">
           <h2 class="ticket-title">Get your ticket</h2>
           <p class="ticket-subtitle">Заповни форму і отримай свій квиток</p>
-
           <div class="ticket-form-wrapper">
               <img src="{% static 'images/ticket_mob.png' %}" alt="Ticket background" class="ticket-form-wrapper">
             <form class="ticket-form">
@@ -218,26 +202,19 @@
         <div class="popup" id="popup-terms">
           <div class="popup-content mobile">
             <h2>Правила та умови</h2>
-
             <p><b>Опис послуги:</b></p>
-              <ul>Цей сайт є офіційною онлайн-<br>платформою PASUE Club, де Ви можете<br> придбати квитки на заходи клубу.</ul>
-
+              <ul>Цей сайт є офіційною онлайн-платформою PASUE Club, де Ви можете придбати квитки на заходи клубу.</ul>
             <p><b>Умови замовлення:</b></p>
               <li>Покупець зобов'язується надати<br> достовірну контактну інформацію.</li>
               <li>Замовлення вважається дійсним<br> лише після підтвердження успішної<br> оплати на email покупця.</li>
-
             <p><b>Оплата:</b><br></p>
               <li>Оплата здійснюється онлайн за<br> допомогою платіжної системи<br> WayForPay.</li>
               <li>Валюта платежу — гривня (UAH).</li>
-
             <p><b>Доставка:</b><br></p>
               <li>Електронні квитки надсилаються<br> на email одразу після підтвердження<br> оплати.</li>
-
             <span class="popup-close">✕</span>
           </div>
         </div>
-
-        <!-- ПОПАП: Політика повернення коштів -->
         <div class="popup" id="popup-refund">
           <div class="popup-content mobile">
             <h2>Політика повернення коштів</h2>
@@ -249,223 +226,10 @@
             <span class="popup-close">✕</span>
           </div>
         </div>
-
         <p class="copyright">Всі права захищені</p>
       </div>
     </footer>
-    <script>
-        function checkScreenSize() {
-          if (window.innerWidth > 768) {
-            if (window.location.pathname.includes("/mobile/")) {
-              window.location.href = "{% url 'index' %}";
-            }
-          }
-        }
-        checkScreenSize();
-        window.addEventListener("resize", checkScreenSize);
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const menuButton = document.querySelector('.menu-button');
-          const dropdownMenu = document.querySelector('.dropdown-menu');
-          const overlay = document.querySelector('.menu-overlay');
-
-          if (!menuButton || !dropdownMenu || !overlay) return;
-
-          function openMenu() {
-            dropdownMenu.classList.add('open');
-            overlay.classList.add('active');
-            menuButton.setAttribute('aria-expanded', 'true');
-          }
-
-          function closeMenu() {
-            dropdownMenu.classList.remove('open');
-            overlay.classList.remove('active');
-            menuButton.setAttribute('aria-expanded', 'false');
-          }
-
-          menuButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.contains('open') ? closeMenu() : openMenu();
-          });
-
-          overlay.addEventListener('click', closeMenu);
-
-          dropdownMenu.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', closeMenu);
-          });
-        });
-    </script>
-    <script>
-        document.querySelectorAll('[data-popup]').forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            let popupId = "popup-" + this.dataset.popup;
-            document.getElementById(popupId).style.display = "flex";
-          });
-        });
-
-        document.querySelectorAll('.popup-close').forEach(btn => {
-          btn.addEventListener('click', function() {
-            this.closest('.popup').style.display = "none";
-          });
-        });
-
-        window.addEventListener('click', function(e) {
-          if (e.target.classList.contains('popup')) {
-            e.target.style.display = "none";
-          }
-        });
-    </script>
-{#    форма реєстрації#}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('.ticket-form');
-        const emailInput = document.getElementById('email');
-        const phoneInput = document.getElementById('phone');
-
-        // Форматування номера телефону під час введення
-        phoneInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-
-            // Якщо поле стерли — залишаємо порожнім
-            if (value === "") {
-                e.target.value = "";
-                return;
-            }
-
-            // Якщо користувач починає вводити не з 38 — підставимо +38
-            if (!value.startsWith("38")) {
-                value = "38" + value;
-            }
-
-            value = "+" + value;
-
-            // Форматування: +38(0XX)XXX-XX-XX
-            if (value.length >= 4) {
-                value = value.replace(/(\+38)(\d{3})/, '$1($2)');
-            }
-            if (value.length >= 9) {
-                value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
-            }
-            if (value.length >= 13) {
-                value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
-            }
-
-            e.target.value = value.substring(0, 17);
-        });
-
-        // Додаємо підтримку видалення
-        phoneInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace' || e.key === 'Delete') {
-                let pos = this.selectionStart;
-                let val = this.value;
-
-                // Якщо перед курсором спецсимвол – видаляємо його теж
-                if (pos > 0 && /[\-\(\)\s]/.test(val[pos-1])) {
-                    e.preventDefault();
-                    this.value = val.slice(0, pos-1) + val.slice(pos);
-                    this.setSelectionRange(pos-1, pos-1);
-                }
-
-                // Якщо залишився тільки +38 і далі видаляють — очищаємо поле
-                if (this.value === "+38") {
-                    e.preventDefault();
-                    this.value = "";
-                }
-            }
-        });
-
-        // Обробка відправки форми
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData();
-            formData.append('email', emailInput.value);
-            formData.append('phone', phoneInput.value);
-            formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-
-            // Показуємо індикатор завантаження
-            const submitBtn = form.querySelector('.submit-button');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Обробка...';
-            submitBtn.disabled = true;
-
-            fetch('/submit-ticket/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    redirectToWayForPay(data.wayforpay_params);
-                } else {
-                    showValidationErrors(data.errors);
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Виникла помилка. Спробуйте ще раз.');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-    });
-
-    // Допоміжні функції
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    function showValidationErrors(errors) {
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-
-        Object.keys(errors).forEach(field => {
-            const input = document.getElementById(field);
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.style.color = 'red';
-            errorDiv.style.fontSize = '12px';
-            errorDiv.style.marginTop = '5px';
-            errorDiv.textContent = errors[field][0];
-
-            input.parentNode.appendChild(errorDiv);
-            input.style.borderColor = 'red';
-        });
-    }
-
-    function redirectToWayForPay(params) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://secure.wayforpay.com/pay';
-
-        Object.keys(params).forEach(key => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
-            form.appendChild(input);
-        });
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-    </script>
+    <script src="{% static 'js/mobile.js' %}"></script>
+    <script src="{% static 'js/common.js' %}"></script>
 </body>
 </html>

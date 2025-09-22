@@ -10,7 +10,6 @@
       content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
     <link rel="icon" type="image/png" href="{% static 'images/mask.png' %}">
-    <link rel="stylesheet" href="{% static 'css/global.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
@@ -57,7 +56,6 @@
               <p class="hero-description">Це твій вхід в унікальний простір,<br>який створений спеціально для тебе</p>
             </div>
             <div class="hero-visual">
-              <!--merged image-->
               <div class="hero-image-wrapper">
                 <img src="{% static 'images/logo_rabbit.png' %}" alt="A rabbit in a whimsical costume reading a scroll" class="hero-main-image">
                 <div class="hero-info-box"></div>
@@ -79,7 +77,6 @@
         <section id="section-features">
           <div class="features-grid">
             <div class="feature-card">
-              <!--merged image-->
               <div class="feature-image-container">
                 <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
                 <img src="{% static 'images/heart.png' %}" alt="Heart with wings" class="feature-icon-image">
@@ -88,7 +85,6 @@
               <p class="feature-description">Тут ти знайдеш підтримку, сестринство та безпечний простір без порівнянь, конкуренції чи осуду</p>
             </div>
             <div class="feature-card">
-              <!--merged image-->
               <div class="feature-image-container">
                 <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
                 <img src="{% static 'images/castle.png' %}" alt="Pink castle" class="feature-icon-image">
@@ -97,7 +93,6 @@
               <p class="feature-description">Віртуальне місто у Telegram - це територія спілкування, щоденних ритуалів та інсайтів від експертів</p>
             </div>
             <div class="feature-card">
-              <!--merged image-->
               <div class="feature-image-container">
                 <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
                 <img src="{% static 'images/mask.png' %}" alt="Venetian mask" class="feature-icon-image">
@@ -134,7 +129,6 @@
         </section>
         <section id="section-guest">
           <div class="guest-container">
-            <!--merged image-->
             <div class="guest-visual">
               <img src="{% static 'images/ellipse_guest.png' %}" alt="background shape" class="guest-bg-shape-1">
               <img src="{% static 'images/special_guest_logo.png' %}" alt="Silhouette of a woman" class="guest-silhouette">
@@ -152,7 +146,6 @@
             <p class="ticket-subtitle">Заповни форму і отримай свій квиток:</p>
           </div>
           <div class="ticket-form-wrapper">
-            <!--merged image-->
             <div class="ticket-bg">
               <img src="{% static 'images/ticket.png' %}" alt="Ticket background" class="ticket-bg-image">
               <img src="{% static 'images/ticket_logo.png' %}" alt="PASUE Club logo" class="ticket-side-logo">
@@ -226,8 +219,6 @@
             </ol>
           </div>
     </div>
-
-        <!-- Правила та умови -->
         <div class="popup" id="popup-offer">
           <div class="popup-content desktop">
             <span class="popup-close">&times;</span>
@@ -254,255 +245,7 @@
             </ul>
           </div>
         </div>
-        <script>
-          // JavaScript for dropdown menu functionality
-          document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.querySelector('.menu-toggle');
-            const dropdownMenu = document.getElementById('dropdown-menu');
-            const menuItems = document.querySelectorAll('.menu-item');
-
-            // Toggle dropdown menu
-            menuToggle.addEventListener('click', function(e) {
-              e.stopPropagation();
-              dropdownMenu.classList.toggle('active');
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function(e) {
-              if (!e.target.closest('.menu-container')) {
-                dropdownMenu.classList.remove('active');
-              }
-            });
-
-            // Close menu after clicking menu item and smooth scroll
-            menuItems.forEach(item => {
-              item.addEventListener('click', function(e) {
-                e.preventDefault();
-                dropdownMenu.classList.remove('active');
-
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
-                  targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                  });
-                }
-              });
-            });
-          });
-        </script>
-        <script>
-          function checkScreenSize() {
-              if (window.innerWidth <= 768) {
-                if (!window.location.pathname.includes("/mobile/")) {
-                  window.location.href = "{% url 'mobile' %}";
-                }
-              }
-            }
-            checkScreenSize();
-            window.addEventListener("resize", checkScreenSize);
-        </script>
-        <script>
-            document.querySelectorAll('[data-popup]').forEach(link => {
-              link.addEventListener('click', function(e) {
-                e.preventDefault();
-                let popupId = "popup-" + this.dataset.popup;
-                document.getElementById(popupId).style.display = "flex";
-              });
-            });
-
-            document.querySelectorAll('.popup-close').forEach(btn => {
-              btn.addEventListener('click', function() {
-                this.closest('.popup').style.display = "none";
-              });
-            });
-
-            window.addEventListener('click', function(e) {
-              if (e.target.classList.contains('popup')) {
-                e.target.style.display = "none";
-              }
-            });
-        </script>
-    {#    скрипт для форми реєстрації #}
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('.ticket-form');
-            const emailInput = document.getElementById('email');
-            const phoneInput = document.getElementById('phone');
-
-            // Форматування номера телефону під час введення
-            phoneInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-
-                // Якщо повністю стерли — залишаємо пустим
-                if (value === "") {
-                    e.target.value = "";
-                    return;
-                }
-
-                // Якщо користувач починає вводити не з 38 — підставимо +38
-                if (!value.startsWith("38")) {
-                    value = "38" + value;
-                }
-
-                value = "+" + value;
-
-                // Форматування: +38(0XX)XXX-XX-XX
-                if (value.length >= 4) {
-                    value = value.replace(/(\+38)(\d{3})/, '$1($2)');
-                }
-                if (value.length >= 9) {
-                    value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
-                }
-                if (value.length >= 13) {
-                    value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
-                }
-
-                e.target.value = value.substring(0, 17); // обмежуємо довжину
-            });
-
-            // Додаємо підтримку видалення
-            phoneInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' || e.key === 'Delete') {
-                    let pos = this.selectionStart;
-                    let val = this.value;
-
-                    // Якщо перед курсором спецсимвол – видаляємо його теж
-                    if (pos > 0 && /[\-\(\)\s]/.test(val[pos-1])) {
-                        e.preventDefault();
-                        this.value = val.slice(0, pos-1) + val.slice(pos);
-                        this.setSelectionRange(pos-1, pos-1);
-                    }
-
-                    // Якщо залишився тільки +38 і далі видаляють — очистити поле
-                    if (this.value === "+38") {
-                        e.preventDefault();
-                        this.value = "";
-                    }
-                }
-            });
-
-            // Обробка відправки форми
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const formData = new FormData();
-                formData.append('email', emailInput.value);
-                formData.append('phone', phoneInput.value);
-                formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-
-                const submitBtn = form.querySelector('.submit-ticket-btn');
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Обробка...';
-                submitBtn.disabled = true;
-
-                fetch('/submit-ticket/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        redirectToWayForPay(data.wayforpay_params);
-                    } else {
-                        showValidationErrors(data.errors);
-                        submitBtn.textContent = originalText;
-                        submitBtn.disabled = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Виникла помилка. Спробуйте ще раз.');
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                });
-            });
-        });
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        function showValidationErrors(errors) {
-            document.querySelectorAll('.error-message').forEach(el => el.remove());
-
-            Object.keys(errors).forEach(field => {
-                const input = document.getElementById(field);
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.style.color = 'red';
-                errorDiv.style.fontSize = '12px';
-                errorDiv.style.marginTop = '5px';
-                errorDiv.textContent = errors[field][0];
-
-                input.parentNode.appendChild(errorDiv);
-                input.style.borderColor = 'red';
-            });
-        }
-
-        function redirectToWayForPay(params) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://secure.wayforpay.com/pay';
-
-            Object.keys(params).forEach(key => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-        </script>
-        <script>
-        function scalePage() {
-            const baseWidth = 1800;
-            const wrapper = document.querySelector('.scale-wrapper');
-
-            // обчислюємо масштаб пропорційно ширині вікна
-            let scale = window.innerWidth / baseWidth;
-
-            // застосовуємо масштаб
-            wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.transformOrigin = 'top left';
-            wrapper.style.position = 'absolute';
-            wrapper.style.top = '0';
-            wrapper.style.left = '50%';
-            wrapper.style.transform += ' translateX(-50%)'; // центр по горизонталі
-
-            // встановлюємо body розміри, щоб уникнути білого відступу
-            const wrapperHeight = wrapper.offsetHeight * scale;
-            document.body.style.height = wrapperHeight + 'px';
-            document.body.style.width = '100%';
-            document.body.style.margin = '0';
-            document.body.style.padding = '0';
-            document.body.style.overflowX = 'hidden'; // прибираємо горизонтальний скрол
-        }
-
-        // запуск тільки на desktop
-        if(window.innerWidth > 1024){
-            window.addEventListener('resize', scalePage);
-            window.addEventListener('load', scalePage);
-        }
-        </script>
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/common.js' %}"></script>
   </body>
 </html>
