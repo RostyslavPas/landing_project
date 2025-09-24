@@ -1,0 +1,1112 @@
+ :root {
+  --primary-color: #8d3648;
+  --dark-bg: #282828;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --background-light: #fffdfa;
+  --font-main: 'Montserrat Alternates', sans-serif;
+  --font-display: 'New Rocker', cursive;
+}
+body {
+  background-color: var(--background-light);
+  font-family: var(--font-main);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+.page-wrapper {
+  max-width: 1728px;
+  margin: 0 auto;
+  position: relative;
+}
+section {
+  padding: 92px 20px;
+  position: relative;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+.cta-button {
+  width: 700px;
+  top: 50%;
+  left: 13%;
+  position: absolute;
+  height: 103px;
+  border-radius: 50px;
+  border: 1px dashed #000000;
+}
+.cta-button-text {
+  position: absolute;
+  width: 100%;
+  top: 34%;
+  left: 2%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.cta-button-key-1 {
+  position: absolute;
+  width: 56px;
+  height: 53px;
+  top: 23%;
+  left: 15%;
+  aspect-ratio: 1.06;
+  background-image: url(/static/images/key-1.png);
+  background-size: 100% 100%;
+}
+.cta-button:hover {
+  background-color: #fffdfa;
+  border: 1px solid #000000;
+}
+.cta-button:hover .cta-button-key-1 {
+  background-image: url(/static/images/key-gold.png);
+}
+.cta-button:active {
+  background-color: #fffdfa;
+  border: 1px solid #edac4c;
+}
+.cta-button:active .cta-button-key-1 {
+  background-image: url(/static/images/key-gold.png);
+}
+.cta-button:active .cta-button-text {
+  color: #edac4c;
+}
+.cta-button-2 {
+  position: absolute;
+  top: 62%;
+  left: 50%;               /* центр по горизонталі */
+  transform: translateX(-50%);
+
+  width: 38%;              /* адаптивна ширина */
+  max-width: 700px;        /* обмеження великого екрану */
+  min-width: 200px;        /* мінімальна ширина */
+
+  height: 103px;           /* можна залишити фіксованою або через vh */
+  border-radius: 50px;
+  border: 1px dashed #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* Текст кнопки */
+.cta-button-2-text {
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: clamp(16px, 2vw, 24px); /* адаптивний розмір шрифту */
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  margin: 0;
+}
+
+/* Іконка всередині кнопки */
+.cta-button-2-key-2 {
+  width: 56px;
+  height: 53px;
+  aspect-ratio: 1.06;
+  background-image: url(/static/images/key-2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 80%; /* відступ від правого краю кнопки */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+.cta-button-2:hover {
+  background-color: #fffdfa;
+  border: 1px solid #000000;
+}
+.cta-button-2:hover .cta-button-2-key-2 {
+  background-image: url(/static/images/key-gold.png);
+}
+.cta-button-2:active {
+  background-color: #fffdfa;
+  border: 1px solid #edac4c;
+}
+.cta-button-2:active .cta-button-2-key-2 {
+  background-image: url(/static/images/key-gold.png);
+}
+.cta-button-2:active .cta-button-2-text {
+  color: #edac4c;
+}
+
+/* CSS from section:header */
+.header-section {
+  padding-top: 40px;
+  padding-bottom: 0;
+}
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  position: relative;
+  height: 120px;
+}
+.menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7%;
+  position: relative;
+  left: 70%;
+  width: 70%;
+}
+.menu-toggle img {
+  width: 50%;
+  height: auto;
+}
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.logo-bg {
+  width: 800px;
+  height: auto;
+}
+.logo-text {
+  font-size: 24px;
+  color: var(--text-dark);
+  margin-top: -83px;
+  margin-left: -179px;
+  display: block;
+}
+
+/* CSS from section:hero */
+#section-hero {
+  padding-top: 20px;
+}
+.hero-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.hero-content {
+  flex: 1;
+  padding-left: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+  margin-top: 50px;
+}
+.hero-title {
+  position: absolute;
+  width: 712px;
+  top: 27%;
+  left: 11%;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  color: #8d3648;
+  font-size: 78px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+.hero-subtitle {
+  position: absolute;
+  width: 712px;
+  top: 40%;
+  left: 11%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  color: #000000;
+  font-size: 23px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.hero-description {
+  position: absolute;
+  width: 712px;
+  top: 65%;
+  left: 12%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  color: #000000;
+  font-size: 23px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.hero-cta {
+  width: 36%;
+  justify-content: flex-start;
+  padding-left: 30px;
+}
+.hero-visual {
+  flex: 1;
+  position: relative;
+  margin-top: -100px;
+}
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 110%; /* Aspect ratio */
+}
+.hero-main-image {
+  position: absolute;
+  top: -11%;
+  left: -4%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+}
+.hero-info-box {
+  position: absolute;
+  bottom: 17%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #282828;
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 25px 40px;
+  width: 710px;
+  height: 201px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 23px;
+  z-index: 1;
+}
+.hero-p {
+  width: 680px;
+  top: 83%;
+  left: 10%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 23px;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.hero-ps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: -6%;
+  margin-left: 35%;
+  position: relative;
+  z-index: 5;
+}
+.hero-ps-envelope {
+  width: 21%;
+}
+.hero-ps-text {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* CSS from section:about */
+#section-about {
+  padding-top: 0;
+  padding-bottom: 3%;
+}
+.about-container {
+  position: absolute;
+  width: 498px;
+  height: 133px;
+  top: -30%;
+  left: 38%;
+}
+.about-title {
+  width: 123px;
+  top: 39px;
+  left: 0;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 24px;
+  text-align: center;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.about-logo {
+  position: absolute;
+  width: 426px;
+  height: 133px;
+  top: 0;
+  left: 72px;
+  object-fit: cover;
+}
+
+/* CSS from section:features */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.feature-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.feature-image-container {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin-bottom: 40px;
+}
+.feature-bg-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.feature-icon-image {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 132%;
+  max-height: 106%;
+  object-fit: contain;
+}
+.feature-title {
+  font-size: 23px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.feature-description {
+  font-size: 23px;
+  line-height: 1.4;
+  max-width: 512px;
+}
+
+/* CSS from section:highlights */
+#section-highlights {
+  text-align: center;
+}
+.highlights-title {
+  position: absolute;
+  width: 784px;
+  top: 0;
+  left: 27%;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  color: #8d3648;
+  font-size: 78px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.highlights-subtitle {
+  width: 376px;
+  top: 82px;
+  left: 34%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 24px;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.highlights-content-wrapper {
+  position: relative;
+  min-height: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.highlights-bg-image {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px;
+  z-index: 1;
+}
+.highlights-cards {
+  position: relative;
+  width: 100%;
+  max-width: 1500px;
+  height: 500px;
+  z-index: 2;
+}
+.highlight-card-1 {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 25px;
+  position: absolute;
+  text-align: left;
+  font-size: 23px;
+  line-height: 1.4;
+}
+.highlight-card-1 p {
+  color: white;
+}
+.highlight-card-1 strong {
+  font-weight: 600;
+}
+.highlight-card-2 {
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 25px;
+  position: absolute;
+  text-align: left;
+  font-size: 23px;
+  line-height: 1.4;
+}
+.highlight-card-2 p {
+  color: var(--dark-bg);;
+}
+.highlight-card-2 strong {
+  font-weight: 600;
+}
+.highlight-card-3 {
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 25px;
+  position: absolute;
+  text-align: left;
+  font-size: 23px;
+  line-height: 1.4;
+}
+.highlight-card-3 p {
+  color: var(--dark-bg);;
+}
+.highlight-card-3 strong {
+  font-weight: 600;
+}
+.highlight-card-4 {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 25px;
+  position: absolute;
+  text-align: left;
+  font-size: 23px;
+  line-height: 1.4;
+}
+.highlight-card-4 p {
+  color: white;
+}
+.highlight-card-4 strong {
+  font-weight: 600;
+}
+.left-top {
+  top: -14%;
+  left: 7%;
+  width: 28%;
+}
+.left-bottom {
+  bottom: 61%;
+  left: 7%;
+  width: 29%;
+}
+.right-top {
+  top: -16%;
+  right: 6%;
+  width: 30%;
+}
+.right-bottom {
+  bottom: 63%;
+  right: 7%;
+  width: 29%;
+}
+
+.highlights-summary {
+  top: 10%;
+  bottom: 10%;
+  right: 10%;
+  width: 38%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.highlights-summary p {
+  font-size: 23px;
+  line-height: 1.5;
+  max-width: 680px;
+}
+.highlights-summary strong {
+  font-weight: 600;
+}
+
+/* CSS from section:guest */
+#section-guest {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+.guest-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.guest-visual {
+  position: relative;
+  width: 700px;
+  height: 600px;
+}
+.guest-bg-shape-1 {
+  position: absolute;
+  width: 459px;
+  height: 453px;
+  top: -17%;
+  left: -47%;
+  background-color: #282828;
+  border-radius: 230px / 227px;
+}
+.guest-silhouette {
+  position: absolute;
+  width: 584px;
+  height: 533px;
+  top: -43%;
+  left: -52%;
+  object-fit: cover;
+}
+.guest-mirror {
+  position: absolute;
+  width: 165px;
+  height: 156px;
+  top: -17%;
+  left: -59%;
+  object-fit: cover;
+}
+.guest-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.guest-title-image {
+  position: absolute;
+  width: 613px;
+  height: 115px;
+  top: -24%;
+  left: 32%;
+  object-fit: cover;
+}
+.guest-subtitle {
+  width: 246px;
+  top: -8%;
+  left: 37%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 24px;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+/* CSS from section:ticket */
+#section-ticket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.ticket-header {
+  text-align: center;
+}
+.ticket-title {
+  position: absolute;
+  width: 542px;
+  top: -218%;
+  left: 35%;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  color: #8d3648;
+  font-size: 85px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+.ticket-subtitle {
+  width: 512px;
+  top: -162%;
+  left: 36%;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 23px;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.ticket-form-wrapper {
+  position: absolute;
+  width: 1150px;
+  height: 395px;
+}
+.ticket-bg {
+  position: absolute;
+  top: -86%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ticket-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ticket-side-logo {
+  position: absolute;
+  left: 16%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 320px;
+  width: auto;
+}
+.ticket-form {
+  position: relative;
+  z-index: 2;
+  width: 33%;
+  margin: -27% auto;
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  position: relative;
+  left: 7%;
+}
+.form-group input {
+  border: 1px solid var(--text-dark);
+  border-radius: 50px;
+  height: 55px;
+  padding: 0 20px;
+  font-size: 18px;
+  background-color: transparent;
+}
+.price-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+  font-family: 'New Rocker', Georgia, serif;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: right;
+}
+.price-label {
+  position: relative;
+  left: 75%;
+  top: -20px;
+  font-size: 45px;
+}
+.price-label-2 {
+  position: relative;
+  left: 55%;
+  top: 10px;
+  font-size: 24px;
+}
+.submit-ticket-btn {
+  position: absolute;
+  width: 64%;
+  height: 53px;
+  top: 82%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #8d3648;
+  border-radius: 50px;
+  border: 3px solid transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.text-wrapper-14 {
+  width: 155px;
+  top: 9px;
+  left: 45px;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 24px;
+  white-space: nowrap;
+  position: absolute;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+/* hover */
+.submit-ticket-btn:hover {
+  background-color: transparent;
+  border-color: #8d3648;
+  opacity: 0.9;
+}
+.submit-ticket-btn:hover .text-wrapper-14 {
+  color: #8d3648;
+}
+/* click */
+.submit-ticket-btn:active {
+  background-color: #8d3648;
+  border-color: #8d3648;
+}
+.submit-ticket-btn:active .text-wrapper-14 {
+  color: #edac4c;
+}
+
+/* CSS from section:footer */
+#section-footer {
+  background-color: var(--dark-bg);
+  /*color: var(--text-light);*/
+  padding: 50px 20px;
+
+}
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 150px;
+  position: relative;
+  left: 1%;
+}
+
+.footer-social-link {
+  display: flex;
+  flex-direction: column; /* іконка зверху, текст знизу */
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-light); /* щоб співпадало з футером */
+  font-size: 16px;
+  font-weight: 500;
+  gap: 8px; /* відстань між іконкою і текстом */
+}
+
+.footer-social-link img {
+  height: 48px;
+  width: auto;
+  transition: transform 0.3s;
+}
+
+.footer-social-link:hover img {
+  transform: scale(1.1);
+}
+
+.footer-social-link span {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+
+/* решта твої стилі лишаються */
+.footer-legal-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  font-size: 24px;
+  font-weight: 500;
+}
+.footer-legal-links a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--text-light);
+  opacity: .3;
+}
+.copyright {
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+
+/* Випадаюче меню */
+.menu-container {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 58%;
+  min-width: 400px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 27px 0;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+  border: 1px solid #e0e0e0;
+}
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.menu-item {
+  display: block;
+  padding: 12px 24px;
+  color: #000000;
+  text-decoration: none;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+/* Default стиль посилань */
+.menu-item {
+  background-color: transparent;
+}
+/* Hover стиль посилань */
+.menu-item:hover {
+  background-color: #f5f5f5;
+  color: #8d3648;
+  font-weight: 600;
+}
+/* Pressed стиль посилань */
+.menu-item:active {
+  background-color: #8d3648;
+  color: #ffffff;
+  border-bottom-color: #8d3648;
+  font-weight: 600;
+}
+.social_links {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 20px 24px 0;
+  border-top: 1px solid #e0e0e0;
+}
+.social_link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.social_link img {
+  width: 100%;
+  height: 100%;
+}
+ /*Hover стиль соціальних іконок */
+.social_link:hover {
+  transform: scale(1.1);
+}
+.social_link:active {
+  background-color: #edac4c;
+  transform: scale(0.95);
+}
+.social_link:active img {
+  filter: brightness(0) invert(1);
+}
+/* Hover стиль футер соціальних іконок */
+.footer-social-link:hover {
+  transform: scale(1.1);
+}
+
+/*************************popup_for_privacy_policy**********************/
+/* Загальні стилі для попапів */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.active {
+  display: flex;
+}
+
+.popup-content.desktop {
+  background: #D9D9D9;
+  border-radius: 20px;
+  padding: 25px 50px;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  font-family: var(--font-body);
+  color: #000000;
+}
+
+/* Заголовок */
+.popup-content.desktop h2 {
+  margin-top: 20px;
+  margin-bottom: 40px; /* Збільшено відступ після заголовка */
+  font-size: 20px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 100%;
+  color: #000000;
+}
+
+/* Секційні заголовки (жирний текст) */
+.popup-content.desktop p b,
+.popup-content.desktop p strong {
+  font-weight: 700;
+  display: block;
+  margin-top: 20px; /* Відступ зверху перед новою секцією */
+  margin-bottom: 0; /* Прибрано відступ після секційного заголовка */
+}
+
+/* Перша секція без верхнього відступу */
+.popup-content.desktop p:first-of-type b,
+.popup-content.desktop p:first-of-type strong {
+  margin-top: 0;
+}
+
+/* Основний текст параграфів */
+.popup-content.desktop p {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 0; /* Прибрано нижній відступ */
+  color: #000000;
+  text-align: left;
+}
+
+/* Списки елементів */
+.popup-content.desktop li {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 8px; /* Відступ між пунктами списку */
+  margin-top: 0; /* Прибрано верхній відступ */
+  color: #000000;
+  text-align: left;
+  display: list-item;
+}
+
+/* Окремо для ul (з маркерами-крапками) */
+.popup-content.desktop ul li {
+  list-style-type: disc;
+  margin-left: 0;
+}
+
+/* Окремо для ol (з нумерацією) */
+.popup-content.desktop ol li {
+  list-style-type: decimal;
+  margin-left: 0;
+}
+
+/* Останній елемент списку з більшим відступом */
+.popup-content.desktop li:last-child {
+  margin-bottom: 20px;
+}
+
+/* Контейнери списків */
+.popup-content.desktop ul {
+  margin-left: 0;
+  margin-top: 0; /* Прибрано верхній відступ */
+  margin-bottom: 0;
+  list-style-type: disc; /* Повертаємо маркери для ul */
+  padding-left: 20px; /* Відступ для маркерів */
+}
+
+.popup-content.desktop ol {
+  margin-left: 0;
+  margin-top: 0; /* Прибрано верхній відступ */
+  margin-bottom: 0;
+  list-style: decimal; /* Повертаємо нумерацію */
+  padding-left: 20px; /* Відступ для нумерації */
+}
+
+/* Хрестик */
+.popup-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+  color: #8d3648;
+}
+
+/* Додаткові стилі для кращого вигляду */
+.popup-content.desktop {
+  line-height: 1.5; /* Загальна висота рядка */
+}
+
+/* Якщо потрібно більше повітря між секціями */
+.popup-content.desktop p:not(:first-of-type) {
+  margin-top: 25px;
+}
+/*Масштабування верстки*/
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.scale-wrapper {
+  transform-origin: top left; /* залишаємо лівий верхній кут */
+  width: 1800px; /* базова ширина */
+  height: auto;
+  position: relative;
+}

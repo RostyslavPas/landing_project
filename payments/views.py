@@ -1,16 +1,15 @@
-from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib import messages
-from django.urls import reverse
-from django.utils.decorators import method_decorator
-from django.views import View
-import json
-import hashlib
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
+
 import time
+import hashlib
+import json
+
 from .models import TicketOrder
 from .forms import TicketOrderForm
 
@@ -25,9 +24,9 @@ def mobile(request):
 
 @require_http_methods(["POST"])
 def submit_ticket_form(request):
+    """Форма замовлення квитка"""
     form = TicketOrderForm(request.POST)
 
-    # Визначення типу пристрою
     user_agent = request.META.get('HTTP_USER_AGENT', '')
     is_mobile = any(device in user_agent.lower() for device in
                     ['mobile', 'android', 'iphone', 'ipad'])
@@ -37,7 +36,6 @@ def submit_ticket_form(request):
         email = form.cleaned_data['email']
         phone = form.cleaned_data['phone']
 
-        # Перевіряємо чи існує вже такий користувач
         order, created = TicketOrder.objects.get_or_create(
             email=email,
             defaults={
@@ -48,24 +46,16 @@ def submit_ticket_form(request):
         )
 
         if not created:
-            # Якщо користувач вже існує, оновлюємо його дані
             order.phone = phone
             order.device_type = device_type
             order.payment_status = 'pending'
             order.save()
 
-        # Генерація параметрів для WayForPay
         wayforpay_params = generate_wayforpay_params(order)
 
-        return JsonResponse({
-            'success': True,
-            'wayforpay_params': wayforpay_params
-        })
+        return JsonResponse({'success': True, 'wayforpay_params': wayforpay_params})
     else:
-        return JsonResponse({
-            'success': False,
-            'errors': form.errors
-        })
+        return JsonResponse({'success': False, 'errors': form.errors})
 
 
 def generate_wayforpay_params(order):
@@ -96,7 +86,6 @@ def generate_wayforpay_params(order):
         'serviceUrl': settings.WAYFORPAY_SERVICE_URL,
     }
 
-    # Генерація підпису
     signature_string = ";".join([
         merchant_account,
         str(params['merchantDomainName']),
@@ -119,48 +108,46 @@ def generate_wayforpay_params(order):
 @csrf_exempt
 @require_http_methods(["POST"])
 def wayforpay_callback(request):
-    """Обробка callback від WayForPay"""
+    """Webhook від WayForPay"""
     try:
         data = json.loads(request.body.decode('utf-8'))
         order_reference = data.get('orderReference')
         transaction_status = data.get('transactionStatus')
 
-        if order_reference:
-            try:
-                order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
+        if not order_reference:
+            return HttpResponse('Missing orderReference', status=400)
 
-                if transaction_status == 'Approved':
-                    order.payment_status = 'success'
-                    order.save()
+        try:
+            order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
+        except TicketOrder.DoesNotExist:
+            return HttpResponse('Order not found', status=404)
 
-                    # Відправка email після успішної оплати
-                    send_confirmation_email(order)
+        if transaction_status == 'Approved':
+            order.payment_status = 'success'
+            order.save()
+            send_confirmation_email(order)
+        else:
+            order.payment_status = 'failed'
+            order.save()
 
-                elif transaction_status in ['Declined', 'Expired', 'Refunded']:
-                    order.payment_status = 'failed'
-                    order.save()
-
-                return HttpResponse('OK', status=200)
-            except TicketOrder.DoesNotExist:
-                return HttpResponse('Order not found', status=404)
+        return HttpResponse('OK', status=200)
 
     except Exception as e:
         return HttpResponse(f'Error: {str(e)}', status=400)
 
-    return HttpResponse('Invalid request', status=400)
 
-
+@require_GET
 def payment_success(request):
-    """Сторінка успішної оплати"""
+    """Сторінка успішної оплати для користувача"""
     order_reference = request.GET.get('orderReference')
+    order = None
     if order_reference:
         try:
             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
-            return render(request, 'payment_success.html', {'order': order})
         except TicketOrder.DoesNotExist:
             pass
 
-    return render(request, 'payment_success.html')
+    return render(request, 'payment_success.html', {'order': order})
 
 
 def payment_failed(request):
@@ -194,10 +181,8 @@ def send_confirmation_email(order):
             [order.email],
             fail_silently=False,
         )
-
         order.email_status = 'sent'
-        order.save()
-
-    except Exception as e:
+    except Exception:
         order.email_status = 'failed'
-        order.save()
+
+    order.save()

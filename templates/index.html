@@ -9,7 +9,7 @@
       name="description"
       content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
-    <link rel="icon" type="image/png" href="{% static 'images/mask.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/fleur.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
@@ -245,7 +245,18 @@
             </ul>
           </div>
         </div>
+        <!-- Підключаємо зовнішній JS -->
         <script src="{% static 'js/main.js' %}"></script>
-        <script src="{% static 'js/common.js' %}"></script>
+        <script>
+            function checkScreenSize() {
+                  if (window.innerWidth <= 768) {
+                    if (!window.location.pathname.includes("/mobile/")) {
+                      window.location.href = "{% url 'mobile' %}";
+                    }
+                  }
+                }
+            checkScreenSize();
+            window.addEventListener("resize", checkScreenSize);
+        </script>
   </body>
 </html>
