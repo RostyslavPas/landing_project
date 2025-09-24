@@ -11,9 +11,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "replace_with_your_secret_key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
+# CSRF для callback
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://secure.wayforpay.com"
+).split(",")
+
+if DEBUG:
+    # Локальні адреси для тестування форм
+    CSRF_TRUSTED_ORIGINS += [
+        "http://127.0.0.1:8000",
+        "http://localhost:8000"
+    ]
 ALLOWED_HOSTS = os.getenv(
     "DJANGO_ALLOWED_HOSTS",
-    "pasue.com.ua,www.pasue.com.ua,landing-project-8gew.onrender.com,127.0.0.1"
+    "pasue.com.ua,www.pasue.com.ua,landing-project-8gew.onrender.com,127.0.0.1,localhost"
 ).split(",")
 
 # Додатки
@@ -84,11 +96,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # WayForPay налаштування
-WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT")
-WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY")
-WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN")
-WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL")
-WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL")
+WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT", "test_merch_n1")
+WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "test_secret")
+WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "http://127.0.0.1:8000")
+WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", f"{WAYFORPAY_DOMAIN}/payment/success/")
+WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", f"{WAYFORPAY_DOMAIN}/payment/callback/")
 
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

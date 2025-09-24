@@ -230,6 +230,16 @@
       </div>
     </footer>
     <script src="{% static 'js/mobile.js' %}"></script>
-    <script src="{% static 'js/common.js' %}"></script>
+    <script>
+        function checkScreenSize() {
+          if (window.innerWidth > 768) {
+            if (window.location.pathname.includes("/mobile/")) {
+              window.location.href = "{% url 'index' %}";
+            }
+          }
+        }
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+    </script>
 </body>
 </html>
