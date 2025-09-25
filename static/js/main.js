@@ -90,11 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Відправка форми
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const formData = new FormData();
-            formData.append('email', emailInput.value);
-            formData.append('phone', phoneInput.value);
-            formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
+            const formData = new FormData(form); // забираємо поля напряму з форми
             const submitBtn = form.querySelector('.submit-ticket-btn');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Обробка...';
@@ -102,8 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             fetch('/submit-ticket/', {
                 method: 'POST',
-                body: formData,
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                body: new FormData(form),
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                credentials: 'include'
             })
             .then(response => response.json())
             .then(data => {
@@ -177,17 +175,34 @@ function showValidationErrors(errors) {
     });
 }
 
+
 function redirectToWayForPay(params) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = 'https://secure.wayforpay.com/pay';
+
     Object.keys(params).forEach(key => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
-        form.appendChild(input);
+        const value = params[key];
+
+        if (Array.isArray(value)) {
+            // Для масивів створюємо окреме поле для кожного елемента
+            value.forEach(item => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key + '[]';  // Додаємо [] до імені
+                input.value = item;
+                form.appendChild(input);
+            });
+        } else {
+            // Для звичайних значень
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
     });
+
     document.body.appendChild(form);
     form.submit();
 }
