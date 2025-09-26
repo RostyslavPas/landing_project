@@ -4,13 +4,11 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
 import hmac
 import time
 import hashlib
 import json
 from .models import TicketOrder
-from .forms import TicketOrderForm
 
 
 def index(request):
@@ -21,92 +19,73 @@ def mobile(request):
     return render(request, 'mobile.html')
 
 
-@require_http_methods(["POST"])
-def submit_ticket_form(request):
-    """Форма замовлення квитка"""
-    form = TicketOrderForm(request.POST)
-
-    if form.is_valid():
-        email = form.cleaned_data['email']
-        phone = form.cleaned_data['phone']
-
-        order, _ = TicketOrder.objects.get_or_create(
-            email=email,
-            defaults={
-                'phone': phone,
-                'device_type': 'desktop',
-                'payment_status': 'pending',
-            },
-        )
-
-        # генеруємо orderReference
-        order_reference = f"ORDER_{order.id}_{int(time.time())}"
-        order.wayforpay_order_reference = order_reference
-        order.save()
-
-        params = generate_wayforpay_params(order)
-        return JsonResponse({"success": True, "wayforpay_params": params})
-
-    return JsonResponse({"success": False, "errors": form.errors})
-
-
 def generate_wayforpay_params(order):
-    """Генерація параметрів для WayForPay з коректним підписом"""
     merchant_account = settings.WAYFORPAY_MERCHANT_ACCOUNT
-    merchant_secret_key = settings.WAYFORPAY_SECRET_KEY
     merchant_domain = settings.WAYFORPAY_DOMAIN.rstrip('/')
+    secret_key = settings.WAYFORPAY_SECRET_KEY
 
+    # Унікальний orderReference
     order_reference = f"ORDER_{order.id}_{int(time.time())}"
     order.wayforpay_order_reference = order_reference
     order.save()
 
-    # Форматування суми з двома знаками після коми
-    amount_float = float(order.amount)
-
+    # --- Дані для платежу ---
+    amount = float(order.amount)
     params = {
         "merchantAccount": merchant_account,
         "merchantDomainName": merchant_domain,  # без https://
         "orderReference": order_reference,
-        "orderDate": int(time.time()),
-        "amount": f"{amount_float:.2f}",
+        "orderDate": str(int(time.time())),
+        "amount": f"{amount:.2f}",
         "currency": "UAH",
         "productName[]": ["PASUE Club - Grand Opening Party Ticket"],
-        "productCount[]": [str(1)],
-        "productPrice[]": [amount_float],
-        "clientFirstName": "Client",
-        "clientLastName": "Name",
+        "productCount[]": ["1"],
+        "productPrice[]": [f"{amount:.2f}"],
         "clientEmail": order.email,
         "clientPhone": order.phone,
-        "language": "uk",
+        "language": "uk",  # UA, EN, AUTO
         "returnUrl": settings.WAYFORPAY_RETURN_URL,
         "serviceUrl": settings.WAYFORPAY_SERVICE_URL,
     }
 
-    # Формування підпису (md5)
+    # --- Формуємо підпис ---
     signature_string = ";".join([
         params["merchantAccount"],
         params["merchantDomainName"],
         params["orderReference"],
-        str(params["orderDate"]),
+        params["orderDate"],
         params["amount"],
         params["currency"],
-        *params["productName[]"],
-        *[str(c) for c in params["productCount[]"]],
-        *[f"{p:.2f}" for p in params["productPrice[]"]],
+        *params["productName[]"],   # Розгортаємо список
+        *params["productCount[]"],  # Розгортаємо список
+        *params["productPrice[]"],  # Розгортаємо список
     ])
 
-    full_signature_string = f"{signature_string};{merchant_secret_key}"
-    signature = hashlib.md5(full_signature_string.encode("utf-8")).hexdigest()
-    params["merchantSignature"] = signature
+    merchant_signature = hmac.new(
+        secret_key.encode('utf-8'),
+        signature_string.encode('utf-8'),
+        hashlib.md5
+    ).hexdigest()
 
-    # Дебаг
-    print("=== WAYFORPAY INIT DEBUG ===")
-    print(f"Signature string: {signature_string}")
-    print(f"Full string with key: {full_signature_string}")
-    print(f"Generated signature: {signature}")
-    print("=== END DEBUG ===")
+    params["merchantSignature"] = merchant_signature
 
     return params
+
+
+@csrf_exempt
+def submit_ticket_form(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+
+        order, _ = TicketOrder.objects.get_or_create(
+            email=email,
+            defaults={"phone": phone, "payment_status": "pending", "amount": 2500.00}
+        )
+        params = generate_wayforpay_params(order)
+        return JsonResponse({"success": True, "wayforpay_params": params})
+
+    return JsonResponse({"success": False})
 
 
 @csrf_exempt
@@ -115,6 +94,9 @@ def wayforpay_callback(request):
     """Webhook від WayForPay"""
     try:
         data = json.loads(request.body.decode("utf-8"))
+        print(f"=== CALLBACK DATA ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=== END CALLBACK DATA ===")
 
         order_reference = data.get("orderReference")
         transaction_status = data.get("transactionStatus")
@@ -126,9 +108,9 @@ def wayforpay_callback(request):
         try:
             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
         except TicketOrder.DoesNotExist:
+            print(f"Order not found: {order_reference}")
             return HttpResponse("Order not found", status=404)
 
-        # Порядок полів для callback згідно документації
         signature_fields = [
             data.get("merchantAccount", ""),
             data.get("orderReference", ""),
@@ -144,14 +126,18 @@ def wayforpay_callback(request):
         full_signature_string = f"{signature_string};{settings.WAYFORPAY_SECRET_KEY}"
         expected_signature = hashlib.md5(full_signature_string.encode("utf-8")).hexdigest()
 
+        print(f"=== CALLBACK SIGNATURE DEBUG ===")
+        print(f"Signature fields: {signature_fields}")
+        print(f"Signature string: {signature_string}")
+        print(f"Full string with key: {full_signature_string}")
+        print(f"Expected signature: {expected_signature}")
+        print(f"Received signature: {merchant_signature}")
+
         if expected_signature != merchant_signature:
-            print("=== WAYFORPAY CALLBACK SIGNATURE ERROR ===")
-            print(f"Signature string: {signature_string}")
-            print(f"Full string with key: {full_signature_string}")
-            print(f"Expected signature: {expected_signature}")
-            print(f"Received signature: {merchant_signature}")
-            print("=== END DEBUG ===")
+            print("=== SIGNATURE MISMATCH ===")
             return HttpResponse("Invalid signature", status=403)
+
+        print("=== SIGNATURE VALID ===")
 
         # оновлюємо статус
         if transaction_status == "Approved":
@@ -214,7 +200,8 @@ def send_confirmation_email(order):
             fail_silently=False,
         )
         order.email_status = 'sent'
-    except Exception:
+    except Exception as e:
+        print(f"Email sending error: {str(e)}")
         order.email_status = 'failed'
 
     order.save()

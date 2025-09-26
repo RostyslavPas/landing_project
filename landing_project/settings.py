@@ -12,7 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "replace_with_your_secret_key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
-# CSRF для callback
+
+# CSRF для ngrok
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
@@ -20,14 +21,23 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 if DEBUG:
-    # Локальні адреси для тестування форм
+    # Додаємо ngrok домени
     CSRF_TRUSTED_ORIGINS += [
+        "https://lakeesha-inconvertible-cattishly.ngrok-free.dev",
         "http://127.0.0.1:8000",
         "http://localhost:8000"
     ]
+
+# Для ngrok headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_TZ = True
+
 ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS",
-    "pasue.com.ua,www.pasue.com.ua,landing-project-8gew.onrender.com,127.0.0.1,localhost"
+    "DJANGO_ALLOWED_HOSTS", "pasue.com.ua,"
+                            "www.pasue.com.ua,"
+                            "landing-project-8gew.onrender.com,"
+                            "127.0.0.1,localhost,"
+                            "lakeesha-inconvertible-cattishly.ngrok-free.dev"
 ).split(",")
 
 # Додатки
@@ -99,10 +109,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # WayForPay налаштування
 WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT", "test_merch_n1")
-WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "test_secret")
-WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "http://127.0.0.1:8000")
-WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", f"{WAYFORPAY_DOMAIN}/payment/success/")
-WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", f"{WAYFORPAY_DOMAIN}/payment/callback/")
+WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "flk3409refn54t54t*FNJRET")
+WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "lakeesha-inconvertible-cattishly.ngrok-free.dev")
+WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/success/")
+WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/callback/")
 
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

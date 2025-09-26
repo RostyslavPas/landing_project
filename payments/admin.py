@@ -11,6 +11,7 @@ class TicketOrderAdmin(admin.ModelAdmin):
         'email_status',
         'device_type',
         'amount',
+        'wayforpay_order_reference',
         'created_at',
         'updated_at'
     ]
