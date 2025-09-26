@@ -39,3 +39,4 @@ Thumbs.db
 htmlcov/
 .tox/
 .pytest_cache/
+/payments/migrations/

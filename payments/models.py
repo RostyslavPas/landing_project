@@ -46,12 +46,7 @@ class TicketOrder(models.Model):
         null=True,
         verbose_name="Номер замовлення WayForPay"
     )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=1789.00,
-        verbose_name="Сума"
-    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=2500.00)
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата створення")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата оновлення")
 

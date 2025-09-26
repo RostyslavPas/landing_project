@@ -7,15 +7,17 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Безпека
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "replace_with_your_secret_key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
 # CSRF для callback
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://secure.wayforpay.com"
-).split(",")
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 if DEBUG:
     # Локальні адреси для тестування форм
@@ -110,6 +112,3 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
-
-# CSRF для callback
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://secure.wayforpay.com").split(",")
