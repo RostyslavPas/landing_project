@@ -32,13 +32,7 @@ if DEBUG:
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_TZ = True
 
-ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS", "pasue.com.ua,"
-                            "www.pasue.com.ua,"
-                            "landing-project-8gew.onrender.com,"
-                            "127.0.0.1,localhost,"
-                            "lakeesha-inconvertible-cattishly.ngrok-free.dev"
-).split(",")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 # Додатки
 INSTALLED_APPS = [
@@ -108,11 +102,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # WayForPay налаштування
-WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT", "test_merch_n1")
-WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "flk3409refn54t54t*FNJRET")
-WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "lakeesha-inconvertible-cattishly.ngrok-free.dev")
-WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/result/")
-WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/callback/")
+WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT")
+WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY")
+WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN")
+WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL")
+WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL")
 
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
