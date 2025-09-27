@@ -94,7 +94,7 @@ def wayforpay_callback(request):
     """Webhook від WayForPay"""
     try:
         data = json.loads(request.body.decode("utf-8"))
-        print(f"=== CALLBACK DATA ===")
+        print("=== CALLBACK DATA ===")
         print(json.dumps(data, indent=2, ensure_ascii=False))
         print("=== END CALLBACK DATA ===")
 
@@ -111,6 +111,7 @@ def wayforpay_callback(request):
             print(f"Order not found: {order_reference}")
             return HttpResponse("Order not found", status=404)
 
+        # Формуємо підпис
         signature_fields = [
             data.get("merchantAccount", ""),
             data.get("orderReference", ""),
@@ -123,13 +124,16 @@ def wayforpay_callback(request):
         ]
 
         signature_string = ";".join(signature_fields)
-        full_signature_string = f"{signature_string};{settings.WAYFORPAY_SECRET_KEY}"
-        expected_signature = hashlib.md5(full_signature_string.encode("utf-8")).hexdigest()
 
-        print(f"=== CALLBACK SIGNATURE DEBUG ===")
+        expected_signature = hmac.new(
+            settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
+            signature_string.encode("utf-8"),
+            hashlib.md5
+        ).hexdigest()
+
+        print("=== CALLBACK SIGNATURE DEBUG ===")
         print(f"Signature fields: {signature_fields}")
         print(f"Signature string: {signature_string}")
-        print(f"Full string with key: {full_signature_string}")
         print(f"Expected signature: {expected_signature}")
         print(f"Received signature: {merchant_signature}")
 
@@ -139,7 +143,7 @@ def wayforpay_callback(request):
 
         print("=== SIGNATURE VALID ===")
 
-        # оновлюємо статус
+        # Оновлюємо статус замовлення
         if transaction_status == "Approved":
             order.payment_status = "success"
             order.save()
@@ -155,22 +159,43 @@ def wayforpay_callback(request):
         return HttpResponse(f"Error: {str(e)}", status=400)
 
 
+# @csrf_exempt
+# @require_http_methods(["POST", "GET"])
+# def payment_success(request):
+#     """Сторінка успішної оплати"""
+#     order_reference = request.GET.get("orderReference")
+#     order = None
+#     if order_reference:
+#         try:
+#             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
+#         except TicketOrder.DoesNotExist:
+#             pass
+#     return render(request, "payment_success.html", {"order": order})
+#
+#
+# def payment_failed(request):
+#     return render(request, "payment_failed.html")
 @csrf_exempt
-@require_http_methods(["POST", "GET"])
-def payment_success(request):
-    """Сторінка успішної оплати"""
+@require_http_methods(["GET", "POST"])
+def payment_result(request):
+    """
+    Сторінка результату оплати.
+    Використовуємо один URL для success і failure.
+    """
     order_reference = request.GET.get("orderReference")
     order = None
+    status = "failed"  # дефолт
+
     if order_reference:
         try:
             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
+            status = "success" if order.payment_status == "success" else "failed"
         except TicketOrder.DoesNotExist:
-            pass
-    return render(request, "payment_success.html", {"order": order})
+            order = None
+            status = "failed"
 
-
-def payment_failed(request):
-    return render(request, "payment_failed.html")
+    template = "payment_success.html" if status == "success" else "payment_failed.html"
+    return render(request, template, {"order": order})
 
 
 def send_confirmation_email(order):

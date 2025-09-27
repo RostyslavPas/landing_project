@@ -7,7 +7,8 @@ urlpatterns = [
     path('mobile/', views.mobile, name='mobile'),
     path('submit-ticket/', views.submit_ticket_form, name='submit_ticket'),
     path('submit-ticket-form/', views.submit_ticket_form, name='submit_ticket_form'),
-    path("payment/success/", views.payment_success, name="payment_success"),
-    path("payment/failed/", views.payment_failed, name="payment_failed"),
+    # path("payment/success/", views.payment_success, name="payment_success"),
+    # path("payment/failed/", views.payment_failed, name="payment_failed"),
+    path("payment/result/", views.payment_result, name="payment_result"),
     path("payment/callback/", views.wayforpay_callback, name="wayforpay_callback")
 ]

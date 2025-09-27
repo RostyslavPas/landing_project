@@ -111,7 +111,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT", "test_merch_n1")
 WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "flk3409refn54t54t*FNJRET")
 WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "lakeesha-inconvertible-cattishly.ngrok-free.dev")
-WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/success/")
+WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/result/")
 WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", "https://lakeesha-inconvertible-cattishly.ngrok-free.dev/payment/callback/")
 
 # Email налаштування
