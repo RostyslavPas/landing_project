@@ -9,7 +9,7 @@
       name="description"
       content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
-    <link rel="icon" type="image/png" href="{% static 'images/fleur.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
@@ -29,8 +29,8 @@
                       <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
                         <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
                       </a>
-                      <a href="https://t.me/pasueclub" class="social_link" target="_blank" aria-label="Telegram">
-                        <img src="{% static 'images/tel_header.png' %}" alt="Telegram" />
+                      <a href="#" class="social_link" target="_blank" aria-label="Telegram" onclick="openTelegram(event)">
+                        <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
                       </a>
                       <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
                         <img src="{% static 'images/email.png' %}" alt="Email" />
@@ -130,9 +130,7 @@
         <section id="section-guest">
           <div class="guest-container">
             <div class="guest-visual">
-              <img src="{% static 'images/ellipse_guest.png' %}" alt="background shape" class="guest-bg-shape-1">
-{#              <img src="{% static 'images/special_guest_logo.png' %}" alt="Silhouette of a woman" class="guest-silhouette">#}
-{#              <img src="{% static 'images/mirror.png' %}" alt="Ornate mirror" class="guest-mirror">#}
+              <img src="{% static 'images/trio.png' %}" alt="background shape" class="guest-bg-shape-1">
             </div>
             <div class="guest-info">
               <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image">
@@ -140,8 +138,8 @@
             </div>
             <div class="guest-description">
               <p class="guest-description-item">«Тріо Різні» — жіночий колектив, який<br> перетворює простий вечір на той, який<br> захочеться згадувати знову й знову.</p>
-              <p class="guest-description-item">Вони чесні, смішні й справжні. Вони сміються з<br> того, про що ми мовчимо, і говорять так, що<br> хочеться сміятися й плакати водночас.</p>
-              <p class="guest-description-item">Їхній виступ заряджає теплом і залишає<br> післясмак довгої розмови з подругою.</p>
+              <p class="guest-description-item">З ними ти станеш учасницею шоу<br> «Порадниця»: з тебе питання, а з дівчат -<br> чесна і смішна відповідь</p>
+              <p class="guest-description-item">Вони такі справжні та щирі, що в тебе<br> залишиться післясмак довгої розмови з<br> подругою</p>
             </div>
           </div>
         </section>
@@ -149,6 +147,10 @@
           <div class="ticket-header">
             <h2 class="ticket-title">Get your ticket</h2>
             <p class="ticket-subtitle">Заповни форму і отримай свій квиток:</p>
+            <div class="ticket-info-main">
+                <p class="ticket-info">Дата проведення: <span class="bold">29 листопада 2025</span></p>
+                <p class="ticket-info">Час проведення: <span class="bold">17:00-20:00</span></p>
+            </div>
           </div>
           <div class="ticket-form-wrapper">
             <div class="ticket-bg">
@@ -180,7 +182,7 @@
                 <div class="error-message" id="phone-error" style="display: none;"></div>
               </div>
               <div class="form-group price-group">
-                <span class="price-label">2500</span>
+                <span class="price-label">2159</span>
                 <span class="price-label-2">UAH</span>
                 <button type="submit" class="submit-ticket-btn">
                   <span class="text-wrapper-14">Отримати</span>
@@ -188,6 +190,7 @@
               </div>
             </form>
           </div>
+          <p class="location-info">Місце проведення: <span class="bold">м.Київ, вул. Бориса Грінченка 7 (HEAVEN)</span></p>
         </section>
         <section id="section-footer">
           <footer class="site-footer">
@@ -200,8 +203,8 @@
                   <img src="{% static 'images/email-icon.png' %}" alt="Email" />
                   <span>pasue.club@gmail.com</span>
               </a>
-              <a href="https://t.me/" class="footer-social-link" target="_blank" aria-label="Telegram">
-                  <img src="{% static 'images/tel_footer.png' %}" alt="Telegram" />
+              <a href="#" class="footer-social-link" target="_blank" aria-label="Telegram" onclick="openTelegram(event)">
+                  <img src="{% static 'images/telegram-icon.png' %}" alt="Telegram" />
                   <span>+38 068 443 78 82</span>
               </a>
             </div>
@@ -262,6 +265,20 @@
                 }
             checkScreenSize();
             window.addEventListener("resize", checkScreenSize);
+        </script>
+        <script>
+          function openTelegram(e) {
+            e.preventDefault();
+            const phone = "380684437882";
+            const tgApp = `tg://resolve?phone=${phone}`;
+            const tgWeb = `https://t.me/+${phone}`;
+
+            window.location.href = tgApp;
+
+            setTimeout(() => {
+              window.open(tgWeb, "_blank");
+            }, 1000);
+          }
         </script>
   </body>
 </html>
