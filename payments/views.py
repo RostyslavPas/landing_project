@@ -185,13 +185,9 @@ def wayforpay_callback(request):
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def payment_result(request):
-    """
-    Сторінка результату оплати.
-    Використовуємо один URL для success і failure.
-    """
     order_reference = request.GET.get("orderReference")
     order = None
-    status = "failed"  # дефолт
+    status = "failed"
 
     if order_reference:
         try:
