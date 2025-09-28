@@ -338,8 +338,7 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .about-title {
   width: 123px;
-  top: 39px;
-  left: 0;
+  top: 10%;
   font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 600;
   color: #000000;
@@ -354,7 +353,7 @@ h1, h2, h3, h4, h5, h6, p {
   position: absolute;
   width: 426px;
   height: 133px;
-  top: 0;
+  top: -25%;
   left: 72px;
   object-fit: cover;
 }

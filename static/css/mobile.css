@@ -155,11 +155,20 @@ img {
 }
 .hero-subtitle {
   position: relative;
-  top: 15px;
-  right: 1px;
+  top: 17px;
+  right: 4px;
   font-size: 14px;
   line-height: 1.2;
   margin-top: 24px;
+}
+.hero-subtitle .bold {
+  font-weight: 400;
+  font-size: 24px;
+  font-family: 'New Rocker', Georgia, serif;
+  color: #8D3648;
+}
+.hero-subtitle .child2 {
+  font-weight: 500;
 }
 .hero-image {
   position: absolute;
@@ -169,8 +178,8 @@ img {
   z-index: auto;
 }
 .hero-cta-wrapper {
-  margin-top: 165px;
-  padding: 15px 10px;
+  margin-top: 31%;
+  padding: 15px 0;
 }
 .cta-subtext {
   text-align: center;
@@ -180,7 +189,6 @@ img {
 .ps-note {
   display: flex;
   align-items: center;
-  gap: 20px;
   margin-top: 20px;
 }
 .ps-image {
@@ -188,7 +196,7 @@ img {
   flex-shrink: 0;
   position: relative;
   top: 2px;
-  right: -17px;
+  right: 4px;
 }
 .ps-text {
   font-size: 13px;
@@ -206,7 +214,7 @@ img {
   margin-bottom: 50px;
   position: relative;
   top: -16px;
-  right: -25px;
+  right: -6px;
 }
 .about-title {
   font-family: var(--font-body);
@@ -305,11 +313,10 @@ img {
 .highlight-item img {
   width: 53px;
   flex-shrink: 0;
-  margin-top: -5px;
 }
 .highlight-item p {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.3;
 }
 .highlight-item p strong {
@@ -371,10 +378,10 @@ img {
   position: absolute;
 }
 .guest-img-bg {
-  width: 168px;
-  height: 177px;
-  top: 58%;
-  left: 73%;
+  width: 100%;
+  height: 126%;
+  top: 45%;
+  left: 40%;
   transform: translate(-40%, -50%);
 }
 .guest-img-main {
@@ -391,16 +398,38 @@ img {
   left: 66%;
   transform: translateX(-130%) rotate(-7.9deg);
 }
+.guest-description {
+    margin-top: 3rem;
+    max-width: 100%;
+    margin-right: auto;
+}
+
+.guest-description-item {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 14px;
+    line-height: 100%;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.guest-description-item:first-child {
+    font-weight: 500;
+}
+
 .ticket-form-container {
   margin-top: 20px;
   text-align: center;
 }
 .ticket-title {
   font-size: 48px;
+  text-align: center;
 }
 .ticket-subtitle {
   font-weight: 600;
   font-size: 14px;
+  text-align: center;
 }
 .ticket-form-wrapper {
   margin-top: -65px;
@@ -421,6 +450,23 @@ img {
 .form-group {
   text-align: left;
   margin-bottom: 22px;
+}
+.ticket-info-main{
+  position: relative;
+  top: 10px;
+}
+.ticket-info {
+  text-align: center;
+  font-size: 95%;
+  line-height: 100%;
+  font-weight: 600;
+  margin: 10px 0;
+}
+.ticket-info .bold {
+  font-weight: 400;
+}
+.ticket-info:last-of-type .bold {
+  font-weight: 400;
 }
 .form-group label {
   font-weight: 500;
