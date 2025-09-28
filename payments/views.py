@@ -149,10 +149,14 @@ def wayforpay_callback(request):
             order.save()
 
             # Відправка email без падіння callback
-            try:
-                send_confirmation_email(order)
-            except Exception as e:
-                print(f"Email sending error: {e}")
+            if order.email_status != "sent":
+                try:
+                    send_confirmation_email(order)
+                    print(f"Email sent for order {order_reference}")
+                except Exception as e:
+                    print(f"Email sending error for order {order_reference}: {e}")
+            else:
+                print(f"Email already sent for order {order_reference}, skipping.")
 
         else:
             order.payment_status = "failed"
@@ -166,22 +170,6 @@ def wayforpay_callback(request):
         return HttpResponse(f"Error: {str(e)}", status=400)
 
 
-# @csrf_exempt
-# @require_http_methods(["POST", "GET"])
-# def payment_success(request):
-#     """Сторінка успішної оплати"""
-#     order_reference = request.GET.get("orderReference")
-#     order = None
-#     if order_reference:
-#         try:
-#             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
-#         except TicketOrder.DoesNotExist:
-#             pass
-#     return render(request, "payment_success.html", {"order": order})
-#
-#
-# def payment_failed(request):
-#     return render(request, "payment_failed.html")
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def payment_result(request):
