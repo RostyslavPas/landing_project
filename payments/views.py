@@ -147,11 +147,18 @@ def wayforpay_callback(request):
         if transaction_status == "Approved":
             order.payment_status = "success"
             order.save()
-            send_confirmation_email(order)
+
+            # Відправка email без падіння callback
+            try:
+                send_confirmation_email(order)
+            except Exception as e:
+                print(f"Email sending error: {e}")
+
         else:
             order.payment_status = "failed"
             order.save()
 
+        # Повертаємо WayForPay підтвердження
         return JsonResponse({"orderReference": order_reference, "status": "accept"}, status=200)
 
     except Exception as e:
