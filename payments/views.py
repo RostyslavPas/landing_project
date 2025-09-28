@@ -80,7 +80,7 @@ def submit_ticket_form(request):
 
         order, _ = TicketOrder.objects.get_or_create(
             email=email,
-            defaults={"phone": phone, "payment_status": "pending", "amount": 2500.00}
+            defaults={"phone": phone, "payment_status": "pending", "amount": 1.00}
         )
         params = generate_wayforpay_params(order)
         return JsonResponse({"success": True, "wayforpay_params": params})

@@ -21,7 +21,7 @@ class TicketOrder(models.Model):
 
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=2500.00)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=1.00)
     device_type = models.CharField(
         max_length=10,
         choices=DEVICE_TYPE_CHOICES,
