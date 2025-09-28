@@ -44,7 +44,7 @@ def generate_wayforpay_params(order):
         "clientEmail": order.email,
         "clientPhone": order.phone,
         "language": "uk",  # UA, EN, AUTO
-        "returnUrl": settings.WAYFORPAY_RETURN_URL,
+        "returnUrl": f"{settings.WAYFORPAY_RETURN_URL}?orderReference={order_reference}",
         "serviceUrl": settings.WAYFORPAY_SERVICE_URL,
     }
 
