@@ -148,17 +148,52 @@ function showValidationErrors(errors) {
     });
 }
 
+/*WayForPay settings*/
 function redirectToWayForPay(params) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = 'https://secure.wayforpay.com/pay';
+
     Object.keys(params).forEach(key => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
-        form.appendChild(input);
+        const value = params[key];
+
+        if (Array.isArray(value)) {
+            value.forEach(item => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;  // наприклад "productName[]"
+                input.value = item;
+                form.appendChild(input);
+            });
+        } else {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
     });
+
     document.body.appendChild(form);
     form.submit();
 }
+
+document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch('/submit-ticket/', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        credentials: 'include'
+    });
+
+    const data = await response.json();
+    if (data.success) {
+        redirectToWayForPay(data.wayforpay_params);
+    } else {
+        alert('Помилка форми');
+    }
+});
