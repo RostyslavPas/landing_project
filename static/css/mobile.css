@@ -172,9 +172,9 @@ img {
 }
 .hero-image {
   position: absolute;
-  top: 60px;
+  top: 11%;
   right: -4%;
-  width: 300px;
+  width: 76%;
   z-index: auto;
 }
 .hero-cta-wrapper {
@@ -284,7 +284,7 @@ img {
 }
 .highlights-bg-img {
   position: absolute;
-  top: 45px;
+  top: 7%;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
@@ -444,8 +444,7 @@ img {
   position: relative;
   left: 10%;
   top: -110%;
-  max-width: 231px;
-  /*margin: 0 auto;*/
+  max-width: 52%;
 }
 .form-group {
   text-align: left;
@@ -759,4 +758,74 @@ img {
   cursor: pointer;
   text-align: center;
   color: #000;
+}
+@media screen and (max-width: 370px) {
+  .hero-image {
+    position: absolute;
+    top: 13%;
+    right: -4%;
+    width: 76%;
+    z-index: auto;
+  }
+  .hero-subtitle {
+    position: relative;
+    top: 17px;
+    right: 4px;
+    font-size: 14px;
+    line-height: 1.2;
+    margin-top: 9px;
+    max-width: 61%;
+  }
+  .highlights-bg-img {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    z-index: -1;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    position: relative;
+    top: -15px;
+  }
+  .highlights-subtitle {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: -7%;
+    margin-left: 30px;
+    margin-bottom: 64%;
+  }
+  .ticket-form {
+    position: relative;
+    left: 10%;
+    top: -110%;
+    max-width: 50%;
+  }
+  .hero-subtitle .bold {
+    font-weight: 400;
+    font-size: 24px;
+    font-family: 'New Rocker', Georgia, serif;
+    color: #8D3648;
+    position: relative;
+    top: 21px;
+  }
+  .submit-button {
+    background: linear-gradient(90deg, #ff8c00, #ff0080);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 83px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    left: -17%;
+    top: 50px;
+    margin-bottom: 10px;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+    transition: transform 0.2s ease;
+  }
 }

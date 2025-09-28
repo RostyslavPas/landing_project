@@ -78,10 +78,22 @@ def submit_ticket_form(request):
         email = request.POST.get("email")
         phone = request.POST.get("phone")
 
+        ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
+        if "mobi" in ua_string:
+            device_type = "mobile"
+        else:
+            device_type = "desktop"
+
         order, _ = TicketOrder.objects.get_or_create(
             email=email,
-            defaults={"phone": phone, "payment_status": "pending", "amount": 1.00}
+            defaults={
+                "phone": phone,
+                "payment_status": "pending",
+                "amount": 1.00,
+                "device_type": device_type,
+            }
         )
+
         params = generate_wayforpay_params(order)
         return JsonResponse({"success": True, "wayforpay_params": params})
 
