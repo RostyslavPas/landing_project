@@ -62,7 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Форматування номера телефону
         phoneInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
-            if (value === "") { e.target.value = ""; return; }
+            if (value === "") {
+                e.target.value = "";
+                return;
+            }
             if (!value.startsWith("38")) value = "38" + value;
             value = "+" + value;
             if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
@@ -75,51 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Backspace' || e.key === 'Delete') {
                 let pos = phoneInput.selectionStart;
                 let val = phoneInput.value;
-                if (pos > 0 && /[\-\(\)\s]/.test(val[pos-1])) {
+                if (pos > 0 && /[\-\(\)\s]/.test(val[pos - 1])) {
                     e.preventDefault();
-                    phoneInput.value = val.slice(0, pos-1) + val.slice(pos);
-                    phoneInput.setSelectionRange(pos-1, pos-1);
+                    phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
+                    phoneInput.setSelectionRange(pos - 1, pos - 1);
                 }
                 if (phoneInput.value === "+38") {
                     e.preventDefault();
                     phoneInput.value = "";
                 }
             }
-        });
-
-        // Відправка форми
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('email', emailInput.value);
-            formData.append('phone', phoneInput.value);
-            formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-
-            const submitBtn = form.querySelector('.submit-ticket-btn');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Обробка...';
-            submitBtn.disabled = true;
-
-            fetch('/submit-ticket/', {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) redirectToWayForPay(data.wayforpay_params);
-                else {
-                    showValidationErrors(data.errors);
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Виникла помилка. Спробуйте ще раз.');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
         });
     }
 
@@ -176,18 +144,52 @@ function showValidationErrors(errors) {
         input.style.borderColor = 'red';
     });
 }
-
+/*WayForPay settings*/
 function redirectToWayForPay(params) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = 'https://secure.wayforpay.com/pay';
+
     Object.keys(params).forEach(key => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = Array.isArray(params[key]) ? params[key][0] : params[key];
-        form.appendChild(input);
+        const value = params[key];
+
+        if (Array.isArray(value)) {
+            value.forEach(item => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;  // наприклад "productName[]"
+                input.value = item;
+                form.appendChild(input);
+            });
+        } else {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
     });
+
     document.body.appendChild(form);
     form.submit();
 }
+
+document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch('/submit-ticket/', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        credentials: 'include'
+    });
+
+    const data = await response.json();
+    if (data.success) {
+        redirectToWayForPay(data.wayforpay_params);
+    } else {
+        alert('Помилка форми');
+    }
+});

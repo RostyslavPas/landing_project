@@ -7,26 +7,32 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Безпека
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "replace_with_your_secret_key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
-# CSRF для callback
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://secure.wayforpay.com"
-).split(",")
+
+# CSRF для ngrok
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 if DEBUG:
-    # Локальні адреси для тестування форм
+    # Додаємо ngrok домени
     CSRF_TRUSTED_ORIGINS += [
+        "https://lakeesha-inconvertible-cattishly.ngrok-free.dev",
         "http://127.0.0.1:8000",
         "http://localhost:8000"
     ]
-ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS",
-    "pasue.com.ua,www.pasue.com.ua,landing-project-8gew.onrender.com,127.0.0.1,localhost"
-).split(",")
+
+# Для ngrok headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_TZ = True
+
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 # Додатки
 INSTALLED_APPS = [
@@ -96,11 +102,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # WayForPay налаштування
-WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT", "test_merch_n1")
-WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY", "test_secret")
-WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN", "http://127.0.0.1:8000")
-WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL", f"{WAYFORPAY_DOMAIN}/payment/success/")
-WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL", f"{WAYFORPAY_DOMAIN}/payment/callback/")
+WAYFORPAY_MERCHANT_ACCOUNT = os.getenv("WAYFORPAY_MERCHANT_ACCOUNT")
+WAYFORPAY_SECRET_KEY = os.getenv("WAYFORPAY_SECRET_KEY")
+WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN")
+WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL")
+WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL")
 
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -110,6 +116,3 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
-
-# CSRF для callback
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://secure.wayforpay.com").split(",")
