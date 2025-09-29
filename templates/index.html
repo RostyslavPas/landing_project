@@ -21,18 +21,18 @@
               <div class="menu-container">
                   <img class="menu-toggle" src="{% static 'images/logo_burger.png' %}" alt="PASUE Club логотип" />
                   <div class="dropdown-menu" id="dropdown-menu">
-                    <a href="#section-about" class="menu-item">Про PASUE Club</a>
-                    <a href="#section-highlights" class="menu-item">Про івент Grand Opening Party</a>
-                    <a href="#section-guest" class="menu-item">Виступ вечора</a>
-                    <a href="#section-ticket" class="menu-item">Купити квиток</a>
+                    <a href="#about-pasue" class="menu-item">Про PASUE Club</a>
+                    <a href="#about-event" class="menu-item">Про івент Grand Opening Party</a>
+                    <a href="#special-guest" class="menu-item">Виступ вечора</a>
+                    <a href="#get-your-ticket" class="menu-item">Купити квиток</a>
                     <div class="social_links">
-                      <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
+                      <a href="https://instagram.com/pasue.club" class="social_link" target="_blank" aria-label="Instagram">
                         <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
                       </a>
                       <a href="#" class="social_link" target="_blank" aria-label="Telegram" onclick="openTelegram(event)">
                         <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
                       </a>
-                      <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
+                      <a href="mailto:pasue.club@gmail.com" class="social_link" aria-label="Email">
                         <img src="{% static 'images/email.png' %}" alt="Email" />
                       </a>
                     </div>
@@ -47,9 +47,23 @@
         <section id="section-hero">
           <div class="hero-container">
             <div class="hero-content">
+                <div class="event-info-container">
+                    <div class="event-info-item">
+                        <img src="{% static 'images/calendar.png' %}" alt="Calendar" class="event-icon">
+                        <div class="event-text">29 листопада</div>
+                    </div>
+                    <div class="event-info-item">
+                        <img src="{% static 'images/location.png' %}" alt="Location" class="event-icon">
+                        <div class="event-text">Київ, Heaven</div>
+                    </div>
+                    <div class="event-info-item">
+                        <img src="{% static 'images/people.png' %}" alt="People" class="event-icon">
+                        <div class="event-text">50 учасниць</div>
+                    </div>
+                </div>
               <h1 class="hero-title">Grand Opening Party</h1>
               <p class="hero-subtitle">Перша подія від PASUE Club - це більше, ніж вечірка<br>Це святкування відкриття нового жіночого комʼюніті</p>
-              <a href="#section-ticket" class="cta-button hero-cta">
+              <a href="#get-your-ticket" class="cta-button hero-cta">
                 <span class="cta-button-text">Стати учасницею події</span>
                 <div class="cta-button-key-1" aria-hidden="true"></div>
               </a>
@@ -65,7 +79,7 @@
           </div>
           <div class="hero-ps">
             <img src="{% static 'images/letter.png' %}" alt="Envelope with a seal" class="hero-ps-envelope">
-            <p class="hero-ps-text">P.S. Ти знайшла місце яке тобі пасує.<br>Тут ти будеш почутою, побаченою,<br>важливою і потрібною</p>
+            <p class="hero-ps-text" id="about-pasue">P.S. Ти знайшла місце яке тобі пасує.<br>Тут ти будеш почутою, побаченою,<br>важливою і потрібною</p>
           </div>
         </section>
         <section id="section-about">
@@ -104,7 +118,7 @@
         </section>
         <section>
             <div>
-                <h2 class="highlights-title">Event Highlights</h2>
+                <h2 class="highlights-title" id="about-event">Event Highlights</h2>
                 <p class="highlights-subtitle">Що на тебе чекає</p>
             </div>
         </section>
@@ -122,7 +136,7 @@
                         </div>
                         <div class="highlights-summary"><p><strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</p>
                         </div>
-                    <a href="#section-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
+                    <a href="#get-your-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
                         <div class="cta-button-2-key-2" aria-hidden="true"></div></a>
                 </div>
             </div>
@@ -133,7 +147,7 @@
               <img src="{% static 'images/trio.png' %}" alt="background shape" class="guest-bg-shape-1">
             </div>
             <div class="guest-info">
-              <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image">
+              <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image" id="special-guest">
               <p class="guest-subtitle">Виступ вечора:</p>
             </div>
             <div class="guest-description">
@@ -145,8 +159,8 @@
         </section>
         <section id="section-ticket">
           <div class="ticket-header">
-            <h2 class="ticket-title">Get your ticket</h2>
-            <p class="ticket-subtitle">Заповни форму і отримай свій квиток:</p>
+            <h2 class="ticket-title" id="get-your-ticket">Get your ticket</h2>
+            <p class="ticket-subtitle" id="ticket-form-text">Заповни форму і отримай свій квиток:</p>
             <div class="ticket-info-main">
                 <p class="ticket-info">Дата проведення: <span class="bold">29 листопада 2025</span></p>
                 <p class="ticket-info">Час проведення: <span class="bold">17:00-20:00</span></p>
@@ -161,24 +175,12 @@
               {% csrf_token %}
               <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="email"
-                       id="email"
-                       name="email"
-                       required
-                       placeholder="user@example.com"
-                       autocomplete="email"
-                />
+                <input type="email" id="email" name="email" required placeholder="user@example.com" autocomplete="email"/>
                 <div class="error-message" id="email-error" style="display: none;"></div>
               </div>
               <div class="form-group">
                 <label for="phone">Номер телефону:</label>
-                <input type="tel"
-                       id="phone"
-                       name="phone"
-                       required
-                       placeholder="+38(xxx)xxx-xx-xx"
-                       autocomplete="tel"
-                />
+                <input type="tel" id="phone" name="phone" required placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel"/>
                 <div class="error-message" id="phone-error" style="display: none;"></div>
               </div>
               <div class="form-group price-group">

@@ -22,18 +22,18 @@
           </button>
           <div class="menu-overlay"></div>
           <div class="dropdown-menu" id="dropdown-menu">
-              <a href="#about" class="menu-item">Про PASUE Club</a>
-              <a href="#highlights" class="menu-item">Про івент Grand Opening Party</a>
-              <a href="#ticket" class="menu-item">Виступ вечора</a>
-              <a href="#ticket" class="menu-item">Купити квиток</a>
+              <a href="#about-pasue" class="menu-item">Про PASUE Club</a>
+              <a href="#about-event" class="menu-item">Про івент Grand Opening Party</a>
+              <a href="#special-guest" class="menu-item">Виступ вечора</a>
+              <a href="#get-your-ticket" class="menu-item">Купити квиток</a>
               <div class="social_links">
-                <a href="https://instagram.com/pasueclub" class="social_link" target="_blank" aria-label="Instagram">
+                <a href="https://instagram.com/pasue.club" class="social_link" target="_blank" aria-label="Instagram">
                   <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
                 </a>
                 <a href="https://t.me/+380684437882" class="social_link" target="_blank" aria-label="Telegram">
                   <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
                 </a>
-                <a href="mailto:info@pasueclub.com" class="social_link" aria-label="Email">
+                <a href="mailto:pasue.club@gmail.com" class="social_link" aria-label="Email">
                   <img src="{% static 'images/email.png' %}" alt="Email" />
                 </a>
               </div>
@@ -53,11 +53,26 @@
           </h1>
           <p class="hero-subtitle">Перша подія від PASUE Club -<br>це більше, ніж вечірка</p>
             <p class="hero-subtitle"><span class="child2">Це святкування відкриття<br>нового жіночого комʼюніті</span></p>
-            <p class="hero-subtitle"><span class="bold">29.11 Kyiv</span></p>
+            <div class="event-info-container">
+                <div class="event-info-item">
+                    <img src="{% static 'images/calendar-mob.png' %}" alt="Calendar" class="event-icon-img">
+                    <div class="event-text">29 листопада</div>
+                </div>
+
+                <div class="event-info-item">
+                    <img src="{% static 'images/location-mob.png' %}" alt="Location" class="event-icon-img">
+                    <div class="event-text">Київ, Heaven</div>
+                </div>
+
+                <div class="event-info-item">
+                    <img src="{% static 'images/people-mob.png' %}" alt="People" class="event-icon-img">
+                    <div class="event-text">50 учасниць</div>
+                </div>
+            </div>
         </div>
         <img class="hero-image" src="{% static 'images/logo_rabbit_mob.png' %}" alt="A rabbit in a red jacket reading a scroll">
         <div class="hero-cta-wrapper">
-          <a href="#ticket" class="cta-button">
+          <a href="#get-your-ticket" class="cta-button">
             <img src="{% static 'images/key-1-mob.png' %}" alt="Key Icon" width="41" height="39">
             <span>Стати учасницею події</span>
           </a>
@@ -65,7 +80,7 @@
         </div>
         <div class="ps-note">
           <img class="ps-image" src="{% static 'images/letter_mob.png' %}" alt="Envelope with a wax seal">
-          <p class="ps-text">P.S. Ти знайшла місце яке тобі пасує. Тут ти будеш почутою, побаченою, важливою і потрібною</p>
+          <p class="ps-text" id="about-pasue">P.S. Ти знайшла місце яке тобі пасує. Тут ти будеш почутою, побаченою, важливою і потрібною</p>
         </div>
       </div>
     </section>
@@ -111,7 +126,7 @@
     </section>
     <section id="highlights" class="highlights-section">
       <div class="container highlights-container">
-        <h2 class="section-title">Event Highlights</h2>
+        <h2 class="section-title" id="about-event">Event Highlights</h2>
         <img class="highlights-bg-img" src="{% static 'images/lamp_mob.png' %}" alt="Chandelier">
         <p class="highlights-subtitle">Що на тебе чекає:</p>
         <ul class="highlights-list">
@@ -138,7 +153,7 @@
         <p class="highlights-summary">
           <strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися
         </p>
-        <a href="#ticket" class="cta-button">
+        <a href="#get-your-ticket" class="cta-button">
           <img src="{% static 'images/key-2-mob.png' %}" alt="Key Icon" width="41" height="39">
           <span>Приєднатися до вечора</span>
         </a>
@@ -147,7 +162,7 @@
     <section id="ticket" class="ticket-section">
       <div class="container">
         <div class="guest-intro">
-          <img src="{% static 'images/special_guest_mob.png' %}" alt="Special Guest decorative text">
+          <img src="{% static 'images/special_guest_mob.png' %}" alt="Special Guest decorative text" id="special-guest">
           <p>Виступ вечора:</p>
         </div>
         <div class="guest-image-wrapper">
@@ -159,7 +174,7 @@
               <p class="guest-description-item">Вони такі справжні та щирі, що в тебе залишиться післясмак довгої розмови з подругою</p>
             </div>
         <div class="ticket-form-container">
-          <h2 class="ticket-title">Get your ticket</h2>
+          <h2 class="ticket-title" id="get-your-ticket">Get your ticket</h2>
           <p class="ticket-subtitle">Заповни форму і отримай свій квиток</p>
           <div class="ticket-info-main">
                 <p class="ticket-info">Дата: <span class="bold">29 листопада 2025</span></p>
@@ -203,9 +218,9 @@
     <footer id="footer" class="site-footer">
       <div class="container footer-container">
         <div class="social-links">
-          <a href="https://instagram.com/pasueclub" aria-label="Instagram"><img src="{% static 'images/instagram-icon.png' %}" alt="Instagram"></a>
+          <a href="https://instagram.com/pasue.club" aria-label="Instagram"><img src="{% static 'images/instagram-icon.png' %}" alt="Instagram"></a>
           <a href="https://t.me/+380684437882" aria-label="Telegram"><img src="{% static 'images/telegram-icon.png' %}" alt="Telegram"></a>
-          <a href="mailto:info@pasueclub.com" aria-label="Email"><img src="{% static 'images/email-icon.png' %}" alt="Email"></a>
+          <a href="mailto:pasue.club@gmail.com" aria-label="Email"><img src="{% static 'images/email-icon.png' %}" alt="Email"></a>
         </div>
         <nav class="footer-nav">
           <a href="#" data-popup="terms">Правила та умови</a>
