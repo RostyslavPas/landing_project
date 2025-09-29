@@ -174,8 +174,25 @@ def wayforpay_callback(request):
             order.payment_status = "failed"
             order.save()
 
-        # Повертаємо WayForPay підтвердження
-        return JsonResponse({"orderReference": order_reference, "status": "accept"}, status=200)
+            # Формуємо підтвердження для WayForPay
+            status = "accept"
+            ts = int(time.time())
+            sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
+
+            response_signature = hmac.new(
+                settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
+                sig_source.encode("utf-8"),
+                hashlib.md5
+            ).hexdigest()
+
+            response_data = {
+                "orderReference": order_reference,
+                "status": status,
+                "time": ts,
+                "signature": response_signature,
+            }
+
+            return JsonResponse(response_data, status=200)
 
     except Exception as e:
         print(f"Callback error: {str(e)}")
