@@ -130,19 +130,35 @@ document.addEventListener('DOMContentLoaded', () => {
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
 
-        const isEmailValid = validateEmail();
-        const isPhoneValid = validatePhone();
-        // Перевірка на пусті поля
-        if (emailInput.value.trim() === "") {
-          emailInput.classList.add("input-error");
-          emailInput.classList.remove("input-valid");
-        }
-        if (phoneInput.value.trim() === "" || !/^380\d{9}$/.test(phoneInput.value.replace(/\D/g, ""))) {
-          phoneInput.classList.add("input-error");
-          phoneInput.classList.remove("input-valid");
-        }
+        let isValid = true;
 
-        if (!isEmailValid || !isPhoneValid) return; // блокуємо сабміт
+      // Перевірка email
+        if (emailInput.value.trim() === "") {
+            emailInput.classList.add("input-error");
+            emailInput.classList.remove("input-valid");
+            isValid = false;
+          } else {
+            const isEmailValid = validateEmail();
+            if (!isEmailValid) {
+              isValid = false;
+            }
+          }
+
+      // Перевірка телефону
+        if (phoneInput.value.trim() === "" || phoneInput.value === "+38") {
+            phoneInput.classList.add("input-error");
+            phoneInput.classList.remove("input-valid");
+            isValid = false;
+          } else {
+            const isPhoneValid = validatePhone();
+            if (!isPhoneValid) {
+              isValid = false;
+            }
+          }
+
+        if (!isValid) return; // блокуємо сабміт
+
+        // if (!isEmailValid || !isPhoneValid) return; // блокуємо сабміт
 
         const formData = new FormData(form);
         const csrfToken = getCookie('csrftoken');

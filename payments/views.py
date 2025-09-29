@@ -85,14 +85,12 @@ def submit_ticket_form(request):
             ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
             device_type = "mobile" if "mobi" in ua_string else "desktop"
 
-            order, _ = TicketOrder.objects.get_or_create(
+            order = TicketOrder.objects.create(
                 email=email,
-                defaults={
-                    "phone": phone,
-                    "payment_status": "pending",
-                    "amount": 1.00,
-                    "device_type": device_type,
-                }
+                phone=phone,
+                payment_status="pending",
+                amount=1.00,
+                device_type=device_type,
             )
 
             params = generate_wayforpay_params(order)
@@ -163,6 +161,8 @@ def wayforpay_callback(request):
         # Оновлюємо статус замовлення
         if transaction_status == "Approved":
             order.payment_status = "success"
+            order.email = data.get("clientEmail", order.email)
+            order.phone = data.get("clientPhone", order.phone)
             order.save()
 
             # Відправка email

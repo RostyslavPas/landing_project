@@ -19,7 +19,7 @@ class TicketOrder(models.Model):
         ('mobile', 'Мобільний'),
     ]
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     phone = models.CharField(max_length=20)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=1.00)
     device_type = models.CharField(
