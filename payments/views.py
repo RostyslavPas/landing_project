@@ -9,6 +9,7 @@ import time
 import hashlib
 import json
 from .models import TicketOrder
+from .forms import TicketOrderForm
 
 
 def index(request):
@@ -75,29 +76,35 @@ def generate_wayforpay_params(order):
 @csrf_exempt
 def submit_ticket_form(request):
     if request.method == "POST":
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
+        form = TicketOrderForm(request.POST)
 
-        ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
-        if "mobi" in ua_string:
-            device_type = "mobile"
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            phone = form.cleaned_data["phone"]
+
+            ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
+            device_type = "mobile" if "mobi" in ua_string else "desktop"
+
+            order, _ = TicketOrder.objects.get_or_create(
+                email=email,
+                defaults={
+                    "phone": phone,
+                    "payment_status": "pending",
+                    "amount": 1.00,
+                    "device_type": device_type,
+                }
+            )
+
+            params = generate_wayforpay_params(order)
+            return JsonResponse({"success": True, "wayforpay_params": params})
+
         else:
-            device_type = "desktop"
+            return JsonResponse({
+                "success": False,
+                "errors": form.errors
+            }, status=400)
 
-        order, _ = TicketOrder.objects.get_or_create(
-            email=email,
-            defaults={
-                "phone": phone,
-                "payment_status": "pending",
-                "amount": 1.00,
-                "device_type": device_type,
-            }
-        )
-
-        params = generate_wayforpay_params(order)
-        return JsonResponse({"success": True, "wayforpay_params": params})
-
-    return JsonResponse({"success": False})
+    return JsonResponse({"success": False}, status=405)
 
 
 @csrf_exempt
@@ -123,7 +130,7 @@ def wayforpay_callback(request):
             print(f"Order not found: {order_reference}")
             return HttpResponse("Order not found", status=404)
 
-        # Формуємо підпис
+        # Формуємо підпис для перевірки
         signature_fields = [
             data.get("merchantAccount", ""),
             data.get("orderReference", ""),
@@ -131,12 +138,10 @@ def wayforpay_callback(request):
             data.get("currency", ""),
             str(data.get("authCode", "")),
             data.get("cardPan", ""),
-            data.get("transactionStatus", ""),
+            str(data.get("transactionStatus", "")),
             str(data.get("reasonCode", "")),
         ]
-
         signature_string = ";".join(signature_fields)
-
         expected_signature = hmac.new(
             settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
             signature_string.encode("utf-8"),
@@ -160,7 +165,7 @@ def wayforpay_callback(request):
             order.payment_status = "success"
             order.save()
 
-            # Відправка email без падіння callback
+            # Відправка email
             if order.email_status != "sent":
                 try:
                     send_confirmation_email(order)
@@ -169,30 +174,29 @@ def wayforpay_callback(request):
                     print(f"Email sending error for order {order_reference}: {e}")
             else:
                 print(f"Email already sent for order {order_reference}, skipping.")
-
         else:
             order.payment_status = "failed"
             order.save()
 
-            # Формуємо підтвердження для WayForPay
-            status = "accept"
-            ts = int(time.time())
-            sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
+        # --- Підтвердження для WayForPay (для будь-якого статусу) ---
+        status = "accept"
+        ts = int(time.time())
+        sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
 
-            response_signature = hmac.new(
-                settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
-                sig_source.encode("utf-8"),
-                hashlib.md5
-            ).hexdigest()
+        response_signature = hmac.new(
+            settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
+            sig_source.encode("utf-8"),
+            hashlib.md5
+        ).hexdigest()
 
-            response_data = {
-                "orderReference": order_reference,
-                "status": status,
-                "time": ts,
-                "signature": response_signature,
-            }
+        response_data = {
+            "orderReference": order_reference,
+            "status": status,
+            "time": ts,
+            "signature": response_signature,
+        }
 
-            return JsonResponse(response_data, status=200)
+        return JsonResponse(response_data, status=200)
 
     except Exception as e:
         print(f"Callback error: {str(e)}")

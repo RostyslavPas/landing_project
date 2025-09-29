@@ -53,42 +53,137 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- CSRF cookie ---
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
     // --- Форма квитка ---
     const form = document.querySelector('.ticket-form');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
+    const emailError = document.getElementById('email-error');
+    const phoneError = document.getElementById('phone-error');
 
     if (form && emailInput && phoneInput) {
-        // Форматування номера телефону
-        phoneInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value === "") {
-                e.target.value = "";
-                return;
-            }
-            if (!value.startsWith("38")) value = "38" + value;
-            value = "+" + value;
-            if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
-            if (value.length >= 9) value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
-            if (value.length >= 13) value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
-            e.target.value = value.substring(0, 17);
-        });
 
-        phoneInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' || e.key === 'Delete') {
-                let pos = phoneInput.selectionStart;
-                let val = phoneInput.value;
-                if (pos > 0 && /[\-\(\)\s]/.test(val[pos - 1])) {
-                    e.preventDefault();
-                    phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
-                    phoneInput.setSelectionRange(pos - 1, pos - 1);
-                }
-                if (phoneInput.value === "+38") {
-                    e.preventDefault();
-                    phoneInput.value = "";
-                }
-            }
-        });
+      // --- Автододавання +38 ---
+      phoneInput.addEventListener('focus', () => {
+        if (!phoneInput.value.startsWith('+38')) phoneInput.value = '+38';
+        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+      });
+
+      phoneInput.addEventListener('click', () => {
+        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+      });
+
+      phoneInput.addEventListener('keyup', () => {
+        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+      });
+
+      // --- Форматування номера ---
+      phoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value === "") { e.target.value = "+38"; phoneInput.setSelectionRange(3, 3); return; }
+        if (!value.startsWith("38")) value = "38" + value;
+        value = "+" + value;
+        if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
+        if (value.length >= 9) value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
+        if (value.length >= 13) value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
+        e.target.value = value.substring(0, 17);
+        validatePhone();
+      });
+
+      // --- Backspace/Delete ---
+      phoneInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          let pos = phoneInput.selectionStart;
+          let val = phoneInput.value;
+          if (pos <= 3) { e.preventDefault(); return; }
+          if (pos > 0 && /[\-\(\)]/.test(val[pos - 1])) {
+            e.preventDefault();
+            phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
+            phoneInput.setSelectionRange(pos - 1, pos - 1);
+          }
+          if (phoneInput.value === "+38") { e.preventDefault(); phoneInput.setSelectionRange(3, 3); }
+        }
+      });
+
+      // --- Live валідація ---
+      emailInput.addEventListener("input", validateEmail);
+
+      function validateEmail() {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!pattern.test(emailInput.value.trim())) {
+          emailError.textContent = "Введіть коректну email адресу";
+          emailError.style.display = "block";
+          emailInput.classList.add("input-error");
+          return false;
+        }
+        emailError.style.display = "none";
+        emailInput.classList.remove("input-error");
+        return true;
+      }
+
+      function validatePhone() {
+        const digits = phoneInput.value.replace(/\D/g, "");
+        if (!/^380\d{9}$/.test(digits)) {
+          phoneError.textContent = "Номер телефону має бути у форматі +380XXXXXXXXX";
+          phoneError.style.display = "block";
+          phoneInput.classList.add("input-error");
+          return false;
+        }
+        phoneError.style.display = "none";
+        phoneInput.classList.remove("input-error");
+        return true;
+      }
+
+      // --- Сабміт з WayForPay ---
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        if (!validateEmail() || !validatePhone()) return;
+
+        const formData = new FormData(form);
+        const csrfToken = getCookie('csrftoken');
+
+        try {
+          const response = await fetch('/submit-ticket/', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            console.log("❌ Помилка від сервера:", response.status);
+            return;
+          }
+
+          const data = await response.json();
+
+          if (data.success && data.wayforpay_params) {
+            // --- Виклик WayForPay ---
+            redirectToWayForPay(data.wayforpay_params);
+          } else {
+            console.log("❌ Сервер повернув помилку:", data.errors);
+          }
+
+        } catch (err) {
+          console.log("❌ Fetch error:", err);
+        }
+      });
     }
 
     // --- Масштабування сторінки для desktop ---
@@ -116,19 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- Глобальні функції ---
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        document.cookie.split(';').forEach(cookie => {
-            cookie = cookie.trim();
-            if (cookie.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            }
-        });
-    }
-    return cookieValue;
-}
-
 function showValidationErrors(errors) {
     document.querySelectorAll('.error-message').forEach(el => el.remove());
     Object.keys(errors).forEach(field => {
