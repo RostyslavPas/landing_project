@@ -79,6 +79,9 @@ h1, h2, h3, h4, h5, h6, p {
 .cta-button:hover .cta-button-key-1 {
   background-image: url(/static/images/key-gold.png);
 }
+.cta-button:hover .cta-button-text {
+  color: #edac4c;
+}
 .cta-button:active {
   background-color: #fffdfa;
   border: 1px solid #edac4c;
@@ -94,7 +97,7 @@ h1, h2, h3, h4, h5, h6, p {
   top: 64%;
   left: 50%;
   transform: translateX(-50%);
-  width: 38%;
+  width: 37%;
   max-width: 700px;
   min-width: 200px;
   height: 103px;
@@ -111,14 +114,11 @@ h1, h2, h3, h4, h5, h6, p {
   font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 600;
   color: #000000;
-  font-size: clamp(16px, 2vw, 24px); /* адаптивний розмір шрифту */
-  text-align: center;
-  letter-spacing: 0;
-  line-height: normal;
-  margin: 0;
+  font-size: clamp(16px, 2vw, 24px);
+  position: relative;
+  left: 6%;
 }
 
-/* Іконка всередині кнопки */
 .cta-button-2-key-2 {
   width: 56px;
   height: 53px;
@@ -127,11 +127,10 @@ h1, h2, h3, h4, h5, h6, p {
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  right: 80%; /* відступ від правого краю кнопки */
+  right: 73%;
   top: 50%;
   transform: translateY(-50%);
 }
-
 
 .cta-button-2:hover {
   background-color: #fffdfa;
@@ -139,6 +138,9 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .cta-button-2:hover .cta-button-2-key-2 {
   background-image: url(/static/images/key-gold.png);
+}
+.cta-button-2:hover .cta-button-2-text {
+  color: #edac4c;
 }
 .cta-button-2:active {
   background-color: #fffdfa;
@@ -270,10 +272,9 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .hero-main-image {
   position: absolute;
-  top: -11%;
-  left: -4%;
+  top: -5%;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: contain;
   z-index: 2;
 }
@@ -322,6 +323,34 @@ h1, h2, h3, h4, h5, h6, p {
   font-size: 17px;
   font-weight: 500;
   line-height: 1.3;
+}
+.event-info-container {
+    padding: 17% 0 0 12%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7%;
+    max-width: 800px;
+    width: 100%;
+}
+
+.event-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.event-icon {
+    width: 17%;
+    height: 20%;
+    flex-shrink: 0;
+}
+
+.event-text {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1a1a1a;
+    white-space: nowrap;
 }
 
 /* CSS from section:about */
@@ -578,7 +607,7 @@ h1, h2, h3, h4, h5, h6, p {
 .guest-bg-shape-1 {
   position: relative;
   width: 100%;
-  height: 90%;
+  height: auto;
   top: -7%;
   left: 36%;
 }
