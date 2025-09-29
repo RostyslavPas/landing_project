@@ -568,12 +568,12 @@ img {
 .ticket-form {
   position: relative;
   left: 10%;
-  top: -110%;
-  max-width: 52%;
+  top: -112%;
+  max-width: 54%;
 }
 .form-group {
   text-align: left;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 .ticket-info-main{
   position: relative;
@@ -596,16 +596,16 @@ img {
   font-weight: 500;
   font-size: 14px;
   display: block;
-  margin-bottom: 8px;
-  padding-left: 15px;
+  margin-bottom: 3px;
+  padding-left: 11px;
 }
 .form-group input {
   width: 100%;
-  height: 25px;
+  height: 35px;
   border: 1px solid var(--text-dark);
   border-radius: 50px;
   background-color: transparent;
-  padding: 5px 15px;
+  padding: 5px 20px;
   box-sizing: border-box;
 }
 .form-footer {
@@ -637,6 +637,7 @@ img {
   left: 36%;
   top: 3px;
 }
+
 /***************************button version 2********************************/
 .submit-button {
   background: linear-gradient(90deg, #ff8c00, #ff0080);
@@ -925,8 +926,8 @@ img {
   .ticket-form {
     position: relative;
     left: 10%;
-    top: -110%;
-    max-width: 50%;
+    top: -113%;
+    max-width: 58%;
   }
   .hero-subtitle .bold {
     font-weight: 400;
@@ -1058,10 +1059,26 @@ img {
     margin-bottom: 190px;
   }
 }
+@media (min-width: 391px) and (max-width: 400px) {
+  .hero-image {
+      position: absolute;
+      top: 17%;
+      right: -2%;
+      width: 67%;
+      z-index: auto;
+    }
+  .highlights-subtitle {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-left: 13px;
+    margin-bottom: 190px;
+  }
+}
 @media (min-width: 410px) and (max-width: 420px) {
   .hero-image {
       position: absolute;
-      top: 14%;
+      top: 15%;
       right: -2%;
       width: 67%;
       z-index: auto;

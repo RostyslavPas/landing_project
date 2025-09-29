@@ -183,26 +183,16 @@
             </div>
           <div class="ticket-form-wrapper">
               <img src="{% static 'images/ticket_mob.png' %}" alt="Ticket background" class="ticket-form-wrapper">
-            <form class="ticket-form">
+            <form class="ticket-form" novalidate>
               {% csrf_token %}
               <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="email"
-                       id="email"
-                       name="email"
-                       required
-                       placeholder="user@example.com"
-                       autocomplete="email">
+                <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email">
                 <div class="error-message" id="email-error" style="display: none;"></div>
               </div>
               <div class="form-group">
                 <label for="phone">Номер телефону:</label>
-                <input type="tel"
-                       id="phone"
-                       name="phone"
-                       required
-                       placeholder="+38(xxx)xxx-xx-xx"
-                       autocomplete="tel">
+                <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel">
                 <div class="error-message" id="phone-error" style="display: none;"></div>
               </div>
               <div class="form-footer">

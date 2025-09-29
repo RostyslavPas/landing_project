@@ -1,3 +1,4 @@
+# forms.py
 from django import forms
 from django.core.validators import EmailValidator
 import re
@@ -9,23 +10,23 @@ class TicketOrderForm(forms.Form):
         widget=forms.EmailInput(attrs={
             'placeholder': 'user@example.com',
             'class': 'form-control',
-            'required': True
+            'required': False
         }),
         error_messages={
-            'required': 'Email є обов\'язковим полем',
-            'invalid': 'Введіть коректний email адрес'
+            'required': "Email є обов'язковим полем",
+            'invalid': 'Введіть коректну email адресу'
         }
     )
 
     phone = forms.CharField(
         max_length=20,
         widget=forms.TextInput(attrs={
-            'placeholder': '+38(xxx)xxx-xx-xx',
+            'placeholder': '+38(XXX)XXX-XX-XX',
             'class': 'form-control',
-            'required': True
+            'required': False
         }),
         error_messages={
-            'required': 'Номер телефону є обов\'язковим полем',
+            'required': "Номер телефону є обов'язковим полем",
             'invalid': 'Введіть коректний номер телефону'
         }
     )
@@ -33,15 +34,14 @@ class TicketOrderForm(forms.Form):
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
         if phone:
-            # Видаляємо всі символи крім цифр та +
-            cleaned_phone = re.sub(r'[^\d+]', '', phone)
-
-            # Перевіряємо формат українського номера
-            if not re.match(r'^\+380\d{9}$', cleaned_phone):
+            # Видаляємо всі символи, крім цифр
+            digits = re.sub(r'\D', '', phone)
+            if not digits.startswith('380') or len(digits) != 12:
                 raise forms.ValidationError(
-                    'Номер телефону має бути у форматі +380xxxxxxxxx'
+                    'Номер телефону має бути у форматі +380XXXXXXXXX'
                 )
-            return cleaned_phone
+            # Повертаємо у стандартному форматі +380XXXXXXXXX
+            return f'+{digits}'
         return phone
 
     def clean_email(self):
