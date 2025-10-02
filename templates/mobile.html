@@ -220,7 +220,7 @@
           <div class="popup-content mobile">
             <h2>Правила та умови</h2>
             <p><b>Опис послуги:</b></p>
-              <ul>Цей сайт є офіційною онлайн-платформою PASUE Club, де Ви можете придбати квитки на заходи клубу.</ul>
+              <ul>Цей сайт є офіційною онлайн-<br>платформою PASUE Club, де Ви можете<br> придбати квитки на заходи клубу.</ul>
             <p><b>Умови замовлення:</b></p>
               <li>Покупець зобов'язується надати<br> достовірну контактну інформацію.</li>
               <li>Замовлення вважається дійсним<br> лише після підтвердження успішної<br> оплати на email покупця.</li>
@@ -246,10 +246,19 @@
         <p class="copyright">Всі права захищені</p>
       </div>
     </footer>
+    <div class="event-marquee">
+        <span>Перша подія від PASUE Club <i class="fa-solid fa-calendar-days"></i>
+            29 листопада 2025 (17:00-20:00)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="fa-solid fa-location-arrow"></i>
+            м.Київ, вул. Бориса Грінченка 7 (HEAVEN)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="fa-solid fa-pen"></i>
+            Заповни форму і отримай свій квиток
+        </span>
+    </div>
     <script src="{% static 'js/mobile.js' %}"></script>
     <script>
         function checkScreenSize() {
-          if (window.innerWidth > 768) {
+          if (window.innerWidth >= 1000) {
             if (window.location.pathname.includes("/mobile/")) {
               window.location.href = "{% url 'index' %}";
             }

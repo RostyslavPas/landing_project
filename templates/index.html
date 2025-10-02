@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="scale-wrapper">
@@ -229,58 +230,67 @@
             </ol>
           </div>
     </div>
-        <div class="popup" id="popup-offer">
-          <div class="popup-content desktop">
-            <span class="popup-close">&times;</span>
-            <h2>Правила та умови</h2>
+    <div class="popup" id="popup-offer">
+      <div class="popup-content desktop">
+        <span class="popup-close">&times;</span>
+        <h2>Правила та умови</h2>
 
-            <p><b>Опис послуги:</b></p>
-            <p>Цей сайт є офіційною онлайн-платформою PASUE Club,<br> де Ви можете придбати квитки на заходи клубу.</p>
+        <p><b>Опис послуги:</b></p>
+        <p>Цей сайт є офіційною онлайн-платформою PASUE Club,<br> де Ви можете придбати квитки на заходи клубу.</p>
 
-            <p><b>Умови замовлення:</b></p>
-            <ul>
-                <li>Покупець зобов'язується надати достовірну<br> контактну інформацію.</li>
-                <li>Замовлення вважається дійсним лише після<br> підтвердження успішної оплати на email покупця.</li>
-            </ul>
+        <p><b>Умови замовлення:</b></p>
+        <ul>
+            <li>Покупець зобов'язується надати достовірну<br> контактну інформацію.</li>
+            <li>Замовлення вважається дійсним лише після<br> підтвердження успішної оплати на email покупця.</li>
+        </ul>
 
-            <p><b>Оплата:</b></p>
-            <ul>
-                <li>Оплата здійснюється онлайн за допомогою<br> платіжної системи WayForPay.</li>
-                <li>Валюта платежу — гривня (UAH).</li>
-            </ul>
+        <p><b>Оплата:</b></p>
+        <ul>
+            <li>Оплата здійснюється онлайн за допомогою<br> платіжної системи WayForPay.</li>
+            <li>Валюта платежу — гривня (UAH).</li>
+        </ul>
 
-            <p><b>Доставка:</b></p>
-            <ul>
-                <li>Електронні квитки надсилаються на email одразу<br> після підтвердження оплати.</li>
-            </ul>
-          </div>
-        </div>
-        <!-- Підключаємо зовнішній JS -->
-        <script src="{% static 'js/main.js' %}"></script>
-        <script>
-            function checkScreenSize() {
-                  if (window.innerWidth <= 768) {
-                    if (!window.location.pathname.includes("/mobile/")) {
-                      window.location.href = "{% url 'mobile' %}";
-                    }
-                  }
+        <p><b>Доставка:</b></p>
+        <ul>
+            <li>Електронні квитки надсилаються на email одразу<br> після підтвердження оплати.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="event-marquee">
+        <span>Перша подія від PASUE Club <i class="fa-solid fa-calendar-days"></i>
+            29 листопада 2025 (17:00-20:00)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="fa-solid fa-location-arrow"></i>
+            м.Київ, вул. Бориса Грінченка 7 (HEAVEN)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="fa-solid fa-pen"></i>
+            Заповни форму і отримай свій квиток
+        </span>
+    </div>
+    <!-- Підключаємо зовнішній JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        function checkScreenSize() {
+              if (window.innerWidth < 1000) {
+                if (!window.location.pathname.includes("/mobile/")) {
+                  window.location.href = "{% url 'mobile' %}";
                 }
-            checkScreenSize();
-            window.addEventListener("resize", checkScreenSize);
-        </script>
-        <script>
-          function openTelegram(e) {
-            e.preventDefault();
-            const phone = "380684437882";
-            const tgApp = `tg://resolve?phone=${phone}`;
-            const tgWeb = `https://t.me/+${phone}`;
+              }
+            }
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+    </script>
+    <script>
+      function openTelegram(e) {
+        e.preventDefault();
+        const phone = "380684437882";
+        const tgApp = `tg://resolve?phone=${phone}`;
+        const tgWeb = `https://t.me/+${phone}`;
 
-            window.location.href = tgApp;
+        window.location.href = tgApp;
 
-            setTimeout(() => {
-              window.open(tgWeb, "_blank");
-            }, 1000);
-          }
-        </script>
+        setTimeout(() => {
+          window.open(tgWeb, "_blank");
+        }, 1000);
+      }
+    </script>
   </body>
 </html>
