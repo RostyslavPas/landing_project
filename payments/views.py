@@ -1,7 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
+from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import hmac
@@ -11,9 +10,6 @@ import json
 from .keycrm_api import KeyCRMAPI
 from .forms import TicketOrderForm
 import logging
-import base64
-import qrcode
-from io import BytesIO
 from django.shortcuts import render
 from .models import TicketOrder
 
@@ -256,27 +252,6 @@ def wayforpay_callback(request):
             order.phone = data.get("clientPhone", order.phone)
             order.save()
 
-            # Оновлюємо лід в KeyCRM
-            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
-                try:
-                    keycrm = KeyCRMAPI()
-
-                    # Спочатку перевіряємо чи існує лід
-                    lead_exists = keycrm.get_lead(order.keycrm_lead_id)
-
-                    if lead_exists:
-                        update_data = {
-                            "comment": f"✅ Оплата успішна! Сума: {data.get('amount')} грн. Транзакція: {order_reference}"
-                        }
-
-                        keycrm.update_lead(order.keycrm_lead_id, update_data)
-                        logger.info(f"Лід {order.keycrm_lead_id} оновлено після оплати")
-                    else:
-                        logger.warning(f"Лід {order.keycrm_lead_id} не знайдено в KeyCRM")
-
-                except Exception as e:
-                    logger.error(f"Помилка оновлення ліда в KeyCRM: {str(e)}")
-
             # Відправка email
             if order.email_status != "sent":
                 try:
@@ -289,17 +264,6 @@ def wayforpay_callback(request):
         else:
             order.payment_status = "failed"
             order.save()
-
-            # Оновлюємо лід про невдалу оплату
-            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
-                try:
-                    keycrm = KeyCRMAPI()
-                    update_data = {
-                        "comment": f"❌ Оплата не пройшла. Статус: {transaction_status}"
-                    }
-                    keycrm.update_lead(order.keycrm_lead_id, update_data)
-                except Exception as e:
-                    logger.error(f"Помилка оновлення ліда: {str(e)}")
 
         # --- Підтвердження для WayForPay (для будь-якого статусу) ---
         status = "accept"
@@ -346,121 +310,37 @@ def payment_result(request):
 
 
 def send_confirmation_email(order):
-    """Відправка email після успішної оплати з QR-квитком"""
+    """Відправка email після успішної оплати"""
     try:
-        # Унікальна URL-сторінка перевірки квитка
-        verify_url = f"https://www.pasue.com.ua/ticket/verify/{order.wayforpay_order_reference}"
+        subject = 'PASUE Club - Підтвердження оплати квитка'
+        message = f"""
+        Вітаємо!
 
-        # Генеруємо QR-код
-        qr = qrcode.QRCode(version=1, box_size=10, border=4)
-        qr.add_data(verify_url)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white")
+        Ваш квиток на Grand Opening Party від PASUE Club успішно оплачено.
 
-        # Конвертуємо QR у base64
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+        Деталі замовлення:
+        Email: {order.email}
+        Телефон: {order.phone}
+        Номер замовлення: {order.wayforpay_order_reference}
+        Сума: {order.amount} UAH
 
-        # Дані для шаблону
-        context = {
-            "email": order.email,
-            "phone": order.phone,
-            "order_reference": order.wayforpay_order_reference,
-            "amount": order.amount,
-            "verify_url": verify_url,
-            "qr_code": qr_base64,
-        }
+        Дякуємо за покупку!
+        Команда PASUE Club
+        """
 
-        # Рендер HTML-шаблону
-        html_content = render_to_string("ticket_email.html", context)
-        text_content = (
-            f"Ваш квиток на Grand Opening Party успішно оплачено.\n\n"
-            f"Номер квитка: {order.wayforpay_order_reference}\n"
-            f"Email: {order.email}\n"
-            f"Телефон: {order.phone}\n"
-            f"Сума: {order.amount} UAH\n\n"
-            f"Перевірка квитка: {verify_url}\n"
-            f"Команда PASUE Club"
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.email],
+            fail_silently=False,
         )
-
-        # Формуємо і відправляємо лист
-        msg = EmailMultiAlternatives(
-            subject="PASUE Club - Ваш електронний квиток 🎟️",
-            body=text_content,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[order.email],
-        )
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-
-        order.email_status = "sent"
-        order.save()
+        order.email_status = 'sent'
     except Exception as e:
-        logger.error(f"Email sending error: {str(e)}")
-        order.email_status = "failed"
-        order.save()
+        print(f"Email sending error: {str(e)}")
+        order.email_status = 'failed'
 
-
-def generate_qr(order_ref):
-    qr = qrcode.make(f"https://www.pasue.com.ua/verify/{order_ref}/")
-    buf = BytesIO()
-    qr.save(buf, format='PNG')
-    return base64.b64encode(buf.getvalue()).decode()
-
-
-def verify_ticket(request, order_ref):
-    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
-    valid = order is not None and order.ticket_status != 'invalid'
-    qr_code = generate_qr(order_ref) if order else None
-
-    return render(request, 'verify_ticket.html', {
-        'valid': valid,
-        'order_reference': order.wayforpay_order_reference if order else '',
-        'email': order.email if order else '',
-        'phone': order.phone if order else '',
-        'amount': order.amount if order else '',
-        'ticket_status': order.ticket_status if order else '',
-        'qr_code': qr_code,
-    })
-
-
-def verify_admin_ticket(request, order_ref):
-    """Сторінка адміністратора для перевірки квитка"""
-    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
-    qr_code = generate_qr(order_ref) if order else None
-    return render(request, 'verify_admin.html', {
-        'order': order,
-        'qr_code': qr_code,
-    })
-
-
-def mark_ticket_used(request):
-    """AJAX: Позначити квиток як використаний"""
-    order_ref = request.POST.get('order_ref')
-    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
-    if not order:
-        return JsonResponse({'success': False, 'message': 'Квиток не знайдено'}, status=404)
-    if order.ticket_status == 'used':
-        return JsonResponse({'success': False, 'message': 'Квиток вже був використаний'}, status=400)
-
-    order.ticket_status = 'used'
     order.save()
-    return JsonResponse({'success': True, 'message': 'Квиток позначено як використаний'})
-
-
-def verify_check(request, order_ref):
-    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
-    if not order:
-        return JsonResponse({'success': False})
-    return JsonResponse({
-        'success': True,
-        'order_ref': order.wayforpay_order_reference,
-        'email': order.email,
-        'phone': order.phone,
-        'amount': float(order.amount),
-        'ticket_status': order.ticket_status,
-    })
 
 
 # Допоміжна функція для налаштування KeyCRM
