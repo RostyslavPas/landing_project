@@ -1,15 +1,23 @@
-from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import hmac
 import time
 import hashlib
 import json
-from .models import TicketOrder
+from .keycrm_api import KeyCRMAPI
 from .forms import TicketOrderForm
+import logging
+import base64
+import qrcode
+from io import BytesIO
+from django.shortcuts import render
+from .models import TicketOrder
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -34,7 +42,7 @@ def generate_wayforpay_params(order):
     amount = float(order.amount)
     params = {
         "merchantAccount": merchant_account,
-        "merchantDomainName": merchant_domain,  # без https://
+        "merchantDomainName": merchant_domain,
         "orderReference": order_reference,
         "orderDate": str(int(time.time())),
         "amount": f"{amount:.2f}",
@@ -57,9 +65,9 @@ def generate_wayforpay_params(order):
         params["orderDate"],
         params["amount"],
         params["currency"],
-        *params["productName[]"],   # Розгортаємо список
-        *params["productCount[]"],  # Розгортаємо список
-        *params["productPrice[]"],  # Розгортаємо список
+        *params["productName[]"],
+        *params["productCount[]"],
+        *params["productPrice[]"],
     ])
 
     merchant_signature = hmac.new(
@@ -71,6 +79,37 @@ def generate_wayforpay_params(order):
     params["merchantSignature"] = merchant_signature
 
     return params
+
+
+def build_keycrm_lead(order, status="not_paid", comment=""):
+    return {
+        "title": f"Замовлення №{order.id}",
+        "pipeline_id": settings.KEYCRM_PIPELINE_ID,
+        "source_id": settings.KEYCRM_SOURCE_ID,
+        "contact": {
+            "full_name": order.email or "Без імені",
+            "email": order.email,
+            "phone": order.phone
+        },
+        "payments": [
+            {
+                "payment_method": "WayForPay",
+                "amount": float(order.amount),
+                "status": status  # "not_paid", "paid", "declined"
+            }
+        ],
+        "manager_comment": comment or f"Статус оплати: {status}",
+        "custom_fields": [
+            {
+                "uuid": "device_type",
+                "value": order.device_type
+            },
+            {
+                "uuid": "order_id",
+                "value": str(order.id)
+            }
+        ]
+    }
 
 
 @csrf_exempt
@@ -85,6 +124,7 @@ def submit_ticket_form(request):
             ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
             device_type = "mobile" if "mobi" in ua_string else "desktop"
 
+            # Створюємо замовлення
             order = TicketOrder.objects.create(
                 email=email,
                 phone=phone,
@@ -93,6 +133,56 @@ def submit_ticket_form(request):
                 device_type=device_type,
             )
 
+            # Створюємо лід в KeyCRM
+            if settings.KEYCRM_API_TOKEN and settings.KEYCRM_PIPELINE_ID and settings.KEYCRM_SOURCE_ID:
+                try:
+                    keycrm = KeyCRMAPI()
+
+                    lead_data = {
+                        "title": f"Замовлення #{order.id}",
+                        "pipeline_id": settings.KEYCRM_PIPELINE_ID,
+                        "source_id": settings.KEYCRM_SOURCE_ID,
+                        "manager_comment": "Лендінг: Grand Opening Party",
+                        "contact": {
+                            "email": email,
+                            "phone": phone
+                        },
+                        "products": [
+                            {
+                                "sku": f"ticket-{order.id}",
+                                "price": float(order.amount),
+                                "quantity": 1,
+                                "unit_type": "шт",
+                                "name": "Квиток на Grand Opening Party",
+                            }
+                        ],
+                        "payments": [
+                            {
+                                "payment_method": "WayForPay",
+                                "amount": float(order.amount),
+                                "description": "Очікування оплати",
+                                "status": "not_paid"
+                            }
+                        ],
+                        "custom_fields": [
+                            {"uuid": "device_type", "value": device_type},
+                            {"uuid": "order_id", "value": str(order.id)}
+                        ]
+                    }
+
+                    lead = keycrm.create_lead(lead_data)
+
+                    if lead and 'id' in lead:
+                        order.keycrm_lead_id = lead['id']
+                        order.save()
+                        logger.info(f"Лід {lead['id']} створено для замовлення {order.id}")
+                    else:
+                        logger.warning(f"Не вдалося створити лід в KeyCRM для замовлення {order.id}")
+
+                except Exception as e:
+                    logger.error(f"Помилка при створенні ліда в KeyCRM: {str(e)}")
+
+            # Генеруємо параметри для оплати
             params = generate_wayforpay_params(order)
             return JsonResponse({"success": True, "wayforpay_params": params})
 
@@ -111,9 +201,9 @@ def wayforpay_callback(request):
     """Webhook від WayForPay"""
     try:
         data = json.loads(request.body.decode("utf-8"))
-        print("=== CALLBACK DATA ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=== END CALLBACK DATA ===")
+        logger.info("=== CALLBACK DATA ===")
+        logger.info(json.dumps(data, indent=2, ensure_ascii=False))
+        logger.info("=== END CALLBACK DATA ===")
 
         order_reference = data.get("orderReference")
         transaction_status = data.get("transactionStatus")
@@ -124,8 +214,9 @@ def wayforpay_callback(request):
 
         try:
             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
+            logger.info(f"KeyCRM lead id: {order.keycrm_lead_id}")
         except TicketOrder.DoesNotExist:
-            print(f"Order not found: {order_reference}")
+            logger.info(f"Order not found: {order_reference}")
             return HttpResponse("Order not found", status=404)
 
         # Формуємо підпис для перевірки
@@ -146,17 +237,17 @@ def wayforpay_callback(request):
             hashlib.md5
         ).hexdigest()
 
-        print("=== CALLBACK SIGNATURE DEBUG ===")
-        print(f"Signature fields: {signature_fields}")
-        print(f"Signature string: {signature_string}")
-        print(f"Expected signature: {expected_signature}")
-        print(f"Received signature: {merchant_signature}")
+        logger.info("=== CALLBACK SIGNATURE DEBUG ===")
+        logger.info(f"Signature fields: {signature_fields}")
+        logger.info(f"Signature string: {signature_string}")
+        logger.info(f"Expected signature: {expected_signature}")
+        logger.info(f"Received signature: {merchant_signature}")
 
         if expected_signature != merchant_signature:
-            print("=== SIGNATURE MISMATCH ===")
+            logger.info("=== SIGNATURE MISMATCH ===")
             return HttpResponse("Invalid signature", status=403)
 
-        print("=== SIGNATURE VALID ===")
+        logger.info("=== SIGNATURE VALID ===")
 
         # Оновлюємо статус замовлення
         if transaction_status == "Approved":
@@ -165,18 +256,50 @@ def wayforpay_callback(request):
             order.phone = data.get("clientPhone", order.phone)
             order.save()
 
+            # Оновлюємо лід в KeyCRM
+            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
+                try:
+                    keycrm = KeyCRMAPI()
+
+                    # Спочатку перевіряємо чи існує лід
+                    lead_exists = keycrm.get_lead(order.keycrm_lead_id)
+
+                    if lead_exists:
+                        update_data = {
+                            "comment": f"✅ Оплата успішна! Сума: {data.get('amount')} грн. Транзакція: {order_reference}"
+                        }
+
+                        keycrm.update_lead(order.keycrm_lead_id, update_data)
+                        logger.info(f"Лід {order.keycrm_lead_id} оновлено після оплати")
+                    else:
+                        logger.warning(f"Лід {order.keycrm_lead_id} не знайдено в KeyCRM")
+
+                except Exception as e:
+                    logger.error(f"Помилка оновлення ліда в KeyCRM: {str(e)}")
+
             # Відправка email
             if order.email_status != "sent":
                 try:
                     send_confirmation_email(order)
-                    print(f"Email sent for order {order_reference}")
+                    logger.info(f"Email sent for order {order_reference}")
                 except Exception as e:
-                    print(f"Email sending error for order {order_reference}: {e}")
+                    logger.error(f"Email sending error for order {order_reference}: {e}")
             else:
-                print(f"Email already sent for order {order_reference}, skipping.")
+                logger.info(f"Email already sent for order {order_reference}, skipping.")
         else:
             order.payment_status = "failed"
             order.save()
+
+            # Оновлюємо лід про невдалу оплату
+            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
+                try:
+                    keycrm = KeyCRMAPI()
+                    update_data = {
+                        "comment": f"❌ Оплата не пройшла. Статус: {transaction_status}"
+                    }
+                    keycrm.update_lead(order.keycrm_lead_id, update_data)
+                except Exception as e:
+                    logger.error(f"Помилка оновлення ліда: {str(e)}")
 
         # --- Підтвердження для WayForPay (для будь-якого статусу) ---
         status = "accept"
@@ -199,7 +322,7 @@ def wayforpay_callback(request):
         return JsonResponse(response_data, status=200)
 
     except Exception as e:
-        print(f"Callback error: {str(e)}")
+        logger.error(f"Callback error: {str(e)}")
         return HttpResponse(f"Error: {str(e)}", status=400)
 
 
@@ -223,34 +346,141 @@ def payment_result(request):
 
 
 def send_confirmation_email(order):
-    """Відправка email після успішної оплати"""
+    """Відправка email після успішної оплати з QR-квитком"""
     try:
-        subject = 'PASUE Club - Підтвердження оплати квитка'
-        message = f"""
-        Вітаємо!
+        # Унікальна URL-сторінка перевірки квитка
+        verify_url = f"https://www.pasue.com.ua/ticket/verify/{order.wayforpay_order_reference}"
 
-        Ваш квиток на Grand Opening Party від PASUE Club успішно оплачено.
+        # Генеруємо QR-код
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(verify_url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
 
-        Деталі замовлення:
-        Email: {order.email}
-        Телефон: {order.phone}
-        Номер замовлення: {order.wayforpay_order_reference}
-        Сума: {order.amount} UAH
+        # Конвертуємо QR у base64
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-        Дякуємо за покупку!
-        Команда PASUE Club
-        """
+        # Дані для шаблону
+        context = {
+            "email": order.email,
+            "phone": order.phone,
+            "order_reference": order.wayforpay_order_reference,
+            "amount": order.amount,
+            "verify_url": verify_url,
+            "qr_code": qr_base64,
+        }
 
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [order.email],
-            fail_silently=False,
+        # Рендер HTML-шаблону
+        html_content = render_to_string("ticket_email.html", context)
+        text_content = (
+            f"Ваш квиток на Grand Opening Party успішно оплачено.\n\n"
+            f"Номер квитка: {order.wayforpay_order_reference}\n"
+            f"Email: {order.email}\n"
+            f"Телефон: {order.phone}\n"
+            f"Сума: {order.amount} UAH\n\n"
+            f"Перевірка квитка: {verify_url}\n"
+            f"Команда PASUE Club"
         )
-        order.email_status = 'sent'
-    except Exception as e:
-        print(f"Email sending error: {str(e)}")
-        order.email_status = 'failed'
 
+        # Формуємо і відправляємо лист
+        msg = EmailMultiAlternatives(
+            subject="PASUE Club - Ваш електронний квиток 🎟️",
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.email],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+        order.email_status = "sent"
+        order.save()
+    except Exception as e:
+        logger.error(f"Email sending error: {str(e)}")
+        order.email_status = "failed"
+        order.save()
+
+
+def generate_qr(order_ref):
+    qr = qrcode.make(f"https://www.pasue.com.ua/verify/{order_ref}/")
+    buf = BytesIO()
+    qr.save(buf, format='PNG')
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def verify_ticket(request, order_ref):
+    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
+    valid = order is not None and order.ticket_status != 'invalid'
+    qr_code = generate_qr(order_ref) if order else None
+
+    return render(request, 'verify_ticket.html', {
+        'valid': valid,
+        'order_reference': order.wayforpay_order_reference if order else '',
+        'email': order.email if order else '',
+        'phone': order.phone if order else '',
+        'amount': order.amount if order else '',
+        'ticket_status': order.ticket_status if order else '',
+        'qr_code': qr_code,
+    })
+
+
+def verify_admin_ticket(request, order_ref):
+    """Сторінка адміністратора для перевірки квитка"""
+    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
+    qr_code = generate_qr(order_ref) if order else None
+    return render(request, 'verify_admin.html', {
+        'order': order,
+        'qr_code': qr_code,
+    })
+
+
+def mark_ticket_used(request):
+    """AJAX: Позначити квиток як використаний"""
+    order_ref = request.POST.get('order_ref')
+    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
+    if not order:
+        return JsonResponse({'success': False, 'message': 'Квиток не знайдено'}, status=404)
+    if order.ticket_status == 'used':
+        return JsonResponse({'success': False, 'message': 'Квиток вже був використаний'}, status=400)
+
+    order.ticket_status = 'used'
     order.save()
+    return JsonResponse({'success': True, 'message': 'Квиток позначено як використаний'})
+
+
+def verify_check(request, order_ref):
+    order = TicketOrder.objects.filter(wayforpay_order_reference=order_ref).first()
+    if not order:
+        return JsonResponse({'success': False})
+    return JsonResponse({
+        'success': True,
+        'order_ref': order.wayforpay_order_reference,
+        'email': order.email,
+        'phone': order.phone,
+        'amount': float(order.amount),
+        'ticket_status': order.ticket_status,
+    })
+
+
+# Допоміжна функція для налаштування KeyCRM
+@require_http_methods(["GET"])
+def keycrm_info(request):
+    """
+    Допоміжна функція для отримання ID воронки та джерел
+    Викликайте один раз для налаштування
+    """
+    if not settings.KEYCRM_API_TOKEN:
+        return JsonResponse({
+            'error': 'KeyCRM API токен не налаштований'
+        }, status=400)
+
+    keycrm = KeyCRMAPI()
+
+    pipelines = keycrm.get_pipelines()
+    sources = keycrm.get_sources()
+
+    return JsonResponse({
+        'pipelines': pipelines,
+        'sources': sources
+    })

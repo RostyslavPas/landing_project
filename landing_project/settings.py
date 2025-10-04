@@ -113,6 +113,11 @@ WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN")
 WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL")
 WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL")
 
+# KeyCRM налаштування
+KEYCRM_API_TOKEN = os.getenv("KEYCRM_API_TOKEN")
+KEYCRM_PIPELINE_ID = int(os.getenv("KEYCRM_PIPELINE_ID"))
+KEYCRM_SOURCE_ID = int(os.getenv("KEYCRM_SOURCE_ID"))
+
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
@@ -121,3 +126,25 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+
+# Логування
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'payments': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Перевірка квитка | PASUE Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(17deg, #fffdfa 0%, #100e0e 100%);
+      color: #fff;
+      font-family: 'Montserrat Alternates', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: linear-gradient(17deg, #fffdfa 0%, #100e0e 100%);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+      border: 1px solid #2c2c2c;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #f5c518;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .status.success {
+      background-color: rgba(60, 255, 100, 0.1);
+      color: #3cff64;
+      border: 1px solid #3cff64;
+    }
+    .status.error {
+      background-color: rgba(255, 70, 70, 0.1);
+      color: #ff4646;
+      border: 1px solid #ff4646;
+    }
+    .details {
+      text-align: left;
+      font-size: 14px;
+      color: #ddd;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .details span {
+      color: #f5c518;
+      font-weight: 600;
+    }
+    .qr {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .qr img {
+      width: 150px;
+      height: 150px;
+      border: 4px solid #f5c518;
+      border-radius: 10px;
+      background: #fff;
+      padding: 4px;
+    }
+    .footer {
+      color: #777;
+      font-size: 12px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="{% static 'images/main_logo_2.png' %}" alt="PASUE Club" class="logo">
+    <h1>Перевірка квитка</h1>
+
+    {% if valid %}
+      <div class="status success">✅ Квиток дійсний</div>
+      <div class="details">
+        <p><span>Номер:</span> {{ order_reference }}</p>
+        <p><span>Імейл:</span> {{ email }}</p>
+        <p><span>Телефон:</span> {{ phone }}</p>
+        <p><span>Сума:</span> {{ amount }} UAH</p>
+      </div>
+      <div class="qr">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+      </div>
+    {% else %}
+      <div class="status error">❌ Квиток не знайдено або недійсний</div>
+    {% endif %}
+
+    <div class="footer">
+      PASUE Club © {{ now|date:"Y" }} <br>
+      Kyiv, Ukraine
+    </div>
+  </div>
+</body>
+</html>
