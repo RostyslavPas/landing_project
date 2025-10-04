@@ -351,13 +351,13 @@ def send_confirmation_email(order):
     qr.save(buffer, format="PNG")
     qr_bytes = buffer.getvalue()
 
-    subject = f"Ваш квиток на {order.event_name}"
+    subject = f"Ваш квиток на Grand Opening Party від PASUE Club"
     html_content = render_to_string("emails/ticket.html", {"order": order})
 
     email = EmailMultiAlternatives(
         subject=subject,
         body="Ваш квиток у вкладенні.",
-        from_email="info@pasue.com.ua",
+        from_email=settings.DEFAULT_FROM_EMAIL,
         to=[order.email],
     )
     email.attach_alternative(html_content, "text/html")
