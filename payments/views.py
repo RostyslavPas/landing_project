@@ -12,6 +12,11 @@ from .forms import TicketOrderForm
 import logging
 from django.shortcuts import render
 from .models import TicketOrder
+import qrcode
+from io import BytesIO
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from email.mime.image import MIMEImage
 
 logger = logging.getLogger(__name__)
 
@@ -311,36 +316,59 @@ def payment_result(request):
 
 def send_confirmation_email(order):
     """Відправка email після успішної оплати"""
-    try:
-        subject = 'PASUE Club - Підтвердження оплати квитка'
-        message = f"""
-        Вітаємо!
+    # try:
+    #     subject = 'PASUE Club - Підтвердження оплати квитка'
+    #     message = f"""
+    #     Вітаємо!
+    #
+    #     Ваш квиток на Grand Opening Party від PASUE Club успішно оплачено.
+    #
+    #     Деталі замовлення:
+    #     Email: {order.email}
+    #     Телефон: {order.phone}
+    #     Номер замовлення: {order.wayforpay_order_reference}
+    #     Сума: {order.amount} UAH
+    #
+    #     Дякуємо за покупку!
+    #     Команда PASUE Club
+    #     """
+    #
+    #     send_mail(
+    #         subject,
+    #         message,
+    #         settings.DEFAULT_FROM_EMAIL,
+    #         [order.email],
+    #         fail_silently=False,
+    #     )
+    #     order.email_status = 'sent'
+    # except Exception as e:
+    #     print(f"Email sending error: {str(e)}")
+    #     order.email_status = 'failed'
+    #
+    # order.save()
+    qr = qrcode.make(f"TICKET-{order.id}-{order.email}")
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    qr_bytes = buffer.getvalue()
 
-        Ваш квиток на Grand Opening Party від PASUE Club успішно оплачено.
+    subject = f"Ваш квиток на {order.event_name}"
+    html_content = render_to_string("emails/ticket.html", {"order": order})
 
-        Деталі замовлення:
-        Email: {order.email}
-        Телефон: {order.phone}
-        Номер замовлення: {order.wayforpay_order_reference}
-        Сума: {order.amount} UAH
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body="Ваш квиток у вкладенні.",
+        from_email="info@pasue.com.ua",
+        to=[order.email],
+    )
+    email.attach_alternative(html_content, "text/html")
 
-        Дякуємо за покупку!
-        Команда PASUE Club
-        """
+    # Додаємо QR-код у вигляді inline-елемента
+    qr_image = MIMEImage(qr_bytes)
+    qr_image.add_header("Content-ID", "<qrcode.png>")
+    qr_image.add_header("Content-Disposition", "inline", filename="qrcode.png")
+    email.attach(qr_image)
 
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [order.email],
-            fail_silently=False,
-        )
-        order.email_status = 'sent'
-    except Exception as e:
-        print(f"Email sending error: {str(e)}")
-        order.email_status = 'failed'
-
-    order.save()
+    email.send(fail_silently=False)
 
 
 # Допоміжна функція для налаштування KeyCRM
