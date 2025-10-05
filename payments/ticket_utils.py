@@ -20,7 +20,7 @@ bold_font_path = os.path.join(settings.BASE_DIR, "static", "fonts", "DejaVuSans-
 
 # Реєструємо шрифти
 pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
-pdfmetrics.registerFont(TTFont('DejaVu-Bold', bold_font_path))
+pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', bold_font_path))
 
 FONT_NORMAL = 'DejaVuSans'
 FONT_BOLD = 'DejaVuSans-Bold'
