@@ -95,10 +95,9 @@
       <div class="ticket-body">
         <h2>{{ order.event_name }}</h2>
         <div class="ticket-details">
-          <p><strong>Дата:</strong> {{ order.event_date|date:"d.m.Y H:i" }}</p>
-          <p><strong>Місце:</strong> {{ order.event_location }}</p>
-          <p><strong>Ім’я:</strong> {{ order.full_name }}</p>
-          <p><strong>Сума:</strong> {{ order.amount }} грн</p>
+          <p><strong>Дата проведення:</strong> 29 листопада 2025 </p>
+          <p><strong>Місце проведення:</strong> м.Київ, вул. Бориса Грінченка 7 (HEAVEN) </p>
+          <p><strong>Сума квитка:</strong> {{ order.amount }} грн</p>
           <p><strong>Номер замовлення:</strong> {{ order.id }}</p>
         </div>
 
