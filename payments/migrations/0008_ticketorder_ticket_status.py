@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('payments', '0007_ticketorder_keycrm_lead_id_alter_ticketorder_amount_and_more'),
+        ('payments', '0007_ticketorder_event_name_ticketorder_keycrm_lead_id_and_more'),
     ]
 
     operations = [

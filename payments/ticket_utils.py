@@ -174,14 +174,6 @@ def generate_ticket_pdf(order, qr_img):
     c.save()
     pdf_buffer.seek(0)
 
-    # Зберігаємо локально для тесту
-    os.makedirs('local_emails', exist_ok=True)
-    pdf_path = os.path.join('local_emails', f'ticket_{order.id}.pdf')
-    with open(pdf_path, 'wb') as f:
-        f.write(pdf_buffer.read())
-    logger.info(f"PDF з QR збережено: {pdf_path}")
-
-    pdf_buffer.seek(0)
     return pdf_buffer
 
 

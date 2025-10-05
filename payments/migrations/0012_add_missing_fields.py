@@ -10,24 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='ticketorder',
-            name='event_name',
-            field=models.CharField(max_length=255, default='Grand Opening Party'),
-        ),
-        migrations.AddField(
-            model_name='ticketorder',
-            name='scanned_at',
-            field=models.DateTimeField(null=True, blank=True),
-        ),
-        migrations.AddField(
-            model_name='ticketorder',
-            name='scanned_by',
-            field=models.CharField(max_length=100, blank=True),
-        ),
-        migrations.AddField(
-            model_name='ticketorder',
-            name='scan_count',
-            field=models.IntegerField(default=0),
-        ),
+
     ]
