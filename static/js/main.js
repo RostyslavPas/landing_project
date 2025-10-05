@@ -230,7 +230,7 @@ function showValidationErrors(errors) {
 function redirectToWayForPay(params) {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = 'https://secure.wayforpay.com/payment/pasue_ticket';
+    form.action = 'https://secure.wayforpay.com/pay';
 
     Object.keys(params).forEach(key => {
         const value = params[key];
