@@ -261,6 +261,8 @@ def wayforpay_callback(request):
             if order.email_status != "sent":
                 try:
                     send_confirmation_email(order)
+                    order.email_status = "sent"
+                    order.save(update_fields=["email_status"])
                     logger.info(f"Email sent for order {order_reference}")
                 except Exception as e:
                     logger.error(f"Email sending error for order {order_reference}: {e}")
