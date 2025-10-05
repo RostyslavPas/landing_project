@@ -39,6 +39,5 @@ Thumbs.db
 htmlcov/
 .tox/
 .pytest_cache/
-/payments/migrations/
 payments/__pycache__/
 landing_project/__pycache__
