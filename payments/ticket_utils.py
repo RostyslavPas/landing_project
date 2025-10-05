@@ -146,7 +146,7 @@ def generate_ticket_qr(order):
 
 
 def generate_ticket_pdf(order, qr_img):
-    """Генерує PDF квитка з QR кодом"""
+    """Генерує красивий PDF квитка з кольорами"""
     qr_buffer = io.BytesIO()
     qr_img.save(qr_buffer, format='PNG')
     qr_buffer.seek(0)
@@ -156,19 +156,100 @@ def generate_ticket_pdf(order, qr_img):
     c = canvas.Canvas(pdf_buffer, pagesize=A4)
     width, height = A4
 
-    # Текст на PDF
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, height - 100, f"Квиток #{order.id}")
-    c.setFont("Helvetica", 12)
-    c.drawString(50, height - 130, f"Email: {order.email}")
-    c.drawString(50, height - 150, f"Телефон: {order.phone}")
-    c.drawString(50, height - 180, f"Подія: {order.event_name}")
-    c.drawString(50, height - 200, f"Сума: {order.amount} грн")
+    # === ФОН ===
+    c.setFillColorRGB(0.99, 0.98, 0.97)  # #fdfaf7
+    c.rect(0, 0, width, height, fill=1, stroke=0)
 
-    # Вставляємо QR код
-    qr_size = 150
-    c.drawImage(qr_reader, 50, height - 350, width=qr_size, height=qr_size)
-    c.drawString(50, height - 420, "Покажіть цей QR при вході")
+    # === БІЛИЙ КОНТЕЙНЕР ===
+    margin = 40
+    box_width = width - 2 * margin
+    box_height = height - 2 * margin
+
+    c.setFillColorRGB(1, 1, 1)
+    c.roundRect(margin, margin, box_width, box_height, 15, fill=1, stroke=0)
+
+    # Тінь контейнера
+    c.setStrokeColorRGB(0.9, 0.9, 0.9)
+    c.setLineWidth(1)
+    c.roundRect(margin, margin, box_width, box_height, 15, fill=0, stroke=1)
+
+    # === HEADER З ГРАДІЄНТОМ (імітація) ===
+    header_height = 120
+    c.setFillColorRGB(0.94, 0.90, 0.85)  # #efe5da
+    c.roundRect(margin, height - margin - header_height, box_width, header_height, 15, fill=1, stroke=0)
+
+    # Логотип (якщо є локально)
+    logo_path = 'static/images/main_logo.png'
+    if os.path.exists(logo_path):
+        c.drawImage(logo_path, width/2 - 45, height - margin - 90, 90, 90, mask='auto')
+
+    # Заголовок
+    c.setFont('Helvetica-Bold', 24)
+    c.setFillColorRGB(0.12, 0.12, 0.11)
+    c.drawCentredString(width / 2, height - margin - 50, "Вітаємо у PASUE Club ✨")
+
+    # === ТІЛО ===
+    y_pos = height - margin - header_height - 50
+
+    # Назва події
+    c.setFont('Helvetica-Bold', 20)
+    c.setFillColorRGB(0.64, 0.60, 0.34)  # #a27155
+    c.drawCentredString(width / 2, y_pos, order.event_name)
+    y_pos -= 40
+
+    # === ДЕТАЛІ В РАМЦІ ===
+    details_box_height = 120
+    details_y = y_pos - details_box_height
+
+    # Фон деталей
+    c.setFillColorRGB(0.98, 0.96, 0.95)  # #faf6f1
+    c.roundRect(margin + 30, details_y, box_width - 60, details_box_height, 10, fill=1, stroke=0)
+
+    # Ліва бордюра
+    c.setFillColorRGB(0.76, 0.60, 0.42)  # #c19a6b
+    c.rect(margin + 30, details_y, 4, details_box_height, fill=1, stroke=0)
+
+    # Текст деталей
+    c.setFont('Helvetica', 13)
+    c.setFillColorRGB(0.2, 0.2, 0.2)
+
+    detail_y = details_y + details_box_height - 25
+    details_text = [
+        "✨ Коли: 29 листопада 2025, 17:00—20:00",
+        "✨ Де: м.Київ, клуб HEAVEN, вул. Бориса Грінченка, 7",
+        f"✨ Номер квитка: #{order.id}",
+        f"✨ Email: {order.email}",
+        f"✨ Сума: {order.amount} грн"
+    ]
+
+    for line in details_text:
+        c.drawString(margin + 50, detail_y, line)
+        detail_y -= 20
+
+    y_pos = details_y - 40
+
+    # === QR КОД ===
+    qr_size = 180
+    qr_x = width / 2 - qr_size / 2
+    qr_y = y_pos - qr_size - 20
+
+    # Білий фон під QR
+    c.setFillColorRGB(1, 1, 1)
+    c.roundRect(qr_x - 10, qr_y - 10, qr_size + 20, qr_size + 20, 10, fill=1, stroke=0)
+
+    # QR код
+    c.drawImage(qr_reader, qr_x, qr_y, width=qr_size, height=qr_size)
+
+    # Текст під QR
+    c.setFont('Helvetica', 12)
+    c.setFillColorRGB(0.4, 0.4, 0.4)
+    c.drawCentredString(width / 2, qr_y - 25, "Покажіть цей QR при вході")
+
+    # === FOOTER ===
+    c.setFont('Helvetica', 11)
+    c.setFillColorRGB(0.5, 0.5, 0.5)
+    c.drawCentredString(width / 2, margin + 40, "З любов'ю, команда PASUE Club 💛")
+    c.drawCentredString(width / 2, margin + 25, "pasue.club@gmail.com")
 
     c.showPage()
     c.save()

@@ -1,6 +1,5 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import hmac
@@ -12,13 +11,7 @@ from .forms import TicketOrderForm
 import logging
 from django.shortcuts import render
 from .models import TicketOrder
-import qrcode
-from io import BytesIO
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from email.mime.image import MIMEImage
 from .ticket_utils import send_ticket_email_with_pdf
-from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -449,9 +442,8 @@ def scan_ticket_api(request, ticket_id):
         return JsonResponse({'success': False, 'error': 'Квиток не знайдено'}, status=404)
 
 
-@login_required
 def scanner_page(request):
-    """Сторінка сканера (тільки для авторизованих)"""
+    """Сторінка сканера"""
     return render(request, 'scanner.html')
 
 
