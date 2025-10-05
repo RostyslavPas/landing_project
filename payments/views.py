@@ -17,6 +17,8 @@ from io import BytesIO
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from email.mime.image import MIMEImage
+from .ticket_utils import send_ticket_email_with_pdf
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -148,6 +150,11 @@ def submit_ticket_form(request):
                             "email": email,
                             "phone": phone
                         },
+                        "utm_source": "utm_source",
+                        "utm_medium": "utm_medium",
+                        "utm_campaign": "utm_campaign",
+                        "utm_term": "utm_term",
+                        "utm_content": "utm_content",
                         "products": [
                             {
                                 "sku": f"ticket-{order.id}",
@@ -316,64 +323,48 @@ def payment_result(request):
     return render(request, template, {"order": order})
 
 
-def send_confirmation_email(order):
-    """Відправка email після успішної оплати"""
-    # try:
-    #     subject = 'PASUE Club - Підтвердження оплати квитка'
-    #     message = f"""
-    #     Вітаємо!
-    #
-    #     Ваш квиток на Grand Opening Party від PASUE Club успішно оплачено.
-    #
-    #     Деталі замовлення:
-    #     Email: {order.email}
-    #     Телефон: {order.phone}
-    #     Номер замовлення: {order.wayforpay_order_reference}
-    #     Сума: {order.amount} UAH
-    #
-    #     Дякуємо за покупку!
-    #     Команда PASUE Club
-    #     """
-    #
-    #     send_mail(
-    #         subject,
-    #         message,
-    #         settings.DEFAULT_FROM_EMAIL,
-    #         [order.email],
-    #         fail_silently=False,
-    #     )
-    #     order.email_status = 'sent'
-    # except Exception as e:
-    #     print(f"Email sending error: {str(e)}")
-    #     order.email_status = 'failed'
-    #
-    # order.save()
-    qr = qrcode.make(f"TICKET-{order.id}-{order.email}")
-    buffer = BytesIO()
-    qr.save(buffer, format="PNG")
-    qr_bytes = buffer.getvalue()
-
-    subject = f"Ваш квиток на Grand Opening Party від PASUE Club"
-    html_content = render_to_string("emails/ticket.html", {"order": order})
-
-    email = EmailMultiAlternatives(
-        subject=subject,
-        body="Ваш квиток у вкладенні.",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[order.email],
-    )
-    email.attach_alternative(html_content, "text/html")
-
-    # Додаємо QR-код у вигляді inline-елемента
-    qr_image = MIMEImage(qr_bytes)
-    qr_image.add_header("Content-ID", "<qrcode.png>")
-    qr_image.add_header("Content-Disposition", "inline", filename="qrcode.png")
-    email.attach(qr_image)
-
-    email.send(fail_silently=False)
+# def send_confirmation_email(order):
+#     """Відправка email після успішної оплати"""
+#     qr = qrcode.make(f"TICKET-{order.id}-{order.email}")
+#     buffer = BytesIO()
+#     qr.save(buffer, format="PNG")
+#     qr_bytes = buffer.getvalue()
+#
+#     subject = f"Ваш квиток на Grand Opening Party від PASUE Club"
+#     html_content = render_to_string("emails/ticket.html", {"order": order})
+#
+#     email = EmailMultiAlternatives(
+#         subject=subject,
+#         body="Ваш квиток у вкладенні.",
+#         from_email=settings.DEFAULT_FROM_EMAIL,
+#         to=[order.email],
+#     )
+#     email.attach_alternative(html_content, "text/html")
+#
+#     # Додаємо QR-код у вигляді inline-елемента
+#     qr_image = MIMEImage(qr_bytes)
+#     qr_image.add_header("Content-ID", "<qrcode.png>")
+#     qr_image.add_header("Content-Disposition", "inline", filename="qrcode.png")
+#     email.attach(qr_image)
+#
+#     email.send(fail_silently=False)
 
 
 # Допоміжна функція для налаштування KeyCRM
+
+def send_confirmation_email(order):
+    """Відправка email після успішної оплати"""
+    try:
+        send_ticket_email_with_pdf(order)
+        order.email_status = 'sent'
+        order.save(update_fields=["email_status"])
+        logger.info(f"Email з PDF відправлено для замовлення {order.id}")
+    except Exception as e:
+        logger.error(f"Помилка відправки email: {str(e)}")
+        order.email_status = 'failed'
+        order.save(update_fields=["email_status"])
+
+
 @require_http_methods(["GET"])
 def keycrm_info(request):
     """
@@ -394,3 +385,90 @@ def keycrm_info(request):
         'pipelines': pipelines,
         'sources': sources
     })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def validate_ticket_api(request, ticket_id):
+    """API для перевірки статусу квитка"""
+    try:
+        ticket = TicketOrder.objects.get(id=ticket_id, payment_status='success')
+        return JsonResponse({
+            'success': True,
+            'order_id': ticket.id,
+            'event_name': ticket.event_name,
+            'status': ticket.ticket_status,
+            'is_valid': ticket.is_valid(),
+            'scan_count': ticket.scan_count,
+        })
+    except TicketOrder.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Квиток не знайдено'}, status=404)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def scan_ticket_api(request, ticket_id):
+    """API для сканування квитка"""
+    try:
+        ticket = TicketOrder.objects.get(id=ticket_id, payment_status='success')
+
+        body = json.loads(request.body) if request.body else {}
+        scanned_by = body.get('scanned_by', '')
+
+        was_valid = ticket.is_valid()
+
+        # Логування
+        from .models import TicketScanLog
+        TicketScanLog.objects.create(
+            ticket=ticket,
+            scanned_by=scanned_by,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            was_valid=was_valid,
+            previous_status=ticket.ticket_status
+        )
+
+        if was_valid:
+            ticket.mark_as_used(scanned_by)
+            message = '✅ Квиток дійсний! Вхід дозволено.'
+        else:
+            message = '⚠️ Квиток вже був використаний.'
+
+        return JsonResponse({
+            'success': True,
+            'order_id': ticket.id,
+            'was_valid': was_valid,
+            'status': ticket.ticket_status,
+            'message': message
+        })
+    except TicketOrder.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Квиток не знайдено'}, status=404)
+
+
+@login_required
+def scanner_page(request):
+    """Сторінка сканера (тільки для авторизованих)"""
+    return render(request, 'scanner.html')
+
+
+def verify_ticket_page(request, ticket_id):
+    """Сторінка перевірки квитка по QR-коду"""
+    try:
+        ticket = TicketOrder.objects.get(id=ticket_id, payment_status='success')
+
+        context = {
+            'ticket': ticket,
+            'is_valid': ticket.is_valid(),
+            'status_text': {
+                'active': 'Дійсний',
+                'used': 'Використаний',
+                'invalid': 'Недійсний'
+            }.get(ticket.ticket_status, 'Невідомо')
+        }
+
+        return render(request, 'verify_ticket.html', context)
+
+    except TicketOrder.DoesNotExist:
+        return render(request, 'verify_ticket.html', {
+            'ticket': None,
+            'error': 'Квиток не знайдено'
+        })
