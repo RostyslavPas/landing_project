@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Сканер квитків - PASUE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat Alternates', -apple-system, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .scan-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 3px solid #4CAF50;
+            border-radius: 20px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+            animation: scan 2s ease-in-out infinite;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+
+        @keyframes scan {
+            0%, 100% { top: 0; opacity: 0; }
+            50% { top: 100%; opacity: 1; }
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent);
+            z-index: 10;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .result-modal.show {
+            display: flex;
+        }
+
+        .result-content {
+            background: #1a1a1a;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-message {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .result-details {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .torch-btn {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .torch-btn.active {
+            background: rgba(255,255,255,0.9);
+        }
+    </style>
+</head>
+<body>
+    <video id="video" playsinline autoplay></video>
+
+    <div class="overlay">
+        <div class="scan-frame">
+            <div class="scan-line"></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>🎟️ Сканер квитків</h1>
+        <div class="status" id="status">Натисніть "Почати"</div>
+    </div>
+
+    <button class="torch-btn" id="torchBtn" style="display: none;">🔦</button>
+
+    <div class="controls">
+        <button id="scanBtn" class="btn btn-primary">
+            Почати сканування
+        </button>
+    </div>
+
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <div class="result-icon" id="resultIcon"></div>
+            <div class="result-message" id="resultMessage"></div>
+            <div class="result-details" id="resultDetails"></div>
+            <button class="btn btn-primary" onclick="closeResult()">
+                Продовжити
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const scanBtn = document.getElementById('scanBtn');
+        const torchBtn = document.getElementById('torchBtn');
+        const status = document.getElementById('status');
+        const resultModal = document.getElementById('resultModal');
+
+        let stream = null;
+        let scanning = false;
+        let track = null;
+
+        function vibrate(pattern = [200]) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(pattern);
+            }
+        }
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                });
+
+                video.srcObject = stream;
+                track = stream.getVideoTracks()[0];
+
+                const capabilities = track.getCapabilities();
+                if (capabilities.torch) {
+                    torchBtn.style.display = 'flex';
+                }
+
+                scanning = true;
+                scanBtn.textContent = 'Зупинити';
+                scanBtn.classList.remove('btn-primary');
+                scanBtn.classList.add('btn-secondary');
+                status.textContent = '📷 Сканування активне';
+
+                requestAnimationFrame(tick);
+            } catch (err) {
+                status.textContent = '❌ Помилка: ' + err.message;
+                vibrate([100, 50, 100]);
+            }
+        }
+
+        function stopCamera() {
+            scanning = false;
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+            }
+            scanBtn.textContent = 'Почати сканування';
+            scanBtn.classList.remove('btn-secondary');
+            scanBtn.classList.add('btn-primary');
+            status.textContent = 'Сканування зупинено';
+        }
+
+        async function toggleTorch() {
+            if (!track) return;
+
+            try {
+                const constraints = track.getConstraints();
+                const newState = !constraints.torch;
+
+                await track.applyConstraints({
+                    advanced: [{ torch: newState }]
+                });
+
+                torchBtn.classList.toggle('active');
+                vibrate([50]);
+            } catch (err) {
+                console.error('Torch error:', err);
+            }
+        }
+
+        function tick() {
+            if (!scanning) return;
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    handleQRCode(code.data);
+                    return;
+                }
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        async function handleQRCode(data) {
+            const match = data.match(/TICKET:(\d+)/);
+            if (!match) {
+                showResult('invalid', '❌', 'Невірний QR-код', null);
+                return;
+            }
+
+            const ticketId = match[1];
+            stopCamera();
+            status.textContent = '⏳ Перевірка...';
+            vibrate([100]);
+
+            try {
+                const response = await fetch(`/api/tickets/scan/${ticketId}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scanned_by: 'mobile_scanner'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.was_valid) {
+                        showResult('valid', '✅', result.message, result);
+                        vibrate([200, 100, 200]);
+                    } else {
+                        showResult('warning', '⚠️', result.message, result);
+                        vibrate([100, 50, 100, 50, 100]);
+                    }
+                } else {
+                    showResult('invalid', '❌', result.error || 'Помилка', null);
+                    vibrate([300]);
+                }
+            } catch (error) {
+                showResult('invalid', '❌', 'Помилка з\'єднання', null);
+                vibrate([300]);
+            }
+        }
+
+        function showResult(type, icon, message, details) {
+            document.getElementById('resultIcon').textContent = icon;
+            document.getElementById('resultMessage').textContent = message;
+
+            let detailsHTML = '';
+            if (details && details.order_id) {
+                detailsHTML = `
+                    <div class="detail-row">
+                        <span class="detail-label">Номер</span>
+                        <span class="detail-value">#${details.order_id}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Подія</span>
+                        <span class="detail-value">${details.event_name || 'Grand Opening Party'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Статус</span>
+                        <span class="detail-value">${details.status}</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultDetails').innerHTML = detailsHTML;
+            resultModal.classList.add('show');
+        }
+
+        function closeResult() {
+            resultModal.classList.remove('show');
+            startCamera();
+        }
+
+        scanBtn.addEventListener('click', () => {
+            if (scanning) {
+                stopCamera();
+            } else {
+                startCamera();
+            }
+        });
+
+        torchBtn.addEventListener('click', toggleTorch);
+
+        resultModal.addEventListener('click', (e) => {
+            if (e.target === resultModal) {
+                closeResult();
+            }
+        });
+
+        window.addEventListener('pagehide', stopCamera);
+    </script>
+</body>
+</html>

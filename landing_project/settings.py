@@ -104,6 +104,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+SITE_URL = os.getenv("SITE_URL")
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # WayForPay налаштування
@@ -119,7 +121,9 @@ KEYCRM_PIPELINE_ID = int(os.getenv("KEYCRM_PIPELINE_ID"))
 KEYCRM_SOURCE_ID = int(os.getenv("KEYCRM_SOURCE_ID"))
 
 # Email налаштування
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"

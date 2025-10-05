@@ -2,114 +2,159 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
-    <title>Ваш квиток на подію</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Вітаємо у PASUE Club ✨</title>
     <style>
       body {
         font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background-color: #f8f9fa;
+        background-color: #fdfaf7;
         margin: 0;
         padding: 0;
       }
 
-      .ticket-container {
-        max-width: 600px;
-        margin: 20px auto;
+      .email-container {
+        max-width: 640px;
+        margin: 40px auto;
         background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 20px;
         overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
       }
 
-      .ticket-header {
-        background: linear-gradient(354deg, #1f0606, #d6e0cb);
-        color: #201f1c;
+      .header {
+        background: linear-gradient(180deg, #efe5da, #fff);
         text-align: center;
-        padding: 25px 20px;
+        padding: 35px 25px 25px;
       }
 
-      .ticket-header img {
-        width: 40%;
+      .header img {
+        width: 90px;
         height: auto;
-        margin-bottom: -15px;
+        margin-bottom: 15px;
       }
 
-      .ticket-header h1 {
-        font-size: 20px;
-        margin: 0;
+      .header h1 {
+        font-size: 22px;
         font-weight: 600;
+        color: #1f1f1f;
+        margin: 0;
       }
 
-      .ticket-body {
-        padding: 25px;
-      }
-
-      .ticket-body h2 {
-        font-size: 18px;
+      .body {
+        padding: 30px;
         color: #333;
-        margin-bottom: 10px;
+        line-height: 1.7;
       }
 
-      .ticket-details {
+      .body p {
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+
+      .body strong {
+        color: #a27155;
+      }
+
+      .details {
+        background: #faf6f1;
+        border-left: 4px solid #c19a6b;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin: 25px 0;
+      }
+
+      .details p {
+        margin: 5px 0;
         font-size: 15px;
-        color: #555;
-        line-height: 1.6;
-        margin-bottom: 25px;
       }
 
-      .qr-block {
+      .moodboard {
+        margin: 25px 0;
         text-align: center;
-        margin-bottom: 20px;
       }
 
-      .qr-block img {
-        width: 160px;
-        height: 160px;
+      .moodboard img {
+        width: 100%;
+        border-radius: 16px;
+      }
+
+      .button {
+        display: inline-block;
+        margin: 10px auto 30px;
+        background: #c19a6b;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+        padding: 14px 28px;
+        border-radius: 40px;
+        transition: all 0.2s ease;
+      }
+
+      .button:hover {
+        background: #a67c52;
       }
 
       .footer {
+        background: #faf6f1;
         text-align: center;
+        padding: 20px 15px;
         font-size: 13px;
         color: #777;
-        padding: 15px;
-        background-color: #f3f3f3;
+      }
+
+      .footer a {
+        color: #c19a6b;
+        text-decoration: none;
       }
 
       @media (max-width: 480px) {
-        .ticket-body {
-          padding: 15px;
-        }
-        .ticket-header h1 {
-          font-size: 18px;
-        }
+        .body { padding: 20px; }
+        .header h1 { font-size: 20px; }
+        .button { width: 100%; box-sizing: border-box; }
       }
     </style>
   </head>
   <body>
-    <div class="ticket-container">
-      <div class="ticket-header">
-        <img src="https://www.pasue.com.ua/static/images/main_logo.png" alt="PASUE" />
-        <h1>Ваш квиток підтверджено ✅</h1>
+    <div class="email-container">
+      <div class="header">
+        <img src="https://www.pasue.com.ua/static/images/main_logo.png" alt="PASUE Club" />
+        <h1>Вітаємо у PASUE Club ✨</h1>
       </div>
 
-      <div class="ticket-body">
-        <h2>{{ order.event_name }}</h2>
-        <div class="ticket-details">
-          <p><strong>Дата проведення:</strong> 29 листопада 2025 </p>
-          <p><strong>Місце проведення:</strong> м.Київ, вул. Бориса Грінченка 7 (HEAVEN) </p>
-          <p><strong>Сума квитка:</strong> {{ order.amount }} грн</p>
-          <p><strong>Номер замовлення:</strong> {{ order.id }}</p>
+      <div class="body">
+        <p>Привіт, красуне 💌</p>
+        <p>Твоя участь підтверджена — ти стала частинкою нашого першого івенту <strong>PASUE Club</strong>.</p>
+        <p>Це не просто зустріч, це подія, яка залишиться в памʼяті: атмосферна, душевна, жіноча 🌸</p>
+        <p>Твої деталі події:</p>
+
+        <div class="details">
+          <p>✨ <strong>Коли:</strong> 29 листопада 2025, 17:00–20:00</p>
+          <p>✨ <strong>Де:</strong> м.Київ, клуб HEAVEN, вул. Бориса Грінченка, 7</p>
+          <p>✨ <strong>Формат:</strong> 50 учасниць, welcome-бар, знайомства, сюрпризи</p>
+          <p>✨ <strong>Special guest:</strong> «Тріо Різні» — чесно, тепло і смішно про нас з тобою 🫶</p>
         </div>
 
-        <div class="qr-block">
-          <img src="cid:qrcode.png" alt="QR-код квитка" />
-          <p style="font-size: 14px; color: #666;">Покажіть цей QR при вході</p>
+        <p>Щоб ти краще відчула настрій, ми підготували невеликий мудборд — інтерʼєр та деталі вечора, у якому пройде наша зустріч</p>
+
+        <div class="moodboard">
+          <img src="https://www.pasue.com.ua/static/images/mood.png" alt="Moodboard PASUE Club" />
+          <p style="font-size: 14px; color: #777; margin-top: 8px;">Невеликий sneak peek атмосфери вечора 💫</p>
         </div>
+
+        <p>У вкладенні твій квиток — будь ласка, збережи його та покажи на вході (з телефону або у друкованому вигляді).</p>
+        <p>Щоб нічого не пропустити (таймінг, подарунки, анонси наступних івентів) — переходь у наш бот</p>
+
+        <div style="text-align:center;">
+          <a href="https://t.me/+380684437882" class="button">Перейти у бот 💛</a>
+        </div>
+
+        <p style="text-align:center;">Ми дуже чекаємо зустрічі з тобою 💌</p>
       </div>
 
       <div class="footer">
-        <p>Дякуємо, що обрали <strong>PASUE</strong> 💛<br>
-        Якщо маєте питання — <a href="mailto:info@pasue.com.ua">напишіть нам</a></p>
+        <p>З любовʼю, команда <strong>PASUE Club</strong><br>
+        Якщо маєш питання — <a href="mailto:pasue.club@gmail.com">напиши нам</a></p>
       </div>
     </div>
   </body>

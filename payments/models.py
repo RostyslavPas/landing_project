@@ -53,8 +53,44 @@ class TicketOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    event_name = models.CharField(max_length=255, default='Grand Opening Party')
+    scanned_at = models.DateTimeField(null=True, blank=True)
+    scanned_by = models.CharField(max_length=100, blank=True)
+    scan_count = models.IntegerField(default=0)
+
+    def mark_as_used(self, scanned_by=''):
+        """Відмічає квиток як використаний"""
+        from django.utils import timezone
+        self.ticket_status = 'used'
+        self.scanned_at = timezone.now()
+        self.scanned_by = scanned_by
+        self.scan_count += 1
+        self.save()
+
+    def is_valid(self):
+        """Перевіряє чи квиток дійсний"""
+        return self.ticket_status == 'active'
+
     def __str__(self):
         return f"Order #{self.id} - {self.email}"
 
     class Meta:
         ordering = ['-created_at']
+
+
+class TicketScanLog(models.Model):
+    """Лог сканувань квитків"""
+    ticket = models.ForeignKey(TicketOrder, on_delete=models.CASCADE, related_name='scan_logs')
+    scanned_at = models.DateTimeField(auto_now_add=True)
+    scanned_by = models.CharField(max_length=100, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    was_valid = models.BooleanField()
+    previous_status = models.CharField(max_length=20)
+
+    class Meta:
+        ordering = ['-scanned_at']
+        verbose_name = 'Лог сканування'
+        verbose_name_plural = 'Логи сканувань'
+
+    def __str__(self):
+        return f"Сканування #{self.ticket.id} - {self.scanned_at}"

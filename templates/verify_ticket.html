@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевірка квитка - PASUE</title>
+    <style>
+        body {
+            font-family: 'Montserrat Alternates', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .status-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .status-icon.valid { color: #4CAF50; }
+        .status-icon.used { color: #FF9800; }
+        .status-icon.invalid { color: #F44336; }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .status-badge.valid {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-badge.used {
+            background: #FF9800;
+            color: white;
+        }
+
+        .status-badge.invalid {
+            background: #F44336;
+            color: white;
+        }
+
+        .details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #F44336;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.pasue.com.ua/static/images/main_logo.png" alt="PASUE" class="logo">
+
+        {% if ticket %}
+            {% if ticket.is_valid %}
+                <div class="status-icon valid">✅</div>
+                <h1>Квиток дійсний!</h1>
+                <div class="status-badge valid">{{ status_text }}</div>
+            {% elif ticket.ticket_status == 'used' %}
+                <div class="status-icon used">⚠️</div>
+                <h1>Квиток використано</h1>
+                <div class="status-badge used">{{ status_text }}</div>
+            {% else %}
+                <div class="status-icon invalid">❌</div>
+                <h1>Квиток недійсний</h1>
+                <div class="status-badge invalid">{{ status_text }}</div>
+            {% endif %}
+
+            <div class="details">
+                <div class="detail-row">
+                    <span class="detail-label">Номер квитка</span>
+                    <span class="detail-value">#{{ ticket.id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Подія</span>
+                    <span class="detail-value">{{ ticket.event_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">{{ ticket.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Дата події</span>
+                    <span class="detail-value">29 листопада 2025</span>
+                </div>
+                {% if ticket.scanned_at %}
+                <div class="detail-row">
+                    <span class="detail-label">Використано</span>
+                    <span class="detail-value">{{ ticket.scanned_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <p class="info-text">
+                {% if ticket.is_valid %}
+                    Цей квиток можна використати для входу на подію.
+                {% else %}
+                    Якщо у вас виникли питання, зв'яжіться з нами: pasue.club@gmail.com
+                {% endif %}
+            </p>
+        {% else %}
+            <div class="status-icon invalid">❌</div>
+            <h1>Помилка</h1>
+            <p class="error-message">{{ error }}</p>
+            <p class="info-text">Перевірте QR-код або зв'яжіться з підтримкою.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

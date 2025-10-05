@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import TicketOrder
+from .models import TicketScanLog
 
 
 @admin.register(TicketOrder)
@@ -44,3 +45,10 @@ class TicketOrderAdmin(admin.ModelAdmin):
         if obj:  # editing an existing object
             return self.readonly_fields + ['email', 'phone', 'device_type']
         return self.readonly_fields
+
+
+@admin.register(TicketScanLog)
+class TicketScanLogAdmin(admin.ModelAdmin):
+    list_display = ['ticket', 'scanned_at', 'was_valid', 'scanned_by', 'ip_address']
+    list_filter = ['was_valid', 'scanned_at']
+    readonly_fields = ['ticket', 'scanned_at', 'scanned_by', 'ip_address', 'was_valid', 'previous_status']
