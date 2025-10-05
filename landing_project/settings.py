@@ -79,12 +79,12 @@ WSGI_APPLICATION = "landing_project.wsgi.application"
 # База даних
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DB_NAME", BASE_DIR / "pasue_db"),
-        "USER": os.getenv("DB_USER", "rostislav"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "13241324pasue"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "ENGINE": os.getenv("DB_ENGINE"),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 
