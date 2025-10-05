@@ -1,3 +1,36 @@
+// --- Зберігаємо UTM у cookies ---
+function saveUTMToCookies() {
+  const params = new URLSearchParams(window.location.search);
+  const utms = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+  utms.forEach(name => {
+    const value = params.get(name);
+    if (value) {
+      document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+    }
+  });
+}
+
+// --- Отримуємо UTM з URL або cookies і підставляємо у форму ---
+function getUTMParams() {
+  const params = new URLSearchParams(window.location.search);
+  const cookies = Object.fromEntries(document.cookie.split("; ").map(c => c.split("=")));
+  const utms = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+
+  utms.forEach(name => {
+    const input = document.getElementById(name);
+    if (input) {
+      const fromUrl = params.get(name);
+      const fromCookie = cookies[name] ? decodeURIComponent(cookies[name]) : "";
+      input.value = fromUrl || fromCookie || "";
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  saveUTMToCookies(); // SET
+  getUTMParams();     // GET
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Dropdown меню ---
     const menuToggle = document.querySelector('.menu-toggle');

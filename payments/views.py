@@ -117,6 +117,11 @@ def build_keycrm_lead(order, status="not_paid", comment=""):
 
 @csrf_exempt
 def submit_ticket_form(request):
+    utm_source = request.POST.get("utm_source") or request.COOKIES.get("utm_source", "")
+    utm_medium = request.POST.get("utm_medium") or request.COOKIES.get("utm_medium", "")
+    utm_campaign = request.POST.get("utm_campaign") or request.COOKIES.get("utm_campaign", "")
+    utm_term = request.POST.get("utm_term") or request.COOKIES.get("utm_term", "")
+    utm_content = request.POST.get("utm_content") or request.COOKIES.get("utm_content", "")
     if request.method == "POST":
         form = TicketOrderForm(request.POST)
 
@@ -150,11 +155,11 @@ def submit_ticket_form(request):
                             "email": email,
                             "phone": phone
                         },
-                        "utm_source": "utm_source",
-                        "utm_medium": "utm_medium",
-                        "utm_campaign": "utm_campaign",
-                        "utm_term": "utm_term",
-                        "utm_content": "utm_content",
+                        "utm_source": utm_source,
+                        "utm_medium": utm_medium,
+                        "utm_campaign": utm_campaign,
+                        "utm_term": utm_term,
+                        "utm_content": utm_content,
                         "products": [
                             {
                                 "sku": f"ticket-{order.id}",

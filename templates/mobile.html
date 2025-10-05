@@ -196,6 +196,11 @@
                 <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel">
                 <div class="error-message" id="phone-error" style="display: none;"></div>
               </div>
+                <input type="hidden" id="utm_source" name="utm_source">
+                <input type="hidden" id="utm_medium" name="utm_medium">
+                <input type="hidden" id="utm_campaign" name="utm_campaign">
+                <input type="hidden" id="utm_term" name="utm_term">
+                <input type="hidden" id="utm_content" name="utm_content">
               <div class="form-footer">
                 <span class="price-label">2159</span>
                 <span class="price-label-2">UAH</span>
@@ -257,16 +262,76 @@
         </span>
     </div>
     <script src="{% static 'js/mobile.js' %}"></script>
+{#    <script>#}
+{#        function checkScreenSize() {#}
+{#          if (window.innerWidth >= 1000) {#}
+{#            if (window.location.pathname.includes("/mobile/")) {#}
+{#              window.location.href = "{% url 'index' %}";#}
+{#            }#}
+{#          }#}
+{#        }#}
+{#        checkScreenSize();#}
+{#        window.addEventListener("resize", checkScreenSize);#}
+{#    </script>#}
     <script>
-        function checkScreenSize() {
-          if (window.innerWidth >= 1000) {
-            if (window.location.pathname.includes("/mobile/")) {
-              window.location.href = "{% url 'index' %}";
-            }
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // --- 1. Зберігаємо UTM у cookies ---
+      function saveUTMToCookies() {
+        const params = new URLSearchParams(window.location.search);
+        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
+        utms.forEach(name => {
+          const value = params.get(name);
+          if (value) {
+            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60*60*24*30}`;
           }
+        });
+      }
+
+      // --- 2. Отримуємо UTM з cookies ---
+      function getUTMFromCookies() {
+        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
+        const result = {};
+        utms.forEach(name => {
+          const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+          result[name] = match ? decodeURIComponent(match[2]) : "";
+        });
+        return result;
+      }
+
+      // --- 3. Підставляємо UTM у форму ---
+      function fillUTMInForm() {
+        const utms = getUTMFromCookies();
+        Object.keys(utms).forEach(name => {
+          const input = document.getElementById(name);
+          if (input) input.value = utms[name];
+        });
+      }
+
+      // --- 4. Редирект між десктоп і мобільною версією ---
+      function checkScreenSize() {
+        saveUTMToCookies(); // зберігаємо UTM перед редиректом
+        const path = window.location.pathname;
+        const utms = getUTMFromCookies();
+        const utmQuery = Object.keys(utms).map(k => utms[k] ? `${k}=${encodeURIComponent(utms[k])}` : "").filter(Boolean).join("&");
+
+        if (window.innerWidth < 1000 && !path.includes("/mobile/")) {
+          // редирект на мобільну
+          window.location.href = "{% url 'mobile' %}" + (utmQuery ? `?${utmQuery}` : "");
         }
-        checkScreenSize();
-        window.addEventListener("resize", checkScreenSize);
+
+        if (window.innerWidth >= 1000 && path.includes("/mobile/")) {
+          // редирект на десктоп
+          window.location.href = "{% url 'index' %}" + (utmQuery ? `?${utmQuery}` : "");
+        }
+      }
+
+      // --- Виклики ---
+      fillUTMInForm();
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+
+    });
     </script>
 </body>
 </html>

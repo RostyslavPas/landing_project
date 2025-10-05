@@ -79,12 +79,12 @@ WSGI_APPLICATION = "landing_project.wsgi.application"
 # База даних
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("DB_USER", ""),
-        "PASSWORD": os.getenv("DB_PASSWORD", ""),
-        "HOST": os.getenv("DB_HOST", ""),
-        "PORT": os.getenv("DB_PORT", ""),
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DB_NAME", BASE_DIR / "pasue_db"),
+        "USER": os.getenv("DB_USER", "rostislav"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "13241324pasue"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -121,9 +121,7 @@ KEYCRM_PIPELINE_ID = int(os.getenv("KEYCRM_PIPELINE_ID"))
 KEYCRM_SOURCE_ID = int(os.getenv("KEYCRM_SOURCE_ID"))
 
 # Email налаштування
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
