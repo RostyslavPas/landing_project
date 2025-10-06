@@ -169,20 +169,28 @@
           </div>
           <div class="ticket-form-wrapper">
             <div class="ticket-bg">
-              <img src="{% static 'images/ticket.png' %}" alt="Ticket background" class="ticket-bg-image">
+              <img src="{% static 'images/ticket_new.png' %}" alt="Ticket background" class="ticket-bg-image">
               <img src="{% static 'images/ticket_logo.png' %}" alt="PASUE Club logo" class="ticket-side-logo">
             </div>
+
             <form class="ticket-form" novalidate>
               {% csrf_token %}
               <div class="form-group">
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email"/>
-                <div class="error-message" id="email-error" style="display: none;"></div>
+                <label for="name">Прізвище та ім'я</label>
+                <input type="text" id="name" name="name" placeholder="Введіть ваше прізвище та ім'я" autocomplete="name"/>
+                <div class="error-message" id="name-error" style="display: none;"></div>
               </div>
-              <div class="form-group">
-                <label for="phone">Номер телефону:</label>
-                <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel"/>
-                <div class="error-message" id="phone-error" style="display: none;"></div>
+              <div class="form-row">
+                  <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email"/>
+                    <div class="error-message" id="email-error" style="display: none;"></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Номер телефону:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel"/>
+                    <div class="error-message" id="phone-error" style="display: none;"></div>
+                  </div>
               </div>
 
               <input type="hidden" name="utm_source" id="utm_source">
@@ -274,20 +282,8 @@
     </div>
     <!-- Підключаємо зовнішній JS -->
     <script src="{% static 'js/main.js' %}"></script>
-{#    <script>#}
-{#        function checkScreenSize() {#}
-{#              if (window.innerWidth < 1000) {#}
-{#                if (!window.location.pathname.includes("/mobile/")) {#}
-{#                  window.location.href = "{% url 'mobile' %}";#}
-{#                }#}
-{#              }#}
-{#            }#}
-{#        checkScreenSize();#}
-{#        window.addEventListener("resize", checkScreenSize);#}
-{#    </script>#}
     <script>
     document.addEventListener("DOMContentLoaded", () => {
-
       // --- 1. Зберігаємо UTM у cookies ---
       function saveUTMToCookies() {
         const params = new URLSearchParams(window.location.search);
@@ -299,7 +295,6 @@
           }
         });
       }
-
       // --- 2. Отримуємо UTM з cookies ---
       function getUTMFromCookies() {
         const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
@@ -310,7 +305,6 @@
         });
         return result;
       }
-
       // --- 3. Підставляємо UTM у форму ---
       function fillUTMInForm() {
         const utms = getUTMFromCookies();
@@ -319,7 +313,6 @@
           if (input) input.value = utms[name];
         });
       }
-
       // --- 4. Редирект між десктоп і мобільною версією ---
       function checkScreenSize() {
         saveUTMToCookies(); // зберігаємо UTM перед редиректом

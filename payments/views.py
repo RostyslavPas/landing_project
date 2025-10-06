@@ -46,6 +46,7 @@ def generate_wayforpay_params(order):
         "productName[]": ["PASUE Club - Grand Opening Party Ticket"],
         "productCount[]": ["1"],
         "productPrice[]": [f"{amount:.2f}"],
+        "clientFirstName": order.name,
         "clientEmail": order.email,
         "clientPhone": order.phone,
         "language": "uk",  # UA, EN, AUTO
@@ -83,7 +84,7 @@ def build_keycrm_lead(order, status="not_paid", comment=""):
         "pipeline_id": settings.KEYCRM_PIPELINE_ID,
         "source_id": settings.KEYCRM_SOURCE_ID,
         "contact": {
-            "full_name": order.email or "Без імені",
+            "full_name": order.name,
             "email": order.email,
             "phone": order.phone
         },
@@ -119,6 +120,7 @@ def submit_ticket_form(request):
         form = TicketOrderForm(request.POST)
 
         if form.is_valid():
+            name = form.cleaned_data['name']
             email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
 
@@ -127,6 +129,7 @@ def submit_ticket_form(request):
 
             # Створюємо замовлення
             order = TicketOrder.objects.create(
+                name=name,
                 email=email,
                 phone=phone,
                 payment_status="pending",
@@ -145,6 +148,7 @@ def submit_ticket_form(request):
                         "source_id": settings.KEYCRM_SOURCE_ID,
                         "manager_comment": "Лендінг: Grand Opening Party",
                         "contact": {
+                            "full_name": name,
                             "email": email,
                             "phone": phone
                         },
@@ -258,6 +262,7 @@ def wayforpay_callback(request):
         # Оновлюємо статус замовлення
         if transaction_status == "Approved":
             order.payment_status = "success"
+            order.name = data.get("clientFirstName", order.name)
             order.email = data.get("clientEmail", order.email)
             order.phone = data.get("clientPhone", order.phone)
             order.save()

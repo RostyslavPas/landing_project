@@ -6,6 +6,7 @@ from .models import TicketScanLog
 @admin.register(TicketOrder)
 class TicketOrderAdmin(admin.ModelAdmin):
     list_display = [
+        'name',
         'email',
         'phone',
         'payment_status',
@@ -22,12 +23,12 @@ class TicketOrderAdmin(admin.ModelAdmin):
         'device_type',
         'created_at'
     ]
-    search_fields = ['email', 'phone', 'wayforpay_order_reference']
+    search_fields = ['name', 'email', 'phone', 'wayforpay_order_reference']
     readonly_fields = ['created_at', 'updated_at', 'wayforpay_order_reference']
 
     fieldsets = (
         ('Контактна інформація', {
-            'fields': ('email', 'phone', 'device_type')
+            'fields': ('name', 'email', 'phone', 'device_type')
         }),
         ('Платіжна інформація', {
             'fields': ('amount', 'payment_status', 'wayforpay_order_reference')

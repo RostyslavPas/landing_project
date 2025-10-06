@@ -104,12 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Форма квитка ---
     const form = document.querySelector('.ticket-form');
+    const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
+    const nameError = document.getElementById('name-error');
     const emailError = document.getElementById('email-error');
     const phoneError = document.getElementById('phone-error');
 
-    if (form && emailInput && phoneInput) {
+    if (form && emailInput && phoneInput && nameInput) {
 
       // --- Автододавання +38 ---
       phoneInput.addEventListener('focus', () => {
@@ -154,7 +156,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // --- Live валідація ---
+      nameInput.addEventListener("input", validateName);
       emailInput.addEventListener("input", validateEmail);
+      phoneInput.addEventListener("input", validatePhone);
+
+      function validateName() {
+          const nameValue = nameInput.value.trim();
+          if (nameValue === "") {
+            nameError.textContent = "Прізвище та Ім’я є обов’язковим полем";
+            nameError.style.display = "block";
+            nameInput.classList.add("input-error");
+            return false;
+          }
+          nameError.style.display = "none";
+          nameInput.classList.remove("input-error");
+          return true;
+        }
 
       function validateEmail() {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -186,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
 
-        if (!validateEmail() || !validatePhone()) return;
+        if (!validateEmail() || !validatePhone() || !validateName()) return;
 
         const formData = new FormData(form);
         const csrfToken = getCookie('csrftoken');
