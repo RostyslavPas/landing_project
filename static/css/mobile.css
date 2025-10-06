@@ -580,19 +580,18 @@ img {
   text-align: center;
 }
 .ticket-form-wrapper {
-  margin-top: -65px;
+  margin-top: -61px;
   padding: 61px 0 69px;
   background-size: contain;
-  height: 218px;
+  height: 275px;
   position: relative;
-  left: -3%;
-  width: 112%;
+  width: 100%;
 }
 .ticket-form {
   position: relative;
-  left: 10%;
+  left: 19%;
   top: -112%;
-  max-width: 54%;
+  max-width: 61%;
 }
 .form-group {
   text-align: left;
@@ -646,7 +645,7 @@ img {
   letter-spacing: 0;
   text-align: center;
   position: relative;
-  left: 45%;
+  left: 24%;
 
 }
 .price-label-2 {
@@ -657,7 +656,7 @@ img {
   letter-spacing: 0;
   text-align: center;
   position: relative;
-  left: 36%;
+  left: 15%;
   top: 3px;
 }
 .form-group input {
@@ -691,7 +690,7 @@ img {
   font-weight: 700;
   cursor: pointer;
   position: relative;
-  left: -11%;
+  left: -24%;
   top: 60px;
   margin-bottom: 10px;
   transform: translateX(-50%);
@@ -1335,7 +1334,7 @@ img {
       font-weight: 700;
       cursor: pointer;
       position: relative;
-      left: 10%;
+      left: -8%;
       top: 60px;
       margin-bottom: 10px;
       transform: translateX(-50%);
@@ -1486,6 +1485,27 @@ img {
       overflow-y: auto;
       padding-top: 80px;
       padding-bottom: 20px;
+    }
+    .price-label {
+      font-family: 'New Rocker', Georgia, serif;
+      font-weight: 400;
+      font-size: 40px;
+      line-height: 100%;
+      letter-spacing: 0;
+      text-align: center;
+      position: relative;
+      left: 29%;
+    }
+    .price-label-2 {
+      font-family: 'New Rocker', Georgia, serif;
+      font-weight: 400;
+      font-size: 25px;
+      line-height: 100%;
+      letter-spacing: 0;
+      text-align: center;
+      position: relative;
+      left: 20%;
+      top: 3px;
     }
 
     .dropdown-menu.open {

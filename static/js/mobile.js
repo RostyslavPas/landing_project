@@ -52,10 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Форма квитка ---
     const form = document.querySelector('.ticket-form');
+    const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
 
-    if (form && emailInput && phoneInput) {
+    if (form && emailInput && phoneInput && nameInput) {
 
       // --- Автододавання +38 ---
       const setCursorAfterCode = () => {
@@ -99,6 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // --- Live валідація ---
+      const validateName = () => {
+        if (nameInput.value.trim() === "") {
+          nameInput.classList.add("input-error");
+          nameInput.classList.remove("input-valid");
+          return false;
+        }
+        nameInput.classList.remove("input-error");
+        nameInput.classList.add("input-valid");
+        return true;
+      };
+
       const validateEmail = () => {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!pattern.test(emailInput.value.trim())) {
@@ -123,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
       };
 
+      nameInput.addEventListener("input", validateName);
       emailInput.addEventListener("input", validateEmail);
       phoneInput.addEventListener("input", validatePhone);
 
@@ -131,6 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         let isValid = true;
+      // Перевірка name
+        if (nameInput.value.trim() === "") {
+            nameInput.classList.add("input-error");
+            nameInput.classList.remove("input-valid");
+            isValid = false;
+        } else {
+            nameInput.classList.remove("input-error");
+            nameInput.classList.add("input-valid");
+        }
 
       // Перевірка email
         if (emailInput.value.trim() === "") {
@@ -182,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             redirectToWayForPay(data.wayforpay_params);
           } else {
             // Підсвічуємо поля червоним, якщо сервер повернув помилку
+            if (data.errors?.name) nameInput.classList.add("input-error");
             if (data.errors?.email) emailInput.classList.add("input-error");
             if (data.errors?.phone) phoneInput.classList.add("input-error");
             console.log("❌ Сервер повернув помилку:", data.errors);

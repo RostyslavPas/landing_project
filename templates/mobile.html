@@ -183,9 +183,14 @@
                 <p class="ticket-info">Місце: <span class="bold">м.Київ, вул. Бориса Грінченка 7 (HEAVEN)</span></p>
             </div>
           <div class="ticket-form-wrapper">
-              <img src="{% static 'images/ticket_mob.png' %}" alt="Ticket background" class="ticket-form-wrapper">
+              <img src="{% static 'images/ticket_mob_new.png' %}" alt="Ticket background" class="ticket-form-wrapper">
             <form class="ticket-form" novalidate>
               {% csrf_token %}
+              <div class="form-group">
+                <label for="name">Прізвище та ім'я:</label>
+                <input type="text" id="name" name="name" placeholder="Введіть прізвище та ім'я" autocomplete="name">
+                <div class="error-message" id="name-error" style="display: none;"></div>
+              </div>
               <div class="form-group">
                 <label for="email">E-mail:</label>
                 <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email">
