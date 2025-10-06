@@ -114,7 +114,7 @@ def generate_ticket_pdf(order, qr_img):
     """Генерує PDF з QR-кодом на готовому шаблоні"""
 
     # Шлях до шаблону
-    template_path = 'static/images/ticket_template.png'
+    template_path = 'static/images/grand_opening_party_ticket.png'
 
     if not os.path.exists(template_path):
         logger.error(f"Template not found: {template_path}")
