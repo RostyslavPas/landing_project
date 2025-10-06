@@ -321,35 +321,6 @@ def payment_result(request):
     return render(request, template, {"order": order})
 
 
-# def send_confirmation_email(order):
-#     """Відправка email після успішної оплати"""
-#     qr = qrcode.make(f"TICKET-{order.id}-{order.email}")
-#     buffer = BytesIO()
-#     qr.save(buffer, format="PNG")
-#     qr_bytes = buffer.getvalue()
-#
-#     subject = f"Ваш квиток на Grand Opening Party від PASUE Club"
-#     html_content = render_to_string("emails/ticket.html", {"order": order})
-#
-#     email = EmailMultiAlternatives(
-#         subject=subject,
-#         body="Ваш квиток у вкладенні.",
-#         from_email=settings.DEFAULT_FROM_EMAIL,
-#         to=[order.email],
-#     )
-#     email.attach_alternative(html_content, "text/html")
-#
-#     # Додаємо QR-код у вигляді inline-елемента
-#     qr_image = MIMEImage(qr_bytes)
-#     qr_image.add_header("Content-ID", "<qrcode.png>")
-#     qr_image.add_header("Content-Disposition", "inline", filename="qrcode.png")
-#     email.attach(qr_image)
-#
-#     email.send(fail_silently=False)
-
-
-# Допоміжна функція для налаштування KeyCRM
-
 def send_confirmation_email(order):
     """Відправка email після успішної оплати"""
     try:
