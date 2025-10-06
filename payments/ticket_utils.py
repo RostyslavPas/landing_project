@@ -114,7 +114,7 @@ def generate_ticket_pdf(order, qr_img):
     """Генерує PDF з QR-кодом на готовому шаблоні"""
 
     # Шлях до шаблону
-    template_path = 'static/images/grand_opening_party_ticket.png'
+    template_path = 'static/images/ticket_template.png'
 
     if not os.path.exists(template_path):
         logger.error(f"Template not found: {template_path}")
@@ -124,19 +124,28 @@ def generate_ticket_pdf(order, qr_img):
     template_img = Image.open(template_path)
     template_width, template_height = template_img.size
 
+    # Створюємо білий фон якщо шаблон має прозорість
+    if template_img.mode in ('RGBA', 'LA') or (template_img.mode == 'P' and 'transparency' in template_img.info):
+        white_bg = Image.new('RGB', (template_width, template_height), 'white')
+        if template_img.mode != 'RGBA':
+            template_img = template_img.convert('RGBA')
+        white_bg.paste(template_img, (0, 0), template_img)
+        template_img = white_bg
+    else:
+        template_img = template_img.convert('RGB')
+
     # Конвертуємо QR в PIL Image
     qr_pil = qr_img.convert('RGBA')
 
-    # Розмір QR-коду - 35% висоти шаблону
-    qr_size = int(template_height * 0.35)
+    # Розмір QR-коду
+    qr_size = int(template_height * 0.10)
     qr_pil = qr_pil.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
 
-    # Позиція QR-коду - 78% від лівого краю, по центру вертикально
-    qr_x = int(template_width * 0.78)
-    qr_y = (template_height - qr_size) // 2
+    # Позиція QR-коду
+    qr_x = int(template_width * 0.57 - qr_size / 2)
+    qr_y = int(template_height * 0.14 - qr_size / 2)
 
     # Накладаємо QR на шаблон
-    # Перевіряємо чи template має alpha канал
     if template_img.mode != 'RGBA':
         template_img = template_img.convert('RGBA')
 

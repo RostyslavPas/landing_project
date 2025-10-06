@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Position Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #8b2332;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 0;
+        }
+
+        .canvas-area {
+            padding: 30px;
+            background: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 600px;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .qr-overlay {
+            position: absolute;
+            cursor: move;
+            border: 2px dashed #8b2332;
+            background: rgba(139, 35, 50, 0.1);
+            display: none;
+        }
+
+        .qr-overlay.active {
+            display: block;
+        }
+
+        .qr-overlay img {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .controls {
+            padding: 30px;
+            background: white;
+            border-left: 1px solid #eee;
+            overflow-y: auto;
+        }
+
+        .control-section {
+            margin-bottom: 30px;
+        }
+
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 20px;
+            background: #8b2332;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .file-input-label:hover {
+            background: #6d1c27;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #8b2332;
+            cursor: pointer;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #8b2332;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .value-display .current {
+            font-weight: 600;
+            color: #8b2332;
+        }
+
+        .code-output {
+            background: #2d2d2d;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 Налаштування QR-коду на квитку</h1>
+        </div>
+
+        <div class="content">
+            <div class="canvas-area">
+                <div class="canvas-wrapper">
+                    <canvas id="canvas"></canvas>
+                    <div class="qr-overlay" id="qrOverlay">
+                        <img id="qrImage" src="" alt="QR">
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-section">
+                    <h3>1. Завантажити шаблон</h3>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="templateInput" accept="image/*">
+                        <label class="file-input-label" for="templateInput">
+                            Вибрати PNG шаблон
+                        </label>
+                    </div>
+                    <div id="templateInfo" style="font-size: 12px; color: #777;"></div>
+                </div>
+
+                <div class="control-section">
+                    <h3>2. Налаштувати QR-код</h3>
+
+                    <div class="control-group">
+                        <label>Розмір QR (%)</label>
+                        <input type="range" id="qrSize" min="10" max="60" value="30" step="1">
+                        <div class="value-display">
+                            <span>10%</span>
+                            <span class="current" id="sizeValue">30%</span>
+                            <span>60%</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Позиція X (%)</label>
+                        <input type="range" id="qrX" min="0" max="100" value="77" step="0.5">
+                        <div class="value-display">
+                            <span>0%</span>
+                            <span class="current" id="xValue">77%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Позиція Y (%)</label>
+                        <input type="range" id="qrY" min="0" max="100" value="50" step="0.5">
+                        <div class="value-display">
+                            <span>0%</span>
+                            <span class="current" id="yValue">50%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        💡 Перетягуй QR мишкою або використовуй слайдери
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>3. Python код</h3>
+                    <div class="code-output" id="pythonCode">qr_size = int(template_height * 0.30)
+qr_x = int(template_width * 0.77)
+qr_y = int(template_height * 0.50)</div>
+
+                    <button class="download-btn" id="downloadBtn" disabled>
+                        💾 Завантажити результат (PNG)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const qrOverlay = document.getElementById('qrOverlay');
+        const qrImage = document.getElementById('qrImage');
+        const templateInput = document.getElementById('templateInput');
+        const qrSizeSlider = document.getElementById('qrSize');
+        const qrXSlider = document.getElementById('qrX');
+        const qrYSlider = document.getElementById('qrY');
+        const sizeValue = document.getElementById('sizeValue');
+        const xValue = document.getElementById('xValue');
+        const yValue = document.getElementById('yValue');
+        const pythonCode = document.getElementById('pythonCode');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const templateInfo = document.getElementById('templateInfo');
+
+        let templateImg = null;
+        let qrDataUrl = null;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Генеруємо QR
+        function generateQR() {
+            const tempDiv = document.createElement('div');
+            const qr = new QRCode(tempDiv, {
+                text: "https://www.pasue.com.ua/verify/123",
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                qrDataUrl = tempDiv.querySelector('img').src;
+                qrImage.src = qrDataUrl;
+            }, 100);
+        }
+
+        generateQR();
+
+        // Завантаження шаблону
+        templateInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                templateImg = new Image();
+                templateImg.onload = () => {
+                    canvas.width = templateImg.width;
+                    canvas.height = templateImg.height;
+                    drawTemplate();
+                    qrOverlay.classList.add('active');
+                    updateQR();
+                    downloadBtn.disabled = false;
+                    templateInfo.textContent = `Розмір: ${templateImg.width}x${templateImg.height}px`;
+                };
+                templateImg.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function drawTemplate() {
+            if (!templateImg) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(templateImg, 0, 0);
+        }
+
+        function updateQR() {
+            if (!templateImg) return;
+
+            const size = parseFloat(qrSizeSlider.value);
+            const x = parseFloat(qrXSlider.value);
+            const y = parseFloat(qrYSlider.value);
+
+            sizeValue.textContent = size + '%';
+            xValue.textContent = x + '%';
+            yValue.textContent = y + '%';
+
+            const qrPixelSize = canvas.height * (size / 100);
+            const qrPixelX = (canvas.width * (x / 100)) - (qrPixelSize / 2);
+            const qrPixelY = (canvas.height * (y / 100)) - (qrPixelSize / 2);
+
+            qrOverlay.style.width = qrPixelSize + 'px';
+            qrOverlay.style.height = qrPixelSize + 'px';
+            qrOverlay.style.left = qrPixelX + 'px';
+            qrOverlay.style.top = qrPixelY + 'px';
+
+            pythonCode.textContent = `qr_size = int(template_height * ${(size/100).toFixed(2)})
+qr_x = int(template_width * ${(x/100).toFixed(2)} - qr_size / 2)
+qr_y = int(template_height * ${(y/100).toFixed(2)} - qr_size / 2)`;
+        }
+
+        qrSizeSlider.addEventListener('input', updateQR);
+        qrXSlider.addEventListener('input', updateQR);
+        qrYSlider.addEventListener('input', updateQR);
+
+        // Drag & Drop для QR
+        qrOverlay.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = qrOverlay.getBoundingClientRect();
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+            qrOverlay.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging || !templateImg) return;
+
+            const canvasRect = canvas.getBoundingClientRect();
+            const qrSize = parseFloat(qrOverlay.style.width);
+
+            let newX = e.clientX - canvasRect.left - dragOffset.x;
+            let newY = e.clientY - canvasRect.top - dragOffset.y;
+
+            newX = Math.max(0, Math.min(newX, canvas.width - qrSize));
+            newY = Math.max(0, Math.min(newY, canvas.height - qrSize));
+
+            qrOverlay.style.left = newX + 'px';
+            qrOverlay.style.top = newY + 'px';
+
+            const xPercent = ((newX + qrSize / 2) / canvas.width * 100).toFixed(1);
+            const yPercent = ((newY + qrSize / 2) / canvas.height * 100).toFixed(1);
+
+            qrXSlider.value = xPercent;
+            qrYSlider.value = yPercent;
+            xValue.textContent = xPercent + '%';
+            yValue.textContent = yPercent + '%';
+
+            const size = (qrSize / canvas.height * 100).toFixed(2);
+            pythonCode.textContent = `qr_size = int(template_height * ${(size/100).toFixed(2)})
+qr_x = int(template_width * ${(xPercent/100).toFixed(2)} - qr_size / 2)
+qr_y = int(template_height * ${(yPercent/100).toFixed(2)} - qr_size / 2)`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                qrOverlay.style.cursor = 'move';
+            }
+        });
+
+        // Завантаження результату
+        downloadBtn.addEventListener('click', () => {
+            if (!templateImg || !qrDataUrl) return;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            tempCtx.fillStyle = 'white';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.drawImage(templateImg, 0, 0);
+
+            const qrImg = new Image();
+            qrImg.onload = () => {
+                const rect = qrOverlay.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                const scale = canvas.width / canvasRect.width;
+
+                const qrX = parseFloat(qrOverlay.style.left);
+                const qrY = parseFloat(qrOverlay.style.top);
+                const qrSize = parseFloat(qrOverlay.style.width);
+
+                tempCtx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+                tempCanvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'ticket_with_qr.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+            qrImg.src = qrDataUrl;
+        });
+    </script>
+</body>
+</html>
