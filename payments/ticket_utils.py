@@ -156,12 +156,12 @@ def generate_ticket_pdf(order, qr_img):
     qr_pil = qr_img.convert('RGBA')
 
     # Розмір QR-коду
-    qr_size = int(template_height * 0.10)
+    qr_size = int(template_height * 0.15)
     qr_pil = qr_pil.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
 
     # Позиція QR-коду (центр QR)
-    qr_center_x = int(template_width * 0.57)
-    qr_center_y = int(template_height * 0.14)
+    qr_center_x = int(template_width * 0.70)
+    qr_center_y = int(template_height * 0.20)
 
     # Розраховуємо верхній лівий кут
     qr_x = qr_center_x - (qr_size // 2)
