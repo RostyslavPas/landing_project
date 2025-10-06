@@ -59,20 +59,35 @@ def generate_ticket_qr(order):
 #     template_img = Image.open(template_path)
 #     template_width, template_height = template_img.size
 #
-#     # Конвертуємо QR в PIL Image
-#     qr_pil = qr_img.convert('RGB')
+#     # Створюємо білий фон якщо шаблон має прозорість
+#     if template_img.mode in ('RGBA', 'LA') or (template_img.mode == 'P' and 'transparency' in template_img.info):
+#         white_bg = Image.new('RGB', (template_width, template_height), 'white')
+#         if template_img.mode != 'RGBA':
+#             template_img = template_img.convert('RGBA')
+#         white_bg.paste(template_img, (0, 0), template_img)
+#         template_img = white_bg
+#     else:
+#         template_img = template_img.convert('RGB')
 #
-#     # Розмір QR-коду - підганяємо під правий блок квитка
-#     qr_size = int(template_height * 0.35)  # 60% висоти квитка
+#     # Конвертуємо QR в PIL Image
+#     qr_pil = qr_img.convert('RGBA')
+#
+#     # Розмір QR-коду
+#     qr_size = int(template_height * 0.10)
 #     qr_pil = qr_pil.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
 #
-#     # Позиція QR-коду (праворуч в пустому блоці)
-#     # Квиток має пропорції приблизно 2:1 (ліва частина з текстом + права порожня)
-#     qr_x = int(template_width * 0.70)  # починаємо з 68% ширини
-#     qr_y = (template_height - qr_size) // 2  # по центру по вертикалі
+#     # Позиція QR-коду
+#     qr_x = int(template_width * 0.57 - qr_size / 2)
+#     qr_y = int(template_height * 0.14 - qr_size / 2)
 #
 #     # Накладаємо QR на шаблон
-#     template_img.paste(qr_pil, (qr_x, qr_y))
+#     if template_img.mode != 'RGBA':
+#         template_img = template_img.convert('RGBA')
+#
+#     template_img.paste(qr_pil, (qr_x, qr_y), qr_pil)
+#
+#     # Конвертуємо назад в RGB для PDF
+#     template_img = template_img.convert('RGB')
 #
 #     # Створюємо PDF
 #     pdf_buffer = io.BytesIO()
@@ -85,25 +100,28 @@ def generate_ticket_qr(order):
 #     img_buffer.seek(0)
 #     img_reader = ImageReader(img_buffer)
 #
-#     # Розраховуємо розміри для A4
-#     # Зберігаємо пропорції шаблону
+#     # Вставляємо зображення по центру A4 з відступами
+#     margin = 50
+#     pdf_width = width - 2 * margin
+#     pdf_height = height - 2 * margin
+#
+#     # Зберігаємо пропорції
 #     aspect_ratio = template_width / template_height
 #
-#     if aspect_ratio > (width / height):
-#         # Шаблон ширший - підганяємо по ширині
-#         pdf_width = width - 40  # margins
-#         pdf_height = pdf_width / aspect_ratio
-#         x = 20
-#         y = (height - pdf_height) / 2
+#     if pdf_width / aspect_ratio <= pdf_height:
+#         # Підганяємо по ширині
+#         final_width = pdf_width
+#         final_height = pdf_width / aspect_ratio
 #     else:
-#         # Шаблон вищий - підганяємо по висоті
-#         pdf_height = height - 40  # margins
-#         pdf_width = pdf_height * aspect_ratio
-#         x = (width - pdf_width) / 2
-#         y = 20
+#         # Підганяємо по висоті
+#         final_height = pdf_height
+#         final_width = pdf_height * aspect_ratio
+#
+#     x = (width - final_width) / 2
+#     y = (height - final_height) / 2
 #
 #     # Вставляємо зображення в PDF
-#     c.drawImage(img_reader, x, y, width=pdf_width, height=pdf_height)
+#     c.drawImage(img_reader, x, y, width=final_width, height=final_height)
 #
 #     c.showPage()
 #     c.save()
@@ -141,18 +159,28 @@ def generate_ticket_pdf(order, qr_img):
     qr_size = int(template_height * 0.10)
     qr_pil = qr_pil.resize((qr_size, qr_size), Image.Resampling.LANCZOS)
 
-    # Позиція QR-коду
-    qr_x = int(template_width * 0.57 - qr_size / 2)
-    qr_y = int(template_height * 0.14 - qr_size / 2)
+    # Позиція QR-коду (центр QR)
+    qr_center_x = int(template_width * 0.57)
+    qr_center_y = int(template_height * 0.14)
+
+    # Розраховуємо верхній лівий кут
+    qr_x = qr_center_x - (qr_size // 2)
+    qr_y = qr_center_y - (qr_size // 2)
 
     # Накладаємо QR на шаблон
+    # Перевіряємо чи template має alpha канал
     if template_img.mode != 'RGBA':
         template_img = template_img.convert('RGBA')
 
     template_img.paste(qr_pil, (qr_x, qr_y), qr_pil)
 
-    # Конвертуємо назад в RGB для PDF
-    template_img = template_img.convert('RGB')
+    # Конвертуємо в RGB для PDF (без прозорості)
+    if template_img.mode == 'RGBA':
+        white_bg = Image.new('RGB', template_img.size, 'white')
+        white_bg.paste(template_img, (0, 0), template_img)
+        template_img = white_bg
+    else:
+        template_img = template_img.convert('RGB')
 
     # Створюємо PDF
     pdf_buffer = io.BytesIO()
