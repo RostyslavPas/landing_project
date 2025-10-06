@@ -934,6 +934,27 @@ img {
     width: 70%;
     z-index: auto;
   }
+  .price-label {
+      font-family: 'New Rocker', Georgia, serif;
+      font-weight: 400;
+      font-size: 40px;
+      line-height: 100%;
+      letter-spacing: 0;
+      text-align: center;
+      position: relative;
+      left: 15%;
+    }
+    .price-label-2 {
+      font-family: 'New Rocker', Georgia, serif;
+      font-weight: 400;
+      font-size: 25px;
+      line-height: 100%;
+      letter-spacing: 0;
+      text-align: center;
+      position: relative;
+      left: 6%;
+      top: 3px;
+    }
   .hero-subtitle {
     position: relative;
     top: 13px;
@@ -966,7 +987,7 @@ img {
   }
   .ticket-form {
     position: relative;
-    left: 10%;
+    left: 21%;
     top: -113%;
     max-width: 58%;
   }
@@ -988,7 +1009,7 @@ img {
     font-weight: 700;
     cursor: pointer;
     position: relative;
-    left: -17%;
+    left: -41%;
     top: 50px;
     margin-bottom: 10px;
     transform: translateX(-50%);
@@ -1075,6 +1096,23 @@ img {
     width: 67%;
     z-index: auto;
   }
+  .submit-button {
+    background: linear-gradient(90deg, #ff8c00, #ff0080);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 83px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    left: -34%;
+    top: 50px;
+    margin-bottom: 10px;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+    transition: transform 0.2s ease;
+  }
   .event-text {
     font-size: 13px;
     font-weight: 500;
@@ -1136,6 +1174,23 @@ img {
       width: 67%;
       z-index: auto;
     }
+  .submit-button {
+    background: linear-gradient(90deg, #ff8c00, #ff0080);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 83px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    left: -30%;
+    top: 50px;
+    margin-bottom: 10px;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+    transition: transform 0.2s ease;
+  }
   .highlights-subtitle {
     font-weight: 600;
     font-size: 14px;
@@ -1167,6 +1222,23 @@ img {
     }
 }
 @media (min-width: 391px) and (max-width: 400px) {
+  .submit-button {
+    background: linear-gradient(90deg, #ff8c00, #ff0080);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 83px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    left: -30%;
+    top: 50px;
+    margin-bottom: 10px;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+    transition: transform 0.2s ease;
+  }
   .hero-image {
       position: absolute;
       top: 17%;
@@ -1212,6 +1284,23 @@ img {
       width: 67%;
       z-index: auto;
     }
+  .submit-button {
+    background: linear-gradient(90deg, #ff8c00, #ff0080);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 83px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    left: -28%;
+    top: 50px;
+    margin-bottom: 10px;
+    transform: translateX(-50%);
+    animation: pulse 2s infinite;
+    transition: transform 0.2s ease;
+  }
   .highlights-subtitle {
     font-weight: 600;
     font-size: 14px;
@@ -1334,7 +1423,7 @@ img {
       font-weight: 700;
       cursor: pointer;
       position: relative;
-      left: -8%;
+      left: -5%;
       top: 60px;
       margin-bottom: 10px;
       transform: translateX(-50%);
@@ -1494,7 +1583,7 @@ img {
       letter-spacing: 0;
       text-align: center;
       position: relative;
-      left: 29%;
+      left: 34%;
     }
     .price-label-2 {
       font-family: 'New Rocker', Georgia, serif;
@@ -1504,7 +1593,7 @@ img {
       letter-spacing: 0;
       text-align: center;
       position: relative;
-      left: 20%;
+      left: 25%;
       top: 3px;
     }
 
