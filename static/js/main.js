@@ -113,127 +113,152 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (form && emailInput && phoneInput && nameInput) {
 
-      // --- Автододавання +38 ---
-      phoneInput.addEventListener('focus', () => {
-        if (!phoneInput.value.startsWith('+38')) phoneInput.value = '+38';
-        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
-      });
+        // --- Автододавання +38 ---
+        phoneInput.addEventListener('focus', () => {
+            if (!phoneInput.value.startsWith('+38')) phoneInput.value = '+38';
+            if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+        });
 
-      phoneInput.addEventListener('click', () => {
-        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
-      });
+        phoneInput.addEventListener('click', () => {
+            if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+        });
 
-      phoneInput.addEventListener('keyup', () => {
-        if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
-      });
+        phoneInput.addEventListener('keyup', () => {
+            if (phoneInput.selectionStart < 3) phoneInput.setSelectionRange(3, 3);
+        });
 
-      // --- Форматування номера ---
-      phoneInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value === "") { e.target.value = "+38"; phoneInput.setSelectionRange(3, 3); return; }
-        if (!value.startsWith("38")) value = "38" + value;
-        value = "+" + value;
-        if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
-        if (value.length >= 9) value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
-        if (value.length >= 13) value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
-        e.target.value = value.substring(0, 17);
-        validatePhone();
-      });
+        // --- Форматування номера ---
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value === "") {
+                e.target.value = "+38";
+                phoneInput.setSelectionRange(3, 3);
+                return;
+            }
+            if (!value.startsWith("38")) value = "38" + value;
+            value = "+" + value;
+            if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
+            if (value.length >= 9) value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
+            if (value.length >= 13) value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
+            e.target.value = value.substring(0, 17);
+            validatePhone();
+        });
 
-      // --- Backspace/Delete ---
-      phoneInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' || e.key === 'Delete') {
-          let pos = phoneInput.selectionStart;
-          let val = phoneInput.value;
-          if (pos <= 3) { e.preventDefault(); return; }
-          if (pos > 0 && /[\-\(\)]/.test(val[pos - 1])) {
+        // --- Backspace/Delete ---
+        phoneInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                let pos = phoneInput.selectionStart;
+                let val = phoneInput.value;
+                if (pos <= 3) {
+                    e.preventDefault();
+                    return;
+                }
+                if (pos > 0 && /[\-\(\)]/.test(val[pos - 1])) {
+                    e.preventDefault();
+                    phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
+                    phoneInput.setSelectionRange(pos - 1, pos - 1);
+                }
+                if (phoneInput.value === "+38") {
+                    e.preventDefault();
+                    phoneInput.setSelectionRange(3, 3);
+                }
+            }
+        });
+
+        // --- Live валідація ---
+        nameInput.addEventListener("input", validateName);
+        emailInput.addEventListener("input", validateEmail);
+        phoneInput.addEventListener("input", validatePhone);
+
+        function validateName() {
+            const nameValue = nameInput.value.trim();
+            if (nameValue === "") {
+                nameError.textContent = "Прізвище та Ім’я є обов’язковим полем";
+                nameError.style.display = "block";
+                nameInput.classList.add("input-error");
+                return false;
+            }
+            nameError.style.display = "none";
+            nameInput.classList.remove("input-error");
+            return true;
+        }
+
+        function validateEmail() {
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!pattern.test(emailInput.value.trim())) {
+                emailError.textContent = "Введіть коректну email адресу";
+                emailError.style.display = "block";
+                emailInput.classList.add("input-error");
+                return false;
+            }
+            emailError.style.display = "none";
+            emailInput.classList.remove("input-error");
+            return true;
+        }
+
+        function validatePhone() {
+            const digits = phoneInput.value.replace(/\D/g, "");
+            if (!/^380\d{9}$/.test(digits)) {
+                phoneError.textContent = "Номер телефону має бути у форматі +380XXXXXXXXX";
+                phoneError.style.display = "block";
+                phoneInput.classList.add("input-error");
+                return false;
+            }
+            phoneError.style.display = "none";
+            phoneInput.classList.remove("input-error");
+            return true;
+        }
+
+        // --- Сабміт з WayForPay ---
+        form.addEventListener("submit", async function (e) {
             e.preventDefault();
-            phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
-            phoneInput.setSelectionRange(pos - 1, pos - 1);
-          }
-          if (phoneInput.value === "+38") { e.preventDefault(); phoneInput.setSelectionRange(3, 3); }
-        }
-      });
 
-      // --- Live валідація ---
-      nameInput.addEventListener("input", validateName);
-      emailInput.addEventListener("input", validateEmail);
-      phoneInput.addEventListener("input", validatePhone);
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn.disabled) return; // запобігаємо повторному кліку
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Обробка...';
 
-      function validateName() {
-          const nameValue = nameInput.value.trim();
-          if (nameValue === "") {
-            nameError.textContent = "Прізвище та Ім’я є обов’язковим полем";
-            nameError.style.display = "block";
-            nameInput.classList.add("input-error");
-            return false;
-          }
-          nameError.style.display = "none";
-          nameInput.classList.remove("input-error");
-          return true;
-        }
+            if (!validateEmail() || !validatePhone() || !validateName()) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Оплатити';
+                return;
+            }
 
-      function validateEmail() {
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!pattern.test(emailInput.value.trim())) {
-          emailError.textContent = "Введіть коректну email адресу";
-          emailError.style.display = "block";
-          emailInput.classList.add("input-error");
-          return false;
-        }
-        emailError.style.display = "none";
-        emailInput.classList.remove("input-error");
-        return true;
-      }
+            const formData = new FormData(form);
+            const csrfToken = getCookie('csrftoken');
 
-      function validatePhone() {
-        const digits = phoneInput.value.replace(/\D/g, "");
-        if (!/^380\d{9}$/.test(digits)) {
-          phoneError.textContent = "Номер телефону має бути у форматі +380XXXXXXXXX";
-          phoneError.style.display = "block";
-          phoneInput.classList.add("input-error");
-          return false;
-        }
-        phoneError.style.display = "none";
-        phoneInput.classList.remove("input-error");
-        return true;
-      }
+            try {
+                const response = await fetch('/submit-ticket/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {'X-CSRFToken': csrfToken},
+                    credentials: 'include'
+                });
 
-      // --- Сабміт з WayForPay ---
-      form.addEventListener("submit", async function(e) {
-        e.preventDefault();
+                if (!response.ok) {
+                    console.log("❌ Помилка від сервера:", response.status);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Оплатити';
+                    return;
+                }
 
-        if (!validateEmail() || !validatePhone() || !validateName()) return;
+                const data = await response.json();
 
-        const formData = new FormData(form);
-        const csrfToken = getCookie('csrftoken');
+                if (data.success && data.wayforpay_params) {
+                    // --- Виклик WayForPay ---
+                    redirectToWayForPay(data.wayforpay_params);
+                } else {
+                    console.log("❌ Сервер повернув помилку:", data.errors);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Оплатити';
+                }
 
-        try {
-          const response = await fetch('/submit-ticket/', {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': csrfToken },
-            credentials: 'include'
-          });
-
-          if (!response.ok) {
-            console.log("❌ Помилка від сервера:", response.status);
-            return;
-          }
-
-          const data = await response.json();
-
-          if (data.success && data.wayforpay_params) {
-            // --- Виклик WayForPay ---
-            redirectToWayForPay(data.wayforpay_params);
-          } else {
-            console.log("❌ Сервер повернув помилку:", data.errors);
-          }
-
-        } catch (err) {
-          console.log("❌ Fetch error:", err);
-        }
-      });
+            } catch (err) {
+                console.log("❌ Fetch error:", err);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Оплатити';
+            }
+        });
     }
 
     // --- Масштабування сторінки для desktop ---

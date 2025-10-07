@@ -140,82 +140,127 @@ document.addEventListener('DOMContentLoaded', () => {
       phoneInput.addEventListener("input", validatePhone);
 
       // --- Сабміт з WayForPay ---
-      form.addEventListener("submit", async function(e) {
-        e.preventDefault();
+      const btn = document.querySelector('.submit-button');
+        if (btn) {
+          let locked = false;
+          btn.addEventListener('touchstart', (e) => {
+            if (locked) e.preventDefault();
+            locked = true;
+            setTimeout(() => locked = false, 2000); // через 2с розблокується
+          }, { passive: false });
+        }
+      let isSubmitting = false; // глобальний флаг
 
-        let isValid = true;
-      // Перевірка name
-        if (nameInput.value.trim() === "") {
+        form.addEventListener("submit", async function(e) {
+          e.preventDefault();
+
+          // 🚫 Захист від подвійного сабміту
+          if (isSubmitting) {
+            e.stopImmediatePropagation();
+            console.warn("⛔ Повторний submit заблоковано");
+            return;
+          }
+          isSubmitting = true;
+
+          const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.classList.add("disabled"); // якщо є стилі
+          }
+
+          let isValid = true;
+
+          // --- Перевірка name ---
+          if (nameInput.value.trim() === "") {
             nameInput.classList.add("input-error");
             nameInput.classList.remove("input-valid");
             isValid = false;
-        } else {
+          } else {
             nameInput.classList.remove("input-error");
             nameInput.classList.add("input-valid");
-        }
+          }
 
-      // Перевірка email
-        if (emailInput.value.trim() === "") {
+          // --- Перевірка email ---
+          if (emailInput.value.trim() === "") {
             emailInput.classList.add("input-error");
             emailInput.classList.remove("input-valid");
             isValid = false;
           } else {
             const isEmailValid = validateEmail();
-            if (!isEmailValid) {
-              isValid = false;
-            }
+            if (!isEmailValid) isValid = false;
           }
 
-      // Перевірка телефону
-        if (phoneInput.value.trim() === "" || phoneInput.value === "+38") {
+          // --- Перевірка телефону ---
+          if (phoneInput.value.trim() === "" || phoneInput.value === "+38") {
             phoneInput.classList.add("input-error");
             phoneInput.classList.remove("input-valid");
             isValid = false;
           } else {
             const isPhoneValid = validatePhone();
-            if (!isPhoneValid) {
-              isValid = false;
+            if (!isPhoneValid) isValid = false;
+          }
+
+          if (!isValid) {
+            isSubmitting = false; // якщо форма невалідна, зняти блок
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+
+          const formData = new FormData(form);
+          const csrfToken = getCookie('csrftoken');
+
+          try {
+            const response = await fetch('/submit-ticket/', {
+              method: 'POST',
+              body: formData,
+              headers: { 'X-CSRFToken': csrfToken },
+              credentials: 'include'
+            });
+
+            if (!response.ok) {
+              console.log("❌ Помилка від сервера:", response.status);
+              return;
             }
+
+            const data = await response.json();
+
+            if (data.success && data.wayforpay_params) {
+              redirectToWayForPay(data.wayforpay_params);
+            } else {
+              if (data.errors?.name) nameInput.classList.add("input-error");
+              if (data.errors?.email) emailInput.classList.add("input-error");
+              if (data.errors?.phone) phoneInput.classList.add("input-error");
+              console.log("❌ Сервер повернув помилку:", data.errors);
+            }
+
+          } catch (err) {
+            console.log("❌ Fetch error:", err);
+          } finally {
+            // якщо треба розблокувати після певного часу:
+            setTimeout(() => {
+              isSubmitting = false;
+              if (submitButton) submitButton.disabled = false;
+              form.classList.remove("loading");
+            }, 3000); // 3 секунди — щоб не натискали повторно одразу
           }
+        });
 
-        if (!isValid) return; // блокуємо сабміт
+        // 🚫 Додатково блокуємо Enter (на мобільних клавіатурах часто дублює submit)
+        form.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') e.preventDefault();
+        });
 
-        // if (!isEmailValid || !isPhoneValid) return; // блокуємо сабміт
-
-        const formData = new FormData(form);
-        const csrfToken = getCookie('csrftoken');
-
-        try {
-          const response = await fetch('/submit-ticket/', {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': csrfToken },
-            credentials: 'include'
-          });
-
-          if (!response.ok) {
-            console.log("❌ Помилка від сервера:", response.status);
-            return; // alert прибрано
-          }
-
-          const data = await response.json();
-
-          if (data.success && data.wayforpay_params) {
-            redirectToWayForPay(data.wayforpay_params);
-          } else {
-            // Підсвічуємо поля червоним, якщо сервер повернув помилку
-            if (data.errors?.name) nameInput.classList.add("input-error");
-            if (data.errors?.email) emailInput.classList.add("input-error");
-            if (data.errors?.phone) phoneInput.classList.add("input-error");
-            console.log("❌ Сервер повернув помилку:", data.errors);
-          }
-
-        } catch (err) {
-          console.log("❌ Fetch error:", err); // alert прибрано
-        } finally {
-          form.classList.remove("loading");
+        // 🚫 І блокуємо подвійний tap на кнопці
+        const submitButton = document.querySelector('.ticket-form button[type="submit"]');
+        if (submitButton) {
+          submitButton.addEventListener('click', (e) => {
+            if (isSubmitting) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              console.warn("⛔ Повторний клік заблоковано");
+            }
+          }, true);
         }
-      });
     }
 });
 
@@ -279,22 +324,22 @@ function redirectToWayForPay(params) {
     form.submit();
 }
 
-document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-
-    const response = await fetch('/submit-ticket/', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-CSRFToken': getCookie('csrftoken') },
-        credentials: 'include'
-    });
-
-    const data = await response.json();
-    if (data.success) {
-        redirectToWayForPay(data.wayforpay_params);
-    } else {
-        alert('Помилка форми');
-    }
-});
+// document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
+//     e.preventDefault();
+//     const form = e.target;
+//     const formData = new FormData(form);
+//
+//     const response = await fetch('/submit-ticket/', {
+//         method: 'POST',
+//         body: formData,
+//         headers: { 'X-CSRFToken': getCookie('csrftoken') },
+//         credentials: 'include'
+//     });
+//
+//     const data = await response.json();
+//     if (data.success) {
+//         redirectToWayForPay(data.wayforpay_params);
+//     } else {
+//         alert('Помилка форми');
+//     }
+// });
