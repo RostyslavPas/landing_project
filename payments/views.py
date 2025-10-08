@@ -305,7 +305,9 @@ def wayforpay_callback(request):
                         # Створюємо платіж
                         payment_data = {
                             "amount": float(order.amount),
-                            "description": f"Оплата замовлення #{order.id}"
+                            "description": f"Оплата замовлення #{order.id}",
+                            "payment_method_id": 11,
+                            "status": "paid",
                         }
                         payment = keycrm.create_payment(order.keycrm_lead_id, payment_data)
                         if not payment or "id" not in payment:
