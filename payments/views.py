@@ -342,11 +342,23 @@ def wayforpay_callback(request):
                     # Використовуємо збережений payment_id
                     if order.keycrm_payment_id:
                         logger.info(f"🔄 Оновлюємо збережений платіж {order.keycrm_payment_id} на 'paid'")
-                        update_result = keycrm.update_payment_status(
+                        
+                        # Спробуємо через API ліда
+                        update_result = keycrm.update_lead_payment_status(
+                            order.keycrm_lead_id,
                             order.keycrm_payment_id, 
                             "paid", 
                             f"Оплата замовлення #{order.id}"
                         )
+                        
+                        if not update_result:
+                            # Fallback: старий метод
+                            update_result = keycrm.update_payment_status(
+                                order.keycrm_payment_id, 
+                                "paid", 
+                                f"Оплата замовлення #{order.id}"
+                            )
+                        
                         if update_result:
                             logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
                         else:
