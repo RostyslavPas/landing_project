@@ -134,3 +134,22 @@ class KeyCRMAPI:
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
+
+    def update_lead_payment_status(self, lead_id, payment_id, status="paid", description=None):
+        """Оновити статус платежу через API ліда"""
+        url = f"{self.base_url}/pipelines/cards/{lead_id}/payments/{payment_id}"
+        try:
+            payload = {"status": status}
+            if description:
+                payload["description"] = description
+            
+            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Платіж {payment_id} ліда {lead_id} оновлено: статус={status}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при оновленні платежу {payment_id} ліда {lead_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
