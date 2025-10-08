@@ -144,6 +144,18 @@ def submit_ticket_form(request):
             )
 
             logger.info(f"📝 Створено замовлення #{order.id}")
+
+            # ДОДАЄМО: Перевірка на дублювання перед створенням ліда
+            existing_orders = TicketOrder.objects.filter(
+                email=email, 
+                payment_status="pending",
+                created_at__gte=timezone.now() - timedelta(minutes=5)
+            ).exclude(id=order.id)
+
+            if existing_orders.exists():
+                logger.warning(f"⚠️ Знайдено схожі замовлення за останні 5 хвилин для {email}")
+                return JsonResponse({"success": False, "message": "Замовлення вже було створено за останні 5 хвилин. Будь ласка, спробуйте пізніше."})
+
             logger.info(f"🔧 KeyCRM налаштування: TOKEN={bool(settings.KEYCRM_API_TOKEN)}, PIPELINE={settings.KEYCRM_PIPELINE_ID}, SOURCE={settings.KEYCRM_SOURCE_ID}")
 
             # Створюємо лід в KeyCRM
@@ -335,26 +347,36 @@ def wayforpay_callback(request):
                 try:
                     keycrm = KeyCRMAPI()
                     
-                    # Оновлюємо статус платежу
-                    update_result = keycrm.update_payment_status(order.keycrm_payment_id, "paid")
-                    if update_result:
-                        logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
+                    # ВИПРАВЛЯЄМО: Спочатку отримуємо платіж щоб перевірити його існування
+                    payments = keycrm.get_payments(order.keycrm_lead_id)
+                    payment_found = None
+                    for payment in payments:
+                        if payment.get('id') == order.keycrm_payment_id:
+                            payment_found = payment
+                            break
                     
-                    # Додаємо зовнішню транзакцію
-                    transaction_data = {
-                        "transaction_id": str(data.get("transactionId", "")),
-                        "amount": float(order.amount),
-                        "currency": "UAH",
-                        "status": "success",
-                        "description": f"WayForPay payment for order #{order.id}"
-                    }
-                    
-                    transaction_result = keycrm.add_external_transaction(order.keycrm_payment_id, transaction_data)
-                    if transaction_result:
-                        logger.info(f"✅ Зовнішня транзакція додана до платежу {order.keycrm_payment_id}")
+                    if payment_found:
+                        logger.info(f"🔍 Знайдено платіж {order.keycrm_payment_id}: {payment_found}")
+                        
+                        # Додаємо зовнішню транзакцію з правильними полями
+                        transaction_data = {
+                            "transaction_uuid": str(data.get("transactionId", "")),  # ЗМІНЮЄМО на transaction_uuid
+                            "amount": float(order.amount),
+                            "currency": "UAH",
+                            "status": "success",
+                            "description": f"WayForPay payment for order #{order.id}"
+                        }
+                        
+                        transaction_result = keycrm.add_external_transaction(order.keycrm_payment_id, transaction_data)
+                        if transaction_result:
+                            logger.info(f"✅ Зовнішня транзакція додана до платежу {order.keycrm_payment_id}")
+                        else:
+                            logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію")
+                    else:
+                        logger.warning(f"⚠️ Платіж {order.keycrm_payment_id} не знайдено в ліді {order.keycrm_lead_id}")
 
                 except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні платежу в KeyCRM: {e}")
+                    logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
             else:
                 if not order.keycrm_payment_id:
                     logger.warning(f"⚠️ KeyCRM payment_id відсутній для замовлення #{order.id}")
