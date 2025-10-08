@@ -207,11 +207,19 @@ def submit_ticket_form(request):
                     if lead and lead.get('id'):
                         order.keycrm_lead_id = lead['id']
                         
+                        # Додаємо невелику затримку для індексації
+                        import time
+                        time.sleep(2)
+                        
                         # Отримуємо платежі щойно створеного ліда
                         payments = keycrm.get_payments(lead['id'])
+                        logger.info(f"🔍 Після створення ліда знайдено {len(payments)} платежів")
+                        
                         if payments and len(payments) > 0:
                             order.keycrm_payment_id = payments[0].get('id')
                             logger.info(f"💾 Збережено payment_id: {order.keycrm_payment_id}")
+                        else:
+                            logger.warning(f"⚠️ Платежі не знайдено навіть після затримки")
                         
                         order.save()
                         logger.info(f"✅ Лід {lead['id']} створено для замовлення {order.id}")
