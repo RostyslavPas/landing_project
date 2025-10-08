@@ -296,28 +296,35 @@ def wayforpay_callback(request):
                 logger.warning(f"⚠️ KEYCRM_API_TOKEN не налаштований. Пропускаємо оновлення в KeyCRM")
             else:
                 try:
-                    logger.info(f"🔄 Оновлюємо статус оплати в KeyCRM для ліда {order.keycrm_lead_id}")
-
                     keycrm = KeyCRMAPI()
 
-                    result = keycrm.create_external_transaction({
-                        "external_id": data.get("transactionId"),
-                        "buyer_phone": order.phone,
-                        "buyer_email": order.email,
-                        "amount": float(order.amount),
-                        "status": "paid",
-                        "payment_system": "WayForPay",
-                        "comment": f"Оплата успішно проведена. Transaction ID: {data.get('transactionId', 'N/A')}",
-                        "card_title": f"Замовлення #{order.id}",
-                    })
-
-                    if result:
-                        logger.info(f"✅ Статус оплати в KeyCRM оновлено для ліда {order.keycrm_lead_id}")
+                    # 1️⃣ Отримати всі платежі ліда
+                    payments = keycrm.get_payments(order.keycrm_lead_id)
+                    if not payments:
+                        logger.warning(f"⚠️ Платежі для ліда {order.keycrm_lead_id} не знайдено")
                     else:
-                        logger.warning(f"⚠️ Не вдалося оновити статус оплати в KeyCRM для ліда {order.keycrm_lead_id}")
+                        # Припустимо беремо перший активний платіж
+                        payment = payments[0]
+                        payment_id = payment.get("id")
+                        if not payment_id:
+                            logger.warning(f"⚠️ paymentId не знайдено для ліда {order.keycrm_lead_id}")
+                        else:
+                            # 2️⃣ Додаємо зовнішню транзакцію
+                            result = keycrm.add_external_transaction(
+                                payment_id,
+                                {
+                                    "transaction_id": data.get("transactionId"),
+                                    "transaction_uuid": data.get("transactionUuid", "")
+                                }
+                            )
+                            if result:
+                                logger.info(f"✅ Зовнішня транзакція додана для ліда {order.keycrm_lead_id}")
+                            else:
+                                logger.warning(
+                                    f"⚠️ Не вдалося додати зовнішню транзакцію для ліда {order.keycrm_lead_id}")
 
                 except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні статусу оплати в KeyCRM: {str(e)}")
+                    logger.error(f"❌ Помилка при оновленні оплати в KeyCRM: {e}")
 
         elif transaction_status == "Declined":
             order.payment_status = "failed"
