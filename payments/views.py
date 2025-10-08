@@ -339,48 +339,31 @@ def wayforpay_callback(request):
                 try:
                     keycrm = KeyCRMAPI()
                     
-                    # Використовуємо збережений payment_id
-                    if order.keycrm_payment_id:
-                        logger.info(f"🔄 Оновлюємо статус платежу {order.keycrm_payment_id} на 'paid'")
+                    # Спочатку перевіряємо існуючі платежі
+                    payments = keycrm.get_payments(order.keycrm_lead_id)
+                    logger.info(f"🔍 Знайдено {len(payments)} платежів для ліда {order.keycrm_lead_id}")
+                    
+                    # Шукаємо платіж зі статусом "paid" щоб не дублювати
+                    paid_payment_exists = any(p.get('status') == 'paid' for p in payments)
+                    
+                    if not paid_payment_exists:
+                        # Створюємо новий платіж зі статусом "paid"
+                        payment_data = {
+                            "payment_method": "WayForPay",
+                            "amount": float(order.amount),
+                            "status": "paid",
+                            "description": f"Успішна оплата замовлення #{order.id} через WayForPay. AuthCode: {data.get('authCode', '')}"
+                        }
                         
-                        result = keycrm.update_payment_status_direct(
-                            order.keycrm_payment_id, 
-                            "paid", 
-                            f"Оплата замовлення #{order.id} через WayForPay"
-                        )
+                        logger.info(f"🔄 Створюємо новий платіж 'paid' для ліда {order.keycrm_lead_id}")
+                        result = keycrm.create_payment_for_card(order.keycrm_lead_id, payment_data)
                         
                         if result:
-                            logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
+                            logger.info(f"✅ Платіж 'paid' створено для ліда {order.keycrm_lead_id}")
                         else:
-                            logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
+                            logger.warning(f"⚠️ Не вдалося створити платіж 'paid'")
                     else:
-                        # Fallback: шукаємо платежі через API
-                        payments = keycrm.get_payments(order.keycrm_lead_id)
-                        logger.info(f"🔍 Знайдено {len(payments)} платежів для ліда {order.keycrm_lead_id}")
-                        
-                        if payments:
-                            payment_id = payments[0].get("id")
-                            logger.info(f"🔄 Додаємо зовнішню транзакцію до знайденого платежу {payment_id}")
-
-                            transaction_data = {
-                                "external_id": data.get("orderReference"),
-                                "transaction_uuid": data.get("orderReference"),  # Змінюємо на transaction_uuid
-                                "amount": float(data.get("amount", order.amount)),
-                                "currency": data.get("currency", "UAH"),
-                                "status": "success",
-                                "payment_system": data.get("paymentSystem", "WayForPay"),
-                                "description": f"Успішна оплата через WayForPay. AuthCode: {data.get('authCode', '')}",
-                                "processed_at": timezone.now().isoformat()
-                            }
-                            
-                            result = keycrm.add_external_transaction(payment_id, transaction_data)
-                            
-                            if result:
-                                logger.info(f"✅ Зовнішня транзакція додана до платежу {payment_id}")
-                            else:
-                                logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію до платежу {payment_id}")
-                        else:
-                            logger.warning(f"⚠️ Платежі не знайдено і payment_id не збережено")
+                        logger.info(f"ℹ️ Платіж зі статусом 'paid' вже існує для ліда {order.keycrm_lead_id}")
                         
                 except Exception as e:
                     logger.error(f"❌ Помилка при оновленні оплати в KeyCRM: {e}")
