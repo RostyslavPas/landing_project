@@ -81,3 +81,18 @@ class KeyCRMAPI:
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Помилка при отриманні платежів: {e}")
             return []
+
+    def create_payment(self, card_id, data):
+        """Створити платіж для картки (ліда)"""
+        url = f"{self.base_url}/pipelines/cards/{card_id}/payment"
+        try:
+            response = requests.post(url, json=data, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Платіж створено для картки {card_id}: {result}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при створенні платежу для картки {card_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
