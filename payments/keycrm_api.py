@@ -177,3 +177,21 @@ class KeyCRMAPI:
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
+
+    def update_lead_status(self, lead_id, status_id):
+        """Оновити статус ліда в воронці"""
+        url = f"{self.base_url}/pipelines/cards/{lead_id}"
+        try:
+            payload = {"status_id": status_id}
+            
+            logger.info(f"🔄 Оновлюємо статус ліда {lead_id} на {status_id}")
+            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Статус ліда {lead_id} оновлено на {status_id}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при оновленні статусу ліда {lead_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
