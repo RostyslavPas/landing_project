@@ -12,9 +12,7 @@ import logging
 from django.shortcuts import render
 from .models import TicketOrder
 from .ticket_utils import send_ticket_email_with_pdf
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import redirect
-from django.contrib import messages
+
 
 logger = logging.getLogger(__name__)
 
@@ -190,7 +188,7 @@ def submit_ticket_form(request):
                     }
 
                     logger.info(f"🔄 Відправка даних в KeyCRM для замовлення #{order.id}")
-                    lead = keycrm.create_lead(lead_data)
+                    lead = keycrm.create_pipeline_card(lead_data)
 
                     if lead and 'id' in lead:
                         order.keycrm_lead_id = lead['id']
@@ -302,14 +300,16 @@ def wayforpay_callback(request):
 
                     keycrm = KeyCRMAPI()
 
-                    payment_data = {
-                        "status": "paid",  # Статус: paid, not_paid, refund, declined
+                    result = keycrm.create_external_transaction({
+                        "external_id": data.get("transactionId"),
+                        "buyer_phone": order.phone,
+                        "buyer_email": order.email,
                         "amount": float(order.amount),
-                        "payment_method": "WayForPay",
-                        "comment": f"Оплата успішно проведена. Transaction ID: {data.get('transactionId', 'N/A')}"
-                    }
-
-                    result = keycrm.update_payment_status(order.keycrm_lead_id, payment_data)
+                        "status": "paid",
+                        "payment_system": "WayForPay",
+                        "comment": f"Оплата успішно проведена. Transaction ID: {data.get('transactionId', 'N/A')}",
+                        "card_title": f"Замовлення #{order.id}",
+                    })
 
                     if result:
                         logger.info(f"✅ Статус оплати в KeyCRM оновлено для ліда {order.keycrm_lead_id}")
@@ -324,25 +324,6 @@ def wayforpay_callback(request):
             order.save()
 
             logger.info(f"❌ Оплата відхилена для замовлення #{order.id}")
-
-            # Оновлюємо статус в KeyCRM як declined
-
-            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
-                try:
-                    keycrm = KeyCRMAPI()
-
-                    payment_data = {
-                        "status": "declined",
-                        "amount": float(order.amount),
-                        "payment_method": "WayForPay",
-                        "comment": f"Оплата відхилена. Reason: {data.get('reasonCode', 'Unknown')}"
-                    }
-
-                    keycrm.update_payment_status(order.keycrm_lead_id, payment_data)
-                    logger.info(f"✅ Статус declined оновлено в KeyCRM для ліда {order.keycrm_lead_id}")
-
-                except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні статусу declined в KeyCRM: {str(e)}")
 
         else:
             order.payment_status = "failed"
