@@ -328,9 +328,26 @@ def wayforpay_callback(request):
                     
                     # 1️⃣ Отримати всі платежі ліда
                     payments = keycrm.get_payments(order.keycrm_lead_id)
-                    if not payments:
+                    logger.info(f"🔍 Знайдено {len(payments)} платежів для ліда {order.keycrm_lead_id}")
+                    
+                    if payments:
+                        # Беремо перший платіж і оновлюємо його статус
+                        payment_id = payments[0].get("id")
+                        logger.info(f"🔄 Оновлюємо статус платежу {payment_id} на 'paid'")
+                        
+                        # Оновлюємо статус платежу на "paid"
+                        update_result = keycrm.update_payment_status(
+                            payment_id, 
+                            "paid", 
+                            f"Оплата замовлення #{order.id}"
+                        )
+                        if update_result:
+                            logger.info(f"✅ Статус платежу {payment_id} оновлено на 'paid'")
+                        else:
+                            logger.warning(f"⚠️ Не вдалося оновити статус платежу {payment_id}")
+                    else:
                         logger.info(f"ℹ️ Платежі для ліда {order.keycrm_lead_id} не знайдено, створюємо новий")
-                        # Створюємо платіж
+                        # Створюємо платіж тільки якщо його немає
                         payment_data = {
                             "amount": float(order.amount),
                             "description": f"Оплата замовлення #{order.id}",
@@ -338,31 +355,30 @@ def wayforpay_callback(request):
                             "status": "paid",
                         }
                         payment = keycrm.create_payment(order.keycrm_lead_id, payment_data)
-                        if not payment or "id" not in payment:
+                        if payment and "id" in payment:
+                            payment_id = payment["id"]
+                            logger.info(f"✅ Новий платіж {payment_id} створено")
+                        else:
                             logger.warning(f"⚠️ Не вдалося створити платіж для ліда {order.keycrm_lead_id}")
                             payment_id = None
-                        else:
-                            payment_id = payment["id"]
-                    else:
-                        # Беремо перший платіж
-                        payment_id = payments[0].get("id")
-                        
+                    
                     # 2️⃣ Додаємо зовнішню транзакцію, якщо є payment_id
-                    if payment_id:
+                    if payment_id and data.get("transactionId"):
                         result = keycrm.add_external_transaction(
                             payment_id,
                             {
-                                "transaction_id": data.get("transactionId"),
-                                "transaction_uuid": data.get("transactionUuid", "")
+                                "transaction_uuid": str(data.get("transactionId"))  # Використовуємо transactionId як UUID
                             }
                         )
                         if result:
-                            logger.info(f"✅ Зовнішня транзакція додана для ліда {order.keycrm_lead_id}")
+                            logger.info(f"✅ Зовнішня транзакція додана для платежу {payment_id}")
                         else:
-                            logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію для ліда {order.keycrm_lead_id}")
+                            logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію для платежу {payment_id}")
                         
                 except Exception as e:
                     logger.error(f"❌ Помилка при оновленні оплати в KeyCRM: {e}")
+                    if hasattr(e, "response") and e.response is not None:
+                        logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             else:
                 if not order.keycrm_lead_id:
                     logger.warning(f"⚠️ KeyCRM lead_id відсутній для замовлення #{order.id}")
