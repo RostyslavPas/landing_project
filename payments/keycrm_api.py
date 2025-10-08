@@ -86,18 +86,21 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    def update_payment_status(self, payment_id, status="paid"):
-        """Оновити статус платежу"""
+    def update_payment_status(self, payment_id, status="paid", description=None):
+        """Оновити статус та опис платежу"""
         url = f"{self.base_url}/payments/{payment_id}"
         try:
             payload = {"status": status}
+            if description:
+                payload["description"] = description
+            
             response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
             response.raise_for_status()
             result = response.json()
-            logger.info(f"✅ Статус платежу {payment_id} оновлено на {status}")
+            logger.info(f"✅ Платіж {payment_id} оновлено: статус={status}, опис={description}")
             return result
         except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при оновленні статусу платежу {payment_id}: {e}")
+            logger.error(f"❌ Помилка при оновленні платежу {payment_id}: {e}")
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
