@@ -362,7 +362,7 @@ def wayforpay_callback(request):
                         if update_result:
                             logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
                         else:
-                            logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
+                            logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію до платежу {order.keycrm_payment_id}")
                     else:
                         # Fallback: шукаємо платежі через API
                         payments = keycrm.get_payments(order.keycrm_lead_id)
