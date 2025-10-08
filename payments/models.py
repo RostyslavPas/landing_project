@@ -59,6 +59,25 @@ class TicketOrder(models.Model):
     scanned_by = models.CharField(max_length=100, blank=True)
     scan_count = models.IntegerField(default=0)
 
+    is_verified = models.BooleanField(default=False, verbose_name='Підтверджено адміном')
+    verified_at = models.DateTimeField(null=True, blank=True, verbose_name='Час підтвердження')
+    verified_by = models.ForeignKey(
+        'auth.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='verified_tickets',
+        verbose_name='Підтверджено користувачем'
+    )
+
+    def verify_ticket(self, admin_user):
+        """Підтверджує квиток"""
+        from django.utils import timezone
+        self.is_verified = True
+        self.verified_at = timezone.now()
+        self.verified_by = admin_user
+        self.save()
+
     def mark_as_used(self, scanned_by=''):
         """Відмічає квиток як використаний"""
         from django.utils import timezone
