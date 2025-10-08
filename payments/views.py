@@ -196,6 +196,11 @@ def submit_ticket_form(request):
                         order.keycrm_lead_id = lead['id']
                         order.save()
                         logger.info(f"✅ Лід {lead['id']} створено для замовлення {order.id}")
+                        
+                        # ДОДАЄМО: Відразу отримуємо платежі після створення
+                        payments = keycrm.get_payments(lead['id'])
+                        logger.info(f"🔍 Платежі після створення ліда: {payments}")
+                        
                     else:
                         logger.warning(f"⚠️ Не вдалося створити лід в KeyCRM для замовлення {order.id}")
                         logger.warning(f"Відповідь KeyCRM: {lead}")
