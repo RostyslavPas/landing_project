@@ -341,25 +341,18 @@ def wayforpay_callback(request):
                     
                     # Використовуємо збережений payment_id
                     if order.keycrm_payment_id:
-                        logger.info(f"🔄 Додаємо зовнішню транзакцію до платежу {order.keycrm_payment_id}")
-
-                        transaction_data = {
-                            "external_id": data.get("orderReference"),
-                            "transaction_uuid": data.get("orderReference"),  # Змінюємо на transaction_uuid
-                            "amount": float(data.get("amount", order.amount)),
-                            "currency": data.get("currency", "UAH"),
-                            "status": "success",
-                            "payment_system": data.get("paymentSystem", "WayForPay"),
-                            "description": f"Успішна оплата через WayForPay. AuthCode: {data.get('authCode', '')}",
-                            "processed_at": timezone.now().isoformat()
-                        }
+                        logger.info(f"🔄 Оновлюємо статус платежу {order.keycrm_payment_id} на 'paid'")
                         
-                        result = keycrm.add_external_transaction(order.keycrm_payment_id, transaction_data)
+                        result = keycrm.update_payment_status_direct(
+                            order.keycrm_payment_id, 
+                            "paid", 
+                            f"Оплата замовлення #{order.id} через WayForPay"
+                        )
                         
                         if result:
-                            logger.info(f"✅ Зовнішня транзакція додана до платежу {order.keycrm_payment_id}")
+                            logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
                         else:
-                            logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію до платежу {order.keycrm_payment_id}")
+                            logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
                     else:
                         # Fallback: шукаємо платежі через API
                         payments = keycrm.get_payments(order.keycrm_lead_id)
