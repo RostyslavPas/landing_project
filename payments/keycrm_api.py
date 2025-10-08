@@ -105,7 +105,7 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    def add_external_transaction(self, payment_id, transaction_data):
+    def add_external_transaction(self, payment_id,  transaction_data):
         """Додати зовнішню транзакцію до оплати"""
         url = f"{self.base_url}/payments/{payment_id}/external-transactions"
         try:
@@ -185,7 +185,7 @@ class KeyCRMAPI:
             payload = {"status_id": status_id}
             
             logger.info(f"🔄 Оновлюємо статус ліда {lead_id} на {status_id}")
-            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            response = requests.put(url, headers=self.headers, json=payload, timeout=10)
             response.raise_for_status()
             result = response.json()
             logger.info(f"✅ Статус ліда {lead_id} оновлено на {status_id}")
