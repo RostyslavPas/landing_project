@@ -50,6 +50,8 @@ class TicketOrder(models.Model):
     wayforpay_order_reference = models.CharField(max_length=100, blank=True, null=True)
 
     keycrm_lead_id = models.IntegerField(blank=True, null=True, help_text="ID ліда в KeyCRM")
+    keycrm_payment_id = models.IntegerField(blank=True, null=True, help_text="ID платежу в KeyCRM")
+    callback_processed = models.BooleanField(default=False, help_text="Чи оброблено callback від WayForPay")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
