@@ -26,23 +26,9 @@ class KeyCRMAPI:
         Docs: https://docs.keycrm.app/#/Pipelines/createNewPipelineCard
         """
         url = f"{self.base_url}/pipelines/cards"
-        payload = {
-            "title": data.get("title", "Новий лід"),
-            "pipeline_id": data["pipeline_id"],
-            "stage_id": data.get("stage_id"),
-            "price": data.get("price"),
-            "comment": data.get("comment", ""),
-            "source_id": data.get("source_id"),
-            "buyer": {
-                "name": data.get("buyer_name"),
-                "phone": data.get("buyer_phone"),
-                "email": data.get("buyer_email"),
-            }
-        }
-
         try:
-            logger.info(f"➡️ Надсилаю запит на створення картки в KeyCRM: {payload}")
-            response = requests.post(url, json=payload, headers=self.headers, timeout=10)
+            logger.info(f"➡️ Надсилаю запит на створення картки в KeyCRM: {data}")
+            response = requests.post(url, json=data, headers=self.headers, timeout=10)
             response.raise_for_status()
 
             result = response.json()
