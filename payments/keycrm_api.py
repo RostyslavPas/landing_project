@@ -153,3 +153,27 @@ class KeyCRMAPI:
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
+
+    def update_payment_status_direct(self, payment_id, status="paid", description=None):
+        """Прямий PATCH запит для оновлення статусу платежу"""
+        url = f"{self.base_url}/payments/{payment_id}"
+        try:
+            payload = {"status": status}
+            if description:
+                payload["description"] = description
+        
+            logger.info(f"🔄 Прямий PATCH запит до {url} з даними: {payload}")
+            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            
+            logger.info(f"📡 Статус відповіді: {response.status_code}")
+            logger.info(f"📡 Відповідь: {response.text}")
+            
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Платіж {payment_id} оновлено: статус={status}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при прямому оновленні платежу {payment_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
