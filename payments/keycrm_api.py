@@ -10,7 +10,7 @@ class KeyCRMAPI:
 
     def __init__(self):
         self.api_token = settings.KEYCRM_API_TOKEN
-        self.base_url = "https://openapi.keycrm.app/v1"
+        self.base_url = "https://pasue.api.keycrm.app/v1"
         self.headers = {
             "Authorization": f"Bearer {self.api_token}",
             "Content-Type": "application/json"
