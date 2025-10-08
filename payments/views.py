@@ -339,36 +339,16 @@ def wayforpay_callback(request):
                 try:
                     keycrm = KeyCRMAPI()
                     
-                    # Спочатку перевіряємо існуючі платежі
-                    payments = keycrm.get_payments(order.keycrm_lead_id)
-                    logger.info(f"🔍 Знайдено {len(payments)} платежів для ліда {order.keycrm_lead_id}")
+                    # Оновлюємо статус ліда на "Оплата" (ID: 13)
+                    result = keycrm.update_lead_status(order.keycrm_lead_id, 13)
                     
-                    # Шукаємо платіж зі статусом "paid" щоб не дублювати
-                    paid_payment_exists = any(p.get('status') == 'paid' for p in payments)
-                    
-                    if not paid_payment_exists:
-                        # Створюємо новий платіж зі статусом "paid"
-                        payment_data = {
-                            "payment_method": "WayForPay",
-                            "amount": float(order.amount),
-                            "status": "paid",
-                            "description": f"Успішна оплата замовлення #{order.id} через WayForPay. AuthCode: {data.get('authCode', '')}"
-                        }
-                        
-                        logger.info(f"🔄 Створюємо новий платіж 'paid' для ліда {order.keycrm_lead_id}")
-                        result = keycrm.create_payment_for_card(order.keycrm_lead_id, payment_data)
-                        
-                        if result:
-                            logger.info(f"✅ Платіж 'paid' створено для ліда {order.keycrm_lead_id}")
-                        else:
-                            logger.warning(f"⚠️ Не вдалося створити платіж 'paid'")
+                    if result:
+                        logger.info(f"✅ Статус ліда {order.keycrm_lead_id} оновлено на 'Оплата'")
                     else:
-                        logger.info(f"ℹ️ Платіж зі статусом 'paid' вже існує для ліда {order.keycrm_lead_id}")
+                        logger.warning(f"⚠️ Не вдалося оновити статус ліда {order.keycrm_lead_id}")
                         
                 except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні оплати в KeyCRM: {e}")
-                    if hasattr(e, "response") and e.response is not None:
-                        logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+                    logger.error(f"❌ Помилка при оновленні статусу ліда в KeyCRM: {e}")
             else:
                 if not order.keycrm_lead_id:
                     logger.warning(f"⚠️ KeyCRM lead_id відсутній для замовлення #{order.id}")
