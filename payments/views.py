@@ -341,22 +341,26 @@ def wayforpay_callback(request):
                     
                     # Використовуємо збережений payment_id
                     if order.keycrm_payment_id:
-                        logger.info(f"🔄 Додаємо зовнішню транзакцію до платежу {order.keycrm_payment_id}")
+                        logger.info(f"🔄 Оновлюємо збережений платіж {order.keycrm_payment_id} на 'paid'")
                         
-                        transaction_data = {
-                            "external_id": data.get("orderReference"),  # ORDER_118_1759950084
-                            "amount": float(data.get("amount", order.amount)),
-                            "currency": data.get("currency", "UAH"),
-                            "status": "success",
-                            "payment_system": data.get("paymentSystem", "WayForPay"),
-                            "description": f"Успішна оплата через WayForPay. AuthCode: {data.get('authCode', '')}",
-                            "processed_at": timezone.now().isoformat()
-                        }
+                        # Спробуємо через API ліда
+                        update_result = keycrm.update_lead_payment_status(
+                            order.keycrm_lead_id,
+                            order.keycrm_payment_id, 
+                            "paid", 
+                            f"Оплата замовлення #{order.id}"
+                        )
                         
-                        result = keycrm.add_external_transaction(order.keycrm_payment_id, transaction_data)
+                        if not update_result:
+                            # Fallback: старий метод
+                            update_result = keycrm.update_payment_status(
+                                order.keycrm_payment_id, 
+                                "paid", 
+                                f"Оплата замовлення #{order.id}"
+                            )
                         
-                        if result:
-                            logger.info(f"✅ Зовнішня транзакція додана до платежу {order.keycrm_payment_id}")
+                        if update_result:
+                            logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
                         else:
                             logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію до платежу {order.keycrm_payment_id}")
                     else:
