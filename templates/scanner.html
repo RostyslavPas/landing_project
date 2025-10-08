@@ -357,15 +357,29 @@
         }
 
         async function handleQRCode(data) {
-            const match = data.match(/TICKET:(\d+)/);
-            if (!match) {
-                showResult('invalid', '❌', 'Невірний QR-код', null);
+            // Перевірка формату QR (URL або TICKET:ID)
+            let ticketId = null;
+
+            // Спроба знайти ID з URL
+            const urlMatch = data.match(/verify-ticket\/(\d+)/);
+            if (urlMatch) {
+                ticketId = urlMatch[1];
+            } else {
+                // Якщо не URL, можливо формат TICKET:ID
+                const ticketMatch = data.match(/TICKET:(\d+)/);
+                if (ticketMatch) {
+                    ticketId = ticketMatch[1];
+                }
+            }
+
+            if (!ticketId) {
+                showResult('invalid', '❌', 'Невірний формат QR-коду', null);
+                vibrate([300, 100, 300]);
                 return;
             }
 
-            const ticketId = match[1];
             stopCamera();
-            status.textContent = '⏳ Перевірка...';
+            status.textContent = '⏳ Перевірка квитка...';
             vibrate([100]);
 
             try {
@@ -380,22 +394,40 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    if (result.was_valid) {
+                    if (result.status_type === 'valid' || result.was_valid) {
                         showResult('valid', '✅', result.message, result);
                         vibrate([200, 100, 200]);
-                    } else {
+                    } else if (result.status_type === 'used') {
                         showResult('warning', '⚠️', result.message, result);
                         vibrate([100, 50, 100, 50, 100]);
+                    } else {
+                        showResult('invalid', '❌', result.message, result);
+                        vibrate([300]);
                     }
                 } else {
-                    showResult('invalid', '❌', result.error || 'Помилка', null);
+                    showResult('invalid', '❌', result.error || 'Помилка перевірки', null);
                     vibrate([300]);
                 }
             } catch (error) {
-                showResult('invalid', '❌', 'Помилка з\'єднання', null);
+                showResult('invalid', '❌', 'Помилка з\'єднання з сервером', null);
                 vibrate([300]);
+                console.error('Scan error:', error);
             }
         }
+
+        /**
+         * @typedef {Object} TicketDetails
+         * @property {string|number} order_id
+         * @property {string} event_name
+         * @property {string} status
+         */
+
+        /**
+         * @param {string} type
+         * @param {string} icon
+         * @param {string} message
+         * @param {TicketDetails} [details]
+         */
 
         function showResult(type, icon, message, details) {
             document.getElementById('resultIcon').textContent = icon;

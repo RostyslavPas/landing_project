@@ -71,6 +71,25 @@
             color: white;
         }
 
+        .verification-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .verification-badge.verified {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .verification-badge.pending {
+            background: #FF9800;
+            color: white;
+        }
+
         .details {
             background: #f8f9fa;
             border-radius: 15px;
@@ -101,6 +120,45 @@
             font-size: 14px;
         }
 
+        .admin-actions {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .btn-verify {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-verify:hover {
+            background: #45a049;
+        }
+
+        .btn-unverify {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-unverify:hover {
+            background: #da190b;
+        }
+
         .error-message {
             color: #F44336;
             font-size: 18px;
@@ -119,6 +177,7 @@
         <img src="https://www.pasue.com.ua/static/images/main_logo.png" alt="PASUE" class="logo">
 
         {% if ticket %}
+            <!-- Статус квитка -->
             {% if ticket.is_valid %}
                 <div class="status-icon valid">✅</div>
                 <h1>Квиток дійсний!</h1>
@@ -133,6 +192,18 @@
                 <div class="status-badge invalid">{{ status_text }}</div>
             {% endif %}
 
+            <!-- Статус підтвердження адміном -->
+            {% if ticket.is_verified %}
+                <div class="verification-badge verified">
+                    ✓ Підтверджено адміном
+                </div>
+            {% else %}
+                <div class="verification-badge pending">
+                    ⏳ Очікує підтвердження
+                </div>
+            {% endif %}
+
+            <!-- Деталі квитка -->
             <div class="details">
                 <div class="detail-row">
                     <span class="detail-label">Номер квитка</span>
@@ -156,13 +227,52 @@
                     <span class="detail-value">{{ ticket.scanned_at|date:"d.m.Y H:i" }}</span>
                 </div>
                 {% endif %}
+                {% if ticket.is_verified and ticket.verified_at %}
+                <div class="detail-row">
+                    <span class="detail-label">Підтверджено</span>
+                    <span class="detail-value">{{ ticket.verified_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                {% endif %}
             </div>
 
-            <p class="info-text">
-                {% if ticket.is_valid %}
-                    Цей квиток можна використати для входу на подію.
+            <!-- Дії для адміна -->
+            {% if user.is_authenticated and user.is_staff %}
+            <div class="admin-actions">
+                <h3 style="margin-top: 0;">Дії адміністратора</h3>
+                {% if not ticket.is_verified %}
+                    <form method="post" action="{% url 'verify_ticket_action' ticket.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="verify">
+                        <button type="submit" class="btn btn-verify">✓ Підтвердити квиток</button>
+                    </form>
                 {% else %}
-                    Якщо у вас виникли питання, зв'яжіться з нами: pasue.club@gmail.com
+                    <form method="post" action="{% url 'verify_ticket_action' ticket.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="unverify">
+                        <button type="submit" class="btn btn-unverify">✗ Скасувати підтвердження</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <p class="info-text">
+                {% if ticket.ticket_status == 'active' %}
+                    {% if ticket.is_verified %}
+                        ✅ Квиток дійсний і підтверджений. Можна використати для входу.
+                    {% else %}
+                        ✅ Квиток дійсний. Покажіть QR-код на вході для активації.
+                    {% endif %}
+                {% elif ticket.ticket_status == 'used' %}
+                    {% if ticket.scanned_at %}
+                        ⚠️ Цей квиток вже був використаний {{ ticket.scanned_at|date:"d.m.Y о H:i" }}.
+                    {% else %}
+                        ⚠️ Цей квиток вже був використаний.
+                    {% endif %}
+                    {% if ticket.is_verified %}
+                        <br>Підтверджено адміністратором.
+                    {% endif %}
+                {% else %}
+                    ❌ Квиток недійсний. Якщо у вас виникли питання, зв'яжіться з нами: pasue.club@gmail.com
                 {% endif %}
             </p>
         {% else %}

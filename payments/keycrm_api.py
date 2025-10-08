@@ -108,6 +108,71 @@ class KeyCRMAPI:
             logger.info("Продовжуємо роботу, оновлення ліда не критичне")
             return None
 
+    def update_payment_status(self, lead_id, payment_data):
+        """
+        Оновлення статусу оплати для ліда
+
+        Args:
+            lead_id (int): ID ліда в KeyCRM
+            payment_data (dict): Дані про оплату
+                - payment_id (int/str): ID оплати в KeyCRM (якщо відомий)
+                - status (str): Статус оплати: "paid", "not_paid", "refund", "declined"
+                - amount (float): Сума оплати
+                - payment_method (str): Спосіб оплати (опціонально)
+                - comment (str): Коментар (опціонально)
+
+        Returns:
+            dict: Відповідь від API або None
+        """
+        try:
+            # Спочатку отримуємо лід щоб знайти ID оплати
+            lead_data = self.get_lead(lead_id)
+
+            if not lead_data:
+                logger.error(f"Не вдалося отримати дані ліда {lead_id}")
+                return None
+
+            # Шукаємо ID оплати в ліді
+            payment_id = None
+            payments = lead_data.get('payments', [])
+
+            if payments and len(payments) > 0:
+                # Беремо першу оплату (або можна шукати по сумі)
+                payment_id = payments[0].get('id')
+
+            if not payment_id:
+                logger.warning(f"ID оплати не знайдено для ліда {lead_id}")
+                # Якщо оплати немає, створюємо нову
+
+            # Оновлюємо існуючу оплату
+            url = f"{self.base_url}/payments/{payment_id}"
+
+            update_data = {
+                "status": payment_data.get("status", "paid"),
+                "amount": payment_data.get("amount"),
+            }
+
+            if payment_data.get("payment_method"):
+                update_data["payment_method"] = payment_data["payment_method"]
+
+            if payment_data.get("comment"):
+                update_data["description"] = payment_data["comment"]
+
+            logger.info(f"Оновлення оплати {payment_id} для ліда {lead_id}: {update_data}")
+            response = requests.put(url, json=update_data, headers=self.headers, timeout=10)
+            response.raise_for_status()
+
+            result = response.json()
+            logger.info(f"Оплата успішно оновлена. Відповідь: {result}")
+            return result
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Помилка при оновленні оплати для ліда {lead_id}: {str(e)}")
+            if hasattr(e, 'response') and e.response is not None:
+                logger.error(f"Статус код: {e.response.status_code}")
+                logger.error(f"Відповідь сервера: {e.response.text}")
+            return None
+
     def get_pipelines(self):
         """
         Отримання списку воронок

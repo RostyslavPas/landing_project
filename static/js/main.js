@@ -214,13 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+            const textWrapper = submitBtn.querySelector('.text-wrapper-14');
+
             if (submitBtn.disabled) return; // запобігаємо повторному кліку
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Обробка...';
+            if (textWrapper) textWrapper.textContent = 'Обробка...';
 
             if (!validateEmail() || !validatePhone() || !validateName()) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Оплатити';
+                if (textWrapper) textWrapper.textContent = 'Оплатити';
                 return;
             }
 
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     console.log("❌ Помилка від сервера:", response.status);
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Оплатити';
+                    if (textWrapper) textWrapper.textContent = 'Оплатити';
                     return;
                 }
 
@@ -250,13 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     console.log("❌ Сервер повернув помилку:", data.errors);
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Оплатити';
+                    if (textWrapper) textWrapper.textContent = 'Оплатити';
                 }
 
             } catch (err) {
                 console.log("❌ Fetch error:", err);
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Оплатити';
+                if (textWrapper) textWrapper.textContent = 'Оплатити';
             }
         });
     }

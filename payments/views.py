@@ -12,8 +12,15 @@ import logging
 from django.shortcuts import render
 from .models import TicketOrder
 from .ticket_utils import send_ticket_email_with_pdf
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import redirect
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
+
+
+def is_staff(user):
+    return user.is_staff
 
 
 def index(request):
@@ -137,6 +144,8 @@ def submit_ticket_form(request):
                 device_type=device_type,
             )
 
+            logger.info(f"📝 Створено замовлення #{order.id}")
+
             # Створюємо лід в KeyCRM
             if settings.KEYCRM_API_TOKEN and settings.KEYCRM_PIPELINE_ID and settings.KEYCRM_SOURCE_ID:
                 try:
@@ -180,17 +189,19 @@ def submit_ticket_form(request):
                         ]
                     }
 
+                    logger.info(f"🔄 Відправка даних в KeyCRM для замовлення #{order.id}")
                     lead = keycrm.create_lead(lead_data)
 
                     if lead and 'id' in lead:
                         order.keycrm_lead_id = lead['id']
                         order.save()
-                        logger.info(f"Лід {lead['id']} створено для замовлення {order.id}")
+                        logger.info(f"✅ Лід {lead['id']} створено для замовлення {order.id}")
                     else:
-                        logger.warning(f"Не вдалося створити лід в KeyCRM для замовлення {order.id}")
+                        logger.warning(f"⚠️ Не вдалося створити лід в KeyCRM для замовлення {order.id}")
+                        logger.warning(f"Відповідь KeyCRM: {lead}")
 
                 except Exception as e:
-                    logger.error(f"Помилка при створенні ліда в KeyCRM: {str(e)}")
+                    logger.error(f"❌ Помилка при створенні ліда в KeyCRM: {str(e)}")
 
             # Генеруємо параметри для оплати
             params = generate_wayforpay_params(order)
@@ -273,14 +284,70 @@ def wayforpay_callback(request):
                     send_confirmation_email(order)
                     order.email_status = "sent"
                     order.save(update_fields=["email_status"])
-                    logger.info(f"Email sent for order {order_reference}")
+                    logger.info(f"📧 Email відправлено для замовлення #{order.id}")
                 except Exception as e:
-                    logger.error(f"Email sending error for order {order_reference}: {e}")
+                    logger.error(f"❌ Помилка відправки email для замовлення #{order.id}: {e}")
             else:
-                logger.info(f"Email already sent for order {order_reference}, skipping.")
+                logger.info(f"ℹ️ Email вже було відправлено для замовлення #{order.id}")
+
+            # === ОНОВЛЕННЯ СТАТУСУ ОПЛАТИ В KeyCRM ===
+            if not order.keycrm_lead_id:
+                logger.warning(
+                    f"⚠️ KeyCRM lead_id відсутній для замовлення #{order.id}. Пропускаємо оновлення в KeyCRM")
+            elif not settings.KEYCRM_API_TOKEN:
+                logger.warning(f"⚠️ KEYCRM_API_TOKEN не налаштований. Пропускаємо оновлення в KeyCRM")
+            else:
+                try:
+                    logger.info(f"🔄 Оновлюємо статус оплати в KeyCRM для ліда {order.keycrm_lead_id}")
+
+                    keycrm = KeyCRMAPI()
+
+                    payment_data = {
+                        "status": "paid",  # Статус: paid, not_paid, refund, declined
+                        "amount": float(order.amount),
+                        "payment_method": "WayForPay",
+                        "comment": f"Оплата успішно проведена. Transaction ID: {data.get('transactionId', 'N/A')}"
+                    }
+
+                    result = keycrm.update_payment_status(order.keycrm_lead_id, payment_data)
+
+                    if result:
+                        logger.info(f"✅ Статус оплати в KeyCRM оновлено для ліда {order.keycrm_lead_id}")
+                    else:
+                        logger.warning(f"⚠️ Не вдалося оновити статус оплати в KeyCRM для ліда {order.keycrm_lead_id}")
+
+                except Exception as e:
+                    logger.error(f"❌ Помилка при оновленні статусу оплати в KeyCRM: {str(e)}")
+
+        elif transaction_status == "Declined":
+            order.payment_status = "failed"
+            order.save()
+
+            logger.info(f"❌ Оплата відхилена для замовлення #{order.id}")
+
+            # Оновлюємо статус в KeyCRM як declined
+
+            if order.keycrm_lead_id and settings.KEYCRM_API_TOKEN:
+                try:
+                    keycrm = KeyCRMAPI()
+
+                    payment_data = {
+                        "status": "declined",
+                        "amount": float(order.amount),
+                        "payment_method": "WayForPay",
+                        "comment": f"Оплата відхилена. Reason: {data.get('reasonCode', 'Unknown')}"
+                    }
+
+                    keycrm.update_payment_status(order.keycrm_lead_id, payment_data)
+                    logger.info(f"✅ Статус declined оновлено в KeyCRM для ліда {order.keycrm_lead_id}")
+
+                except Exception as e:
+                    logger.error(f"❌ Помилка при оновленні статусу declined в KeyCRM: {str(e)}")
+
         else:
             order.payment_status = "failed"
             order.save()
+            logger.info(f"⚠️ Cтатус транзакції: {transaction_status}")
 
         # --- Підтвердження для WayForPay (для будь-якого статусу) ---
         status = "accept"
@@ -303,7 +370,7 @@ def wayforpay_callback(request):
         return JsonResponse(response_data, status=200)
 
     except Exception as e:
-        logger.error(f"Callback error: {str(e)}")
+        logger.error(f"❌ Callback error: {str(e)}")
         return HttpResponse(f"Error: {str(e)}", status=400)
 
 
@@ -382,14 +449,15 @@ def validate_ticket_api(request, ticket_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 def scan_ticket_api(request, ticket_id):
-    """API для сканування квитка"""
+    """API для сканування квитка - АВТОМАТИЧНО підтверджує та змінює статус"""
     try:
         ticket = TicketOrder.objects.get(id=ticket_id, payment_status='success')
 
         body = json.loads(request.body) if request.body else {}
-        scanned_by = body.get('scanned_by', '')
+        scanned_by = body.get('scanned_by', 'scanner')
 
         was_valid = ticket.is_valid()
+        previous_status = ticket.ticket_status
 
         # Логування
         from .models import TicketScanLog
@@ -401,21 +469,47 @@ def scan_ticket_api(request, ticket_id):
             previous_status=ticket.ticket_status
         )
 
+        # АВТОМАТИЧНО ПІДТВЕРДЖУЄМО при скануванні через сканер
         if was_valid:
-            ticket.mark_as_used(scanned_by)
+            # Відмічаємо як використаний
+            ticket.mark_as_used(scanned_by=scanned_by)
+
+            # Якщо є авторизований користувач, зберігаємо його
+            if hasattr(request, 'user') and request.user.is_authenticated:
+                ticket.verify_ticket(request.user)
+            else:
+                # Якщо немає user, просто відмічаємо як verified
+                from django.utils import timezone
+                ticket.is_verified = True
+                ticket.verified_at = timezone.now()
+                ticket.save()
+
             message = '✅ Квиток дійсний! Вхід дозволено.'
-        else:
+            status_type = 'valid'
+        elif ticket.ticket_status == 'used':
             message = '⚠️ Квиток вже був використаний.'
+            status_type = 'used'
+        else:
+            message = '❌ Квиток недійсний.'
+            status_type = 'invalid'
 
         return JsonResponse({
             'success': True,
             'order_id': ticket.id,
+            'event_name': ticket.event_name,
             'was_valid': was_valid,
             'status': ticket.ticket_status,
-            'message': message
+            'is_verified': ticket.is_verified,
+            'scan_count': ticket.scan_count,
+            'message': message,
+            'status_type': status_type
         })
     except TicketOrder.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Квиток не знайдено'}, status=404)
+        return JsonResponse({
+            'success': False,
+            'error': 'Квиток не знайдено',
+            'status_type': 'invalid'
+        }, status=404)
 
 
 def scanner_page(request):
@@ -445,3 +539,4 @@ def verify_ticket_page(request, ticket_id):
             'ticket': None,
             'error': 'Квиток не знайдено'
         })
+
