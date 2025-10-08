@@ -342,9 +342,10 @@ def wayforpay_callback(request):
                     # Використовуємо збережений payment_id
                     if order.keycrm_payment_id:
                         logger.info(f"🔄 Додаємо зовнішню транзакцію до платежу {order.keycrm_payment_id}")
-                        
+
                         transaction_data = {
-                            "external_id": data.get("orderReference"),  # ORDER_118_1759950084
+                            "external_id": data.get("orderReference"),
+                            "transaction_id": data.get("orderReference"),
                             "amount": float(data.get("amount", order.amount)),
                             "currency": data.get("currency", "UAH"),
                             "status": "success",
@@ -366,16 +367,25 @@ def wayforpay_callback(request):
                         
                         if payments:
                             payment_id = payments[0].get("id")
-                            logger.info(f"🔄 Оновлюємо знайдений платіж {payment_id} на 'paid'")
-                            update_result = keycrm.update_payment_status(
-                                payment_id, 
-                                "paid", 
-                                f"Оплата замовлення #{order.id}"
-                            )
-                            if update_result:
-                                logger.info(f"✅ Статус платежу {payment_id} оновлено на 'paid'")
+                            logger.info(f"🔄 Додаємо зовнішню транзакцію до знайденого платежу {payment_id}")
+
+                            transaction_data = {
+                                "external_id": data.get("orderReference"),
+                                "transaction_id": data.get("orderReference"),
+                                "amount": float(data.get("amount", order.amount)),
+                                "currency": data.get("currency", "UAH"),
+                                "status": "success",
+                                "payment_system": data.get("paymentSystem", "WayForPay"),
+                                "description": f"Успішна оплата через WayForPay. AuthCode: {data.get('authCode', '')}",
+                                "processed_at": timezone.now().isoformat()
+                            }
+                            
+                            result = keycrm.add_external_transaction(payment_id, transaction_data)
+                            
+                            if result:
+                                logger.info(f"✅ Зовнішня транзакція додана до платежу {payment_id}")
                             else:
-                                logger.warning(f"⚠️ Не вдалося оновити статус платежу {payment_id}")
+                                logger.warning(f"⚠️ Не вдалося додати зовнішню транзакцію до платежу {payment_id}")
                         else:
                             logger.warning(f"⚠️ Платежі не знайдено і payment_id не збережено")
                         
