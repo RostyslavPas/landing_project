@@ -17,14 +17,8 @@ class KeyCRMAPI:
             "Content-Type": "application/json"
         }
 
-    # ==========================================================
-    # 1️⃣ СТВОРЕННЯ КАРТКИ (лід у воронці)
-    # ==========================================================
     def create_pipeline_card(self, data):
-        """
-        Створення картки (лід) у воронці KeyCRM.
-        Docs: https://docs.keycrm.app/#/Pipelines/createNewPipelineCard
-        """
+        """Створення картки (лід) у воронці KeyCRM."""
         url = f"{self.base_url}/pipelines/cards"
         try:
             logger.info(f"➡️ Надсилаю запит на створення картки в KeyCRM: {data}")
@@ -43,9 +37,6 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    # ==========================================================
-    # 3️⃣ ДОДАТКОВІ СЕРВІСНІ МЕТОДИ
-    # ==========================================================
     def get_pipelines(self):
         """Отримати список воронок"""
         url = f"{self.base_url}/pipelines"
@@ -57,17 +48,15 @@ class KeyCRMAPI:
             logger.error(f"❌ Помилка при отриманні воронок: {e}")
             return None
 
-    def add_external_transaction(self, payment_id, data):
-        """Додати зовнішню транзакцію до оплати"""
-        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
+    def get_sources(self):
+        """Отримати список джерел"""
+        url = f"{self.base_url}/sources"
         try:
-            response = requests.post(url, json=data, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при додаванні зовнішньої транзакції: {e}")
-            if hasattr(e, "response") and e.response is not None:
-                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            logger.error(f"❌ Помилка при отриманні джерел: {e}")
             return None
 
     def get_payments(self, lead_id):
@@ -93,6 +82,37 @@ class KeyCRMAPI:
             return result
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Помилка при створенні платежу для картки {card_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
+
+    def update_payment_status(self, payment_id, status="paid"):
+        """Оновити статус платежу"""
+        url = f"{self.base_url}/payments/{payment_id}"
+        try:
+            payload = {"status": status}
+            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Статус платежу {payment_id} оновлено на {status}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при оновленні статусу платежу {payment_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
+
+    def add_external_transaction(self, payment_id, transaction_data):
+        """Додати зовнішню транзакцію до оплати"""
+        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
+        try:
+            response = requests.post(url, headers=self.headers, json=transaction_data, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Зовнішня транзакція додана до платежу {payment_id}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при додаванні зовнішньої транзакції: {e}")
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
