@@ -205,13 +205,15 @@ def submit_ticket_form(request):
                             "status": "not_paid"
                         }
                         
-                        payment_result = keycrm.create_payment_for_card(lead['id'], payment_data)
+                        # ЗМІНЮЄМО: використовуємо create_payment замість create_payment_for_card
+                        payment_result = keycrm.create_payment(lead['id'], payment_data)
                         if payment_result and payment_result.get('id'):
                             order.keycrm_payment_id = payment_result['id']
                             order.save()
                             logger.info(f"✅ Платіж {payment_result['id']} створено для ліда {lead['id']}")
                         else:
                             logger.warning(f"⚠️ Не вдалося створити платіж для ліда {lead['id']}")
+                            logger.warning(f"Відповідь KeyCRM: {payment_result}")
 
                     else:
                         logger.warning(f"⚠️ Не вдалося створити лід в KeyCRM для замовлення {order.id}")
