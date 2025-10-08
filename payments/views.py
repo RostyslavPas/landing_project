@@ -345,7 +345,7 @@ def wayforpay_callback(request):
 
                         transaction_data = {
                             "external_id": data.get("orderReference"),
-                            "transaction_id": data.get("orderReference"),
+                            "transaction_uuid": data.get("orderReference"),  # Змінюємо на transaction_uuid
                             "amount": float(data.get("amount", order.amount)),
                             "currency": data.get("currency", "UAH"),
                             "status": "success",
@@ -371,7 +371,7 @@ def wayforpay_callback(request):
 
                             transaction_data = {
                                 "external_id": data.get("orderReference"),
-                                "transaction_id": data.get("orderReference"),
+                                "transaction_uuid": data.get("orderReference"),  # Змінюємо на transaction_uuid
                                 "amount": float(data.get("amount", order.amount)),
                                 "currency": data.get("currency", "UAH"),
                                 "status": "success",
