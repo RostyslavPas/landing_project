@@ -44,43 +44,6 @@ class KeyCRMAPI:
             return None
 
     # ==========================================================
-    # 2️⃣ ДОДАВАННЯ ЗОВНІШНЬОЇ ТРАНЗАКЦІЇ (оплати)
-    # ==========================================================
-    def create_external_transaction(self, data):
-        """
-        Додавання зовнішньої транзакції (оплати)
-        Docs: https://help.keycrm.app/uk/process-automation-api-and-more/iak-pratsiuvati-z-oplatami-v-api
-        """
-        url = f"{self.base_url}/external/transactions"
-
-        payload = {
-            "external_id": data["external_id"],             # унікальний ID (наприклад WayForPay transactionId)
-            "amount": data["amount"],                       # сума оплати
-            "status": data.get("status", "paid"),           # paid | declined | refund
-            "payment_system": data.get("payment_system", "WayForPay"),
-            "buyer_phone": data.get("buyer_phone"),
-            "buyer_email": data.get("buyer_email"),
-            "description": data.get("comment", ""),
-            "date_paid": data.get("date_paid", datetime.utcnow().isoformat()),
-            "card_title": data.get("card_title", "Онлайн оплата"),
-        }
-
-        try:
-            logger.info(f"➡️ Надсилаю зовнішню транзакцію до KeyCRM: {payload}")
-            response = requests.post(url, json=payload, headers=self.headers, timeout=10)
-            response.raise_for_status()
-
-            result = response.json()
-            logger.info(f"✅ Зовнішню транзакцію створено: {result}")
-            return result
-
-        except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при створенні зовнішньої транзакції: {str(e)}")
-            if hasattr(e, "response") and e.response is not None:
-                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-            return None
-
-    # ==========================================================
     # 3️⃣ ДОДАТКОВІ СЕРВІСНІ МЕТОДИ
     # ==========================================================
     def get_pipelines(self):
@@ -94,13 +57,27 @@ class KeyCRMAPI:
             logger.error(f"❌ Помилка при отриманні воронок: {e}")
             return None
 
-    def get_sources(self):
-        """Отримати список джерел"""
-        url = f"{self.base_url}/sources"
+    def add_external_transaction(self, payment_id, data):
+        """Додати зовнішню транзакцію до оплати"""
+        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.post(url, json=data, headers=self.headers, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при отриманні джерел: {e}")
+            logger.error(f"❌ Помилка при додаванні зовнішньої транзакції: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
+
+    def get_payments(self, lead_id):
+        """Отримати платежі для ліда"""
+        url = f"{self.base_url}/pipelines/cards/{lead_id}"
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            card_data = response.json().get("data", {})
+            return card_data.get("payments", [])
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при отриманні платежів: {e}")
+            return []
