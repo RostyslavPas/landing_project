@@ -69,7 +69,7 @@ class KeyCRMAPI:
             status: Статус платежу (paid, not_paid, declined)
             description: Опис платежу
         """
-        url = f"{self.base_url}/pipelines/cards/{lead_id}/payments/{payment_id}"
+        url = f"{self.base_url}/pipelines/cards/{lead_id}/payment/{payment_id}"
         try:
             payload = {"status": status}
             if description:
