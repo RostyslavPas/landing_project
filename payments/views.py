@@ -548,72 +548,87 @@ def wayforpay_callback(request):
                     logger.info(f"📋 Дані з WayForPay callback:")
                     logger.info(f"   - orderReference: {data.get('orderReference')}")
                     logger.info(f"   - authCode: {data.get('authCode')}")
-                    logger.info(f"   - recToken: {data.get('recToken')}")
+                    logger.info(f"   - amount: {data.get('amount')}")
+                    logger.info(f"   - processingDate: {data.get('processingDate')}")
                     logger.info(f"   - order.id: {order.id}")
 
-                    # СТРАТЕГІЯ 1: Спробувати прив'язати транзакцію за UUID (orderReference)
-                    logger.info(f"🔄 Стратегія 1: Спроба прив'язати транзакцію за UUID (orderReference)")
                     transaction_attached = False
 
-                    # Варіант 1: Повний orderReference
-                    attach_result = keycrm.attach_external_transaction_by_uuid(
-                        payment_id=order.keycrm_payment_id,
-                        transaction_uuid=order.wayforpay_order_reference
-                    )
+                    # СТРАТЕГІЯ: Пошук у списку зовнішніх транзакцій з retry
+                    # Причина: KeyCRM потрібен час, щоб отримати транзакцію від WayForPay
+                    logger.info(f"🔄 Пошук транзакції в списку зовнішніх транзакцій")
 
-                    if attach_result:
-                        logger.info(f"✅ Транзакцію прив'язано за UUID: {order.wayforpay_order_reference}")
-                        transaction_attached = True
+                    # Спробуємо знайти транзакцію кілька разів з затримкою
+                    max_attempts = 3
+                    wait_seconds = [2, 5, 10]  # Затримки між спробами
 
-                    # Варіант 2: Спробувати authCode як UUID
-                    if not transaction_attached and data.get('authCode'):
-                        attach_result = keycrm.attach_external_transaction_by_uuid(
-                            payment_id=order.keycrm_payment_id,
-                            transaction_uuid=data.get('authCode')
-                        )
-                        if attach_result:
-                            logger.info(f"✅ Транзакцію прив'язано за authCode: {data.get('authCode')}")
-                            transaction_attached = True
+                    callback_amount = float(data.get('amount', 0))
+                    callback_auth_code = data.get('authCode', '')
+                    callback_processing_date = data.get('processingDate', 0)
 
-                    # СТРАТЕГІЯ 2: Якщо UUID не спрацював, шукаємо в списку транзакцій
-                    if not transaction_attached:
-                        logger.info(f"🔄 Стратегія 2: Пошук транзакції в списку зовнішніх транзакцій")
+                    for attempt in range(max_attempts):
+                        if transaction_attached:
+                            break
 
-                        # Спробуємо знайти транзакцію за різними варіантами
-                        search_variants = [
-                            str(order.id),  # WayForPay може писати "Оплата замовлення #129"
-                            order.wayforpay_order_reference,  # ORDER_129_1760026936
-                            data.get('authCode', ''),  # 531476
-                        ]
+                        if attempt > 0:
+                            wait_time = wait_seconds[attempt - 1]
+                            logger.info(f"⏳ Зачекаємо {wait_time} секунд перед спробою #{attempt + 1}")
+                            import time as time_module
+                            time_module.sleep(wait_time)
 
-                        for search_term in search_variants:
-                            if not search_term or transaction_attached:
-                                continue
+                        logger.info(f"🔍 Спроба #{attempt + 1}: Шукаємо транзакцію")
 
-                            logger.info(f"🔍 Шукаємо транзакцію за: '{search_term}'")
+                        # Отримуємо останні транзакції (без фільтра, щоб побачити всі)
+                        transactions_result = keycrm.get_external_transactions(limit=100)
 
-                            transactions_result = keycrm.get_external_transactions(
-                                description=search_term
-                            )
+                        if transactions_result:
+                            transaction_list = transactions_result.get('data', transactions_result) if isinstance(
+                                transactions_result, dict) else transactions_result
 
-                            if transactions_result:
-                                # Обробляємо різні формати відповіді
-                                transaction_list = transactions_result.get('data', transactions_result) if isinstance(
-                                    transactions_result, dict) else transactions_result
+                            if isinstance(transaction_list, list) and len(transaction_list) > 0:
+                                logger.info(f"📦 Отримано {len(transaction_list)} транзакцій для аналізу")
 
-                                if isinstance(transaction_list, list) and len(transaction_list) > 0:
-                                    logger.info(f"📦 Знайдено {len(transaction_list)} транзакцій")
+                                # Шукаємо транзакцію за точною відповідністю
+                                matching_transaction = None
 
-                                    # Логуємо всі знайдені транзакції
-                                    for idx, trans in enumerate(transaction_list):
-                                        logger.info(
-                                            f"   [{idx}] ID: {trans.get('id')}, Description: {trans.get('description')}, Amount: {trans.get('amount')}, UUID: {trans.get('uuid')}")
+                                for trans in transaction_list:
+                                    trans_id = trans.get('id')
+                                    trans_desc = trans.get('description', '')
+                                    trans_amount = float(trans.get('amount', 0))
+                                    trans_uuid = trans.get('uuid', '')
+                                    trans_created = trans.get('created_at', '')
 
-                                    # Беремо першу знайдену транзакцію
-                                    transaction_id = transaction_list[0].get('id')
-                                    logger.info(f"✅ Використовуємо транзакцію ID: {transaction_id}")
+                                    # Критерії для точної відповідності:
+                                    # 1. Сума співпадає
+                                    # 2. AuthCode або orderReference згадується в description або uuid
+                                    matches_amount = abs(trans_amount - callback_amount) < 0.01
+                                    matches_auth_code = callback_auth_code and callback_auth_code in trans_desc
+                                    matches_order_ref = order.wayforpay_order_reference in trans_desc or order.wayforpay_order_reference in trans_uuid
+                                    matches_order_id = f"#{order.id}" in trans_desc or f"#{order.id} " in trans_desc
 
-                                    # Прив'язуємо за ID
+                                    logger.info(f"   🔍 Перевірка транзакції ID: {trans_id}")
+                                    logger.info(f"      - Description: {trans_desc[:100]}")
+                                    logger.info(f"      - Amount: {trans_amount} (потрібно: {callback_amount})")
+                                    logger.info(f"      - UUID: {trans_uuid}")
+                                    logger.info(
+                                        f"      - Matches: amount={matches_amount}, auth={matches_auth_code}, order_ref={matches_order_ref}, order_id={matches_order_id}")
+
+                                    # Якщо знайшли точну відповідність
+                                    if matches_amount and (matches_auth_code or matches_order_ref):
+                                        matching_transaction = trans
+                                        logger.info(f"✅ ЗНАЙДЕНО ВІДПОВІДНУ ТРАНЗАКЦІЮ!")
+                                        break
+
+                                    # Якщо є лише по order.id - це може бути менш надійно
+                                    elif matches_amount and matches_order_id and not matching_transaction:
+                                        matching_transaction = trans
+                                        logger.info(f"⚠️ Знайдено можливу відповідність по order.id (менш надійно)")
+
+                                if matching_transaction:
+                                    transaction_id = matching_transaction.get('id')
+                                    logger.info(f"🎯 Використовуємо транзакцію ID: {transaction_id}")
+
+                                    # Прив'язуємо транзакцію
                                     attach_result = keycrm.attach_external_transaction_by_id(
                                         payment_id=order.keycrm_payment_id,
                                         transaction_id=transaction_id
@@ -621,18 +636,20 @@ def wayforpay_callback(request):
 
                                     if attach_result:
                                         logger.info(
-                                            f"✅ Транзакцію {transaction_id} прив'язано до платежу {order.keycrm_payment_id}")
+                                            f"✅ Транзакцію {transaction_id} успішно прив'язано до платежу {order.keycrm_payment_id}")
                                         transaction_attached = True
                                         break
                                     else:
                                         logger.warning(f"⚠️ Не вдалося прив'язати транзакцію {transaction_id}")
+                                else:
+                                    logger.warning(f"⚠️ Відповідну транзакцію не знайдено в спробі #{attempt + 1}")
 
-                    # СТРАТЕГІЯ 3: Якщо транзакцію не знайдено, оновлюємо статус платежу вручну
+                    # Якщо після всіх спроб транзакцію не знайдено - оновлюємо статус вручну
                     if not transaction_attached:
-                        logger.warning(f"⚠️ Зовнішню транзакцію не знайдено або не вдалося прив'язати")
-                        logger.info(f"🔄 Стратегія 3: Оновлення статусу платежу вручну")
+                        logger.warning(f"⚠️ Зовнішню транзакцію не знайдено після {max_attempts} спроб")
+                        logger.info(f"🔄 Оновлення статусу платежу вручну")
 
-                        payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}. AuthCode: {data.get('authCode', 'N/A')}"
+                        payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}. AuthCode: {callback_auth_code}"
 
                         manual_update = keycrm.update_lead_payment_status(
                             lead_id=order.keycrm_lead_id,
@@ -646,7 +663,7 @@ def wayforpay_callback(request):
                         else:
                             logger.error(f"❌ Не вдалося оновити статус платежу вручну")
                     else:
-                        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновиться в KeyCRM")
+                        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлений в KeyCRM")
 
                 except Exception as e:
                     logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
