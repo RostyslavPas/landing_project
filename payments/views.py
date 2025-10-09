@@ -540,65 +540,75 @@ def wayforpay_callback(request):
             else:
                 logger.info(f"ℹ️ Email вже було відправлено для замовлення #{order.id}")
 
-            # === KeyCRM оновлення (ПРАВИЛЬНИЙ ФЛОУ) ===
-            if order.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
+            # === KeyCRM оновлення (ПРАВИЛЬНИЙ ФЛОУ згідно з документацією) ===
+            if order.keycrm_lead_id and order.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
                 try:
                     keycrm = KeyCRMAPI()
 
-                    # Крок 1: Оновлюємо статус платежу на "paid"
-                    payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}"
+                    logger.info(f"📋 Дані з WayForPay callback:")
+                    logger.info(f"   - orderReference: {data.get('orderReference')}")
+                    logger.info(f"   - authCode: {data.get('authCode')}")
+                    logger.info(f"   - recToken: {data.get('recToken')}")
+                    logger.info(f"   - order.id: {order.id}")
 
-                    logger.info(f"🔄 Крок 1: Оновлюємо статус платежу {order.keycrm_payment_id} на 'paid'")
-                    payment_update_result = keycrm.update_payment_status(
+                    # СТРАТЕГІЯ 1: Спробувати прив'язати транзакцію за UUID (orderReference)
+                    logger.info(f"🔄 Стратегія 1: Спроба прив'язати транзакцію за UUID (orderReference)")
+                    transaction_attached = False
+
+                    # Варіант 1: Повний orderReference
+                    attach_result = keycrm.attach_external_transaction_by_uuid(
                         payment_id=order.keycrm_payment_id,
-                        status="paid",
-                        description=payment_description
+                        transaction_uuid=order.wayforpay_order_reference
                     )
 
-                    if payment_update_result:
-                        logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
+                    if attach_result:
+                        logger.info(f"✅ Транзакцію прив'язано за UUID: {order.wayforpay_order_reference}")
+                        transaction_attached = True
 
-                        # Крок 2: Шукаємо зовнішню транзакцію в KeyCRM
-                        # WayForPay може передавати різні ідентифікатори:
-                        # - orderReference (наш ORDER_111_1759945930)
-                        # - order.id (просто 111)
-                        # - recToken або інший ідентифікатор
+                    # Варіант 2: Спробувати authCode як UUID
+                    if not transaction_attached and data.get('authCode'):
+                        attach_result = keycrm.attach_external_transaction_by_uuid(
+                            payment_id=order.keycrm_payment_id,
+                            transaction_uuid=data.get('authCode')
+                        )
+                        if attach_result:
+                            logger.info(f"✅ Транзакцію прив'язано за authCode: {data.get('authCode')}")
+                            transaction_attached = True
 
-                        # Спочатку логуємо всі можливі ідентифікатори з callback
-                        logger.info(f"📋 Дані з WayForPay callback:")
-                        logger.info(f"   - orderReference: {data.get('orderReference')}")
-                        logger.info(f"   - recToken: {data.get('recToken')}")
-                        logger.info(f"   - order.id: {order.id}")
+                    # СТРАТЕГІЯ 2: Якщо UUID не спрацював, шукаємо в списку транзакцій
+                    if not transaction_attached:
+                        logger.info(f"🔄 Стратегія 2: Пошук транзакції в списку зовнішніх транзакцій")
 
                         # Спробуємо знайти транзакцію за різними варіантами
                         search_variants = [
-                            str(order.id),  # WayForPay зазвичай пише "Оплата замовлення #111"
-                            order.wayforpay_order_reference,  # ORDER_111_1759945930
-                            data.get('recToken', ''),  # Токен транзакції від WayForPay
+                            str(order.id),  # WayForPay може писати "Оплата замовлення #129"
+                            order.wayforpay_order_reference,  # ORDER_129_1760026936
+                            data.get('authCode', ''),  # 531476
                         ]
 
-                        transaction_found = False
-
                         for search_term in search_variants:
-                            if not search_term:
+                            if not search_term or transaction_attached:
                                 continue
 
-                            logger.info(f"🔍 Шукаємо транзакцію за: {search_term}")
+                            logger.info(f"🔍 Шукаємо транзакцію за: '{search_term}'")
 
-                            transactions = keycrm.get_external_transactions(
+                            transactions_result = keycrm.get_external_transactions(
                                 description=search_term
                             )
 
-                            if transactions and transactions.get('data'):
-                                transaction_list = transactions['data']
-                                logger.info(f"📦 Знайдено {len(transaction_list)} транзакцій")
+                            if transactions_result:
+                                # Обробляємо різні формати відповіді
+                                transaction_list = transactions_result.get('data', transactions_result) if isinstance(
+                                    transactions_result, dict) else transactions_result
 
-                                # Логуємо всі знайдені транзакції
-                                for idx, trans in enumerate(transaction_list):
-                                    logger.info(
-                                        f"   [{idx}] ID: {trans.get('id')}, Description: {trans.get('description')}, Amount: {trans.get('amount')}")
+                                if isinstance(transaction_list, list) and len(transaction_list) > 0:
+                                    logger.info(f"📦 Знайдено {len(transaction_list)} транзакцій")
 
-                                if len(transaction_list) > 0:
+                                    # Логуємо всі знайдені транзакції
+                                    for idx, trans in enumerate(transaction_list):
+                                        logger.info(
+                                            f"   [{idx}] ID: {trans.get('id')}, Description: {trans.get('description')}, Amount: {trans.get('amount')}, UUID: {trans.get('uuid')}")
+
                                     # Беремо першу знайдену транзакцію
                                     transaction_id = transaction_list[0].get('id')
                                     logger.info(f"✅ Використовуємо транзакцію ID: {transaction_id}")
@@ -612,22 +622,37 @@ def wayforpay_callback(request):
                                     if attach_result:
                                         logger.info(
                                             f"✅ Транзакцію {transaction_id} прив'язано до платежу {order.keycrm_payment_id}")
-                                        transaction_found = True
+                                        transaction_attached = True
                                         break
                                     else:
                                         logger.warning(f"⚠️ Не вдалося прив'язати транзакцію {transaction_id}")
 
-                        if not transaction_found:
-                            logger.warning(f"⚠️ Зовнішню транзакцію не знайдено або не вдалося прив'язати")
-                            logger.warning(
-                                f"💡 Можливо, транзакція ще не завантажилась у KeyCRM або використовується інший ідентифікатор")
+                    # СТРАТЕГІЯ 3: Якщо транзакцію не знайдено, оновлюємо статус платежу вручну
+                    if not transaction_attached:
+                        logger.warning(f"⚠️ Зовнішню транзакцію не знайдено або не вдалося прив'язати")
+                        logger.info(f"🔄 Стратегія 3: Оновлення статусу платежу вручну")
+
+                        payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}. AuthCode: {data.get('authCode', 'N/A')}"
+
+                        manual_update = keycrm.update_lead_payment_status(
+                            lead_id=order.keycrm_lead_id,
+                            payment_id=order.keycrm_payment_id,
+                            status="paid",
+                            description=payment_description
+                        )
+
+                        if manual_update:
+                            logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено вручну на 'paid'")
+                        else:
+                            logger.error(f"❌ Не вдалося оновити статус платежу вручну")
                     else:
-                        logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
+                        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновиться в KeyCRM")
 
                 except Exception as e:
                     logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
                     import traceback
                     logger.error(f"Traceback: {traceback.format_exc()}")
+
             else:
                 if not order.keycrm_payment_id:
                     logger.warning(f"⚠️ KeyCRM payment_id відсутній для замовлення #{order.id}")
@@ -639,18 +664,6 @@ def wayforpay_callback(request):
             order.callback_processed = True
             order.save()
             logger.info(f"❌ Оплата відхилена для замовлення #{order.id}")
-
-            # Опціонально: можна оновити статус платежу в KeyCRM на "declined"
-            if order.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
-                try:
-                    keycrm = KeyCRMAPI()
-                    keycrm.update_payment_status(
-                        payment_id=order.keycrm_payment_id,
-                        status="declined",
-                        description=f"Оплата відхилена. Причина: {data.get('reasonCode', 'Unknown')}"
-                    )
-                except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні статусу відхиленого платежу: {e}")
 
         else:
             order.payment_status = "failed"

@@ -1,7 +1,6 @@
 import requests
 import logging
 from django.conf import settings
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -59,45 +58,25 @@ class KeyCRMAPI:
             logger.error(f"❌ Помилка при отриманні джерел: {e}")
             return None
 
-    # def get_payments(self, lead_id):
-    #     """Отримати платежі для ліда"""
-    #     url = f"{self.base_url}/pipelines/cards/{lead_id}"
-    #     try:
-    #         response = requests.get(url, headers=self.headers, timeout=10)
-    #         response.raise_for_status()
-    #         card_data = response.json().get("data", {})
-    #         return card_data.get("payments", [])
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при отриманні платежів: {e}")
-    #         return []
-    #
-    # def create_payment(self, card_id, data):
-    #     """Створити платіж для картки (ліда)"""
-    #     url = f"{self.base_url}/pipelines/cards/{card_id}/payment"
-    #     try:
-    #         response = requests.post(url, json=data, headers=self.headers, timeout=10)
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Платіж створено для картки {card_id}: {result}")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при створенні платежу для картки {card_id}: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
+    def update_lead_payment_status(self, lead_id, payment_id, status="paid", description=None):
+        """
+        Оновити статус платежу через API картки воронки
+        https://docs.keycrm.app/#/Pipelines/updateLeadPayment
 
-    def update_payment_status(self, payment_id, status="paid", description=None):
+        Args:
+            lead_id: ID картки (ліда) в KeyCRM
+            payment_id: ID платежу в KeyCRM
+            status: Статус платежу (paid, not_paid, declined)
+            description: Опис платежу
         """
-        Оновити статус платежу (PUT запит згідно з документацією KeyCRM)
-        https://docs.keycrm.app/#/Payments/updatePayment
-        """
-        url = f"{self.base_url}/payments/{payment_id}"
+        url = f"{self.base_url}/pipelines/cards/{lead_id}/payments/{payment_id}"
         try:
             payload = {"status": status}
             if description:
                 payload["description"] = description
 
-            logger.info(f"🔄 Оновлюємо статус платежу {payment_id} на '{status}'")
+            logger.info(f"🔄 Оновлюємо платіж {payment_id} ліда {lead_id} на статус '{status}'")
+            logger.info(f"📤 URL: {url}")
             logger.info(f"📤 Payload: {payload}")
 
             response = requests.put(url, headers=self.headers, json=payload, timeout=10)
@@ -107,43 +86,11 @@ class KeyCRMAPI:
 
             response.raise_for_status()
             result = response.json()
-            logger.info(f"✅ Платіж {payment_id} оновлено на статус '{status}'")
+            logger.info(f"✅ Платіж {payment_id} ліда {lead_id} оновлено на статус '{status}'")
             return result
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при оновленні платежу {payment_id}: {e}")
-            if hasattr(e, "response") and e.response is not None:
-                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-            return None
-
-    def attach_external_transaction(self, payment_id, transaction_uuid):
-        """
-        Прив'язати зовнішню транзакцію до платежу за UUID
-        https://docs.keycrm.app/#/Payments/attachExternalTransactionToPayment
-
-        Args:
-            payment_id: ID платежу в KeyCRM
-            transaction_uuid: Унікальний ідентифікатор транзакції від платіжного сервісу
-        """
-        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
-        try:
-            payload = {"transaction_uuid": transaction_uuid}
-
-            logger.info(f"🔄 Прив'язуємо зовнішню транзакцію до платежу {payment_id}")
-            logger.info(f"📤 Transaction UUID: {transaction_uuid}")
-
-            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
-
-            logger.info(f"📡 Статус відповіді: {response.status_code}")
-            logger.info(f"📡 Відповідь: {response.text}")
-
-            response.raise_for_status()
-            result = response.json()
-            logger.info(f"✅ Зовнішню транзакцію прив'язано до платежу {payment_id}")
-            return result
-
-        except requests.exceptions.RequestException as e:
-            logger.error(f"❌ Помилка при прив'язці зовнішньої транзакції: {e}")
+            logger.error(f"❌ Помилка при оновленні платежу {payment_id} ліда {lead_id}: {e}")
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
@@ -178,64 +125,6 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    # def create_payment_for_card(self, card_id, payment_data):
-    #     """Створити платіж для картки після створення ліда"""
-    #     url = f"{self.base_url}/pipelines/cards/{card_id}/payments"
-    #     try:
-    #         response = requests.post(url, json=payment_data, headers=self.headers, timeout=10)
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Платіж створено для картки {card_id}: {result}")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при створенні платежу: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
-    #
-    # def update_lead_payment_status(self, lead_id, payment_id, status="paid", description=None):
-    #     """Оновити статус платежу через API ліда"""
-    #     url = f"{self.base_url}/pipelines/cards/{lead_id}/payments/{payment_id}"
-    #     try:
-    #         payload = {"status": status}
-    #         if description:
-    #             payload["description"] = description
-    #
-    #         response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Платіж {payment_id} ліда {lead_id} оновлено: статус={status}")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при оновленні платежу {payment_id} ліда {lead_id}: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
-    #
-    # def update_payment_status_direct(self, payment_id, status="paid", description=None):
-    #     """Прямий PATCH запит для оновлення статусу платежу"""
-    #     url = f"{self.base_url}/payments/{payment_id}"
-    #     try:
-    #         payload = {"status": status}
-    #         if description:
-    #             payload["description"] = description
-    #
-    #         logger.info(f"🔄 Прямий PUT запит до {url} з даними: {payload}")
-    #         response = requests.put(url, headers=self.headers, json=payload, timeout=10)
-    #
-    #         logger.info(f"📡 Статус відповіді: {response.status_code}")
-    #         logger.info(f"📡 Відповідь: {response.text}")
-    #
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Платіж {payment_id} оновлено: статус={status}")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при прямому оновленні платежу {payment_id}: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
-
     def attach_external_transaction_by_id(self, payment_id, transaction_id):
         """
         Прив'язати зовнішню транзакцію до платежу за ID транзакції
@@ -250,10 +139,15 @@ class KeyCRMAPI:
             payload = {"transaction_id": transaction_id}
 
             logger.info(f"🔄 Прив'язуємо зовнішню транзакцію (ID: {transaction_id}) до платежу {payment_id}")
+            logger.info(f"📤 URL: {url}")
+            logger.info(f"📤 Payload: {payload}")
 
             response = requests.post(url, headers=self.headers, json=payload, timeout=10)
-            response.raise_for_status()
 
+            logger.info(f"📡 Статус відповіді: {response.status_code}")
+            logger.info(f"📡 Відповідь: {response.text}")
+
+            response.raise_for_status()
             result = response.json()
             logger.info(f"✅ Зовнішню транзакцію {transaction_id} прив'язано до платежу {payment_id}")
             return result
@@ -264,53 +158,35 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    # def update_lead_status(self, lead_id, status_id, client_id=None):
-    #     """Оновити статус ліда в воронці"""
-    #     url = f"{self.base_url}/pipelines/cards/{lead_id}"
-    #     try:
-    #         payload = {"status_id": status_id}
-    #         if client_id:
-    #             payload["client_id"] = client_id
-    #
-    #         logger.info(f"🔄 Оновлюємо статус ліда {lead_id} на {status_id} з client_id: {client_id}")
-    #         response = requests.put(url, headers=self.headers, json=payload, timeout=10)
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Статус ліда {lead_id} оновлено на {status_id}")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при оновленні статусу ліда {lead_id}: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
+    def attach_external_transaction_by_uuid(self, payment_id, transaction_uuid):
+        """
+        Прив'язати зовнішню транзакцію до платежу за UUID
+        https://docs.keycrm.app/#/Payments/attachExternalTransactionToPayment
 
-    # def update_payment_with_transaction(self, payment_id, order, wayforpay_data):
-    #     """Оновити платіж з зовнішньою транзакцією (повний PUT запит)"""
-    #     url = f"https://pasue.api.keycrm.app/finance/payments/{payment_id}"
-    #     try:
-    #         payload = {
-    #             'destination_type': 'lead',
-    #             'destination_id': order.keycrm_lead_id,
-    #             'payment_id': payment_id,
-    #             'payment_method_id': 6,  # WayForPay
-    #             'status': 'paid',
-    #             'actual_amount': float(order.amount),
-    #             'description': f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}. Товари: PASUE Club - Grand Opening Party Ticket",
-    #             'transaction_uuid': order.wayforpay_order_reference,
-    #             'gateway_transaction_id': wayforpay_data.get('authCode'),
-    #             'gateway_id': 1,
-    #             'currency_code': 'UAH',
-    #             'payment_date': datetime.now().isoformat() + 'Z',
-    #         }
-    #
-    #         logger.info(f"🔄 Оновлюємо платіж {payment_id} з транзакцією: {payload}")
-    #         response = requests.put(url, headers=self.headers, json=payload, timeout=10)
-    #         response.raise_for_status()
-    #         result = response.json()
-    #         logger.info(f"✅ Платіж {payment_id} оновлено з транзакцією")
-    #         return result
-    #     except requests.exceptions.RequestException as e:
-    #         logger.error(f"❌ Помилка при оновленні платежу {payment_id}: {e}")
-    #         if hasattr(e, "response") and e.response is not None:
-    #             logger.error(f"🔻 Відповідь сервера: {e.response.text}")
-    #         return None
+        Args:
+            payment_id: ID платежу в KeyCRM
+            transaction_uuid: Унікальний ідентифікатор транзакції від платіжного сервісу
+        """
+        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
+        try:
+            payload = {"transaction_uuid": transaction_uuid}
+
+            logger.info(f"🔄 Прив'язуємо зовнішню транзакцію (UUID: {transaction_uuid}) до платежу {payment_id}")
+            logger.info(f"📤 URL: {url}")
+            logger.info(f"📤 Payload: {payload}")
+
+            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
+
+            logger.info(f"📡 Статус відповіді: {response.status_code}")
+            logger.info(f"📡 Відповідь: {response.text}")
+
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Зовнішню транзакцію (UUID: {transaction_uuid}) прив'язано до платежу {payment_id}")
+            return result
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при прив'язці зовнішньої транзакції за UUID: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
