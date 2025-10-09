@@ -178,13 +178,15 @@ class KeyCRMAPI:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
 
-    def update_lead_status(self, lead_id, status_id):
+    def update_lead_status(self, lead_id, status_id, client_id=None):
         """Оновити статус ліда в воронці"""
         url = f"{self.base_url}/pipelines/cards/{lead_id}"
         try:
             payload = {"status_id": status_id}
+            if client_id:
+                payload["client_id"] = client_id
             
-            logger.info(f"🔄 Оновлюємо статус ліда {lead_id} на {status_id}")
+            logger.info(f"🔄 Оновлюємо статус ліда {lead_id} на {status_id} з client_id: {client_id}")
             response = requests.put(url, headers=self.headers, json=payload, timeout=10)
             response.raise_for_status()
             result = response.json()
@@ -192,6 +194,37 @@ class KeyCRMAPI:
             return result
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Помилка при оновленні статусу ліда {lead_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
+
+    def update_payment_with_transaction(self, payment_id, order, wayforpay_data):
+        """Оновити платіж з зовнішньою транзакцією (повний PUT запит)"""
+        url = f"https://pasue.api.keycrm.app/finance/payments/{payment_id}"
+        try:
+            payload = {
+                'destination_type': 'lead',
+                'destination_id': order.keycrm_lead_id,
+                'payment_id': payment_id,
+                'payment_method_id': 6,  # WayForPay
+                'status': 'paid',
+                'actual_amount': float(order.amount),
+                'description': f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}. Товари: PASUE Club - Grand Opening Party Ticket",
+                'transaction_uuid': order.wayforpay_order_reference,
+                'gateway_transaction_id': wayforpay_data.get('authCode'),
+                'gateway_id': 1,
+                'currency_code': 'UAH',
+                'payment_date': datetime.now().isoformat() + 'Z',
+            }
+            
+            logger.info(f"🔄 Оновлюємо платіж {payment_id} з транзакцією: {payload}")
+            response = requests.put(url, headers=self.headers, json=payload, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Платіж {payment_id} оновлено з транзакцією")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при оновленні платежу {payment_id}: {e}")
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
