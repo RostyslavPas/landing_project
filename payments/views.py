@@ -206,6 +206,23 @@ def submit_ticket_form(request):
 
                     if lead and lead.get('id'):
                         order.keycrm_lead_id = lead['id']
+                        
+                        # Беремо contact_id з відповіді
+                        lead_response = lead.get('response', {})
+                        if lead_response.get('contact_id'):
+                            order.keycrm_contact_id = lead_response['contact_id']
+                        
+                        # Беремо платежі з відповіді при створенні ліда
+                        payments = lead_response.get('payments', [])
+                        
+                        logger.info(f"🔍 В відповіді при створенні ліда знайдено {len(payments)} платежів")
+                        
+                        if payments and len(payments) > 0:
+                            order.keycrm_payment_id = payments[0].get('id')
+                            logger.info(f"💾 Збережено payment_id з відповіді: {order.keycrm_payment_id}")
+                        else:
+                            logger.warning(f"⚠️ Платежі не знайдено в відповіді при створенні ліда")
+                        
                         order.save()
                         logger.info(f"✅ Лід {lead['id']} створено для замовлення {order.id}")
                     else:
