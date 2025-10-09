@@ -343,16 +343,35 @@ def wayforpay_callback(request):
                 try:
                     keycrm = KeyCRMAPI()
                     
-                    # Оновлюємо платіж з зовнішньою транзакцією
-                    result = keycrm.update_payment_with_transaction(order.keycrm_payment_id, order, data)
+                    # 1️⃣ Спочатку оновлюємо статус платежу на "paid"
+                    payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}"
                     
-                    if result:
-                        logger.info(f"✅ Платіж {order.keycrm_payment_id} оновлено з транзакцією")
+                    logger.info(f"🔄 Оновлюємо статус платежу {order.keycrm_payment_id} на 'paid'")
+                    payment_result_direct = keycrm.update_payment_status_direct(
+                        order.keycrm_payment_id, 
+                        status="paid", 
+                        description=payment_description
+                    )
+                    
+                    if payment_result_direct:
+                        logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
+                        
+                        # 2️⃣ Прив'язуємо зовнішню транзакцію за UUID
+                        logger.info(f"🔄 Прив'язуємо зовнішню транзакцію {order.wayforpay_order_reference}")
+                        transaction_result = keycrm.attach_external_transaction(
+                            order.keycrm_payment_id, 
+                            order.wayforpay_order_reference
+                        )
+                        
+                        if transaction_result:
+                            logger.info(f"✅ Зовнішня транзакція прив'язана до платежу {order.keycrm_payment_id}")
+                        else:
+                            logger.warning(f"⚠️ Не вдалося прив'язати зовнішню транзакцію (можливо, вона ще не завантажилась)")
                     else:
-                        logger.warning(f"⚠️ Не вдалося оновити платіж {order.keycrm_payment_id}")
+                        logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
                         
                 except Exception as e:
-                    logger.error(f"❌ Помилка при оновленні платежу в KeyCRM: {e}")
+                    logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
             else:
                 if not order.keycrm_payment_id:
                     logger.warning(f"⚠️ KeyCRM payment_id відсутній для замовлення #{order.id}")

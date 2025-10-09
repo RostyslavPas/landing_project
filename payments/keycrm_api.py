@@ -162,8 +162,8 @@ class KeyCRMAPI:
             if description:
                 payload["description"] = description
         
-            logger.info(f"🔄 Прямий PATCH запит до {url} з даними: {payload}")
-            response = requests.patch(url, headers=self.headers, json=payload, timeout=10)
+            logger.info(f"🔄 Прямий PUT запит до {url} з даними: {payload}")
+            response = requests.put(url, headers=self.headers, json=payload, timeout=10)
             
             logger.info(f"📡 Статус відповіді: {response.status_code}")
             logger.info(f"📡 Відповідь: {response.text}")
@@ -174,6 +174,28 @@ class KeyCRMAPI:
             return result
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Помилка при прямому оновленні платежу {payment_id}: {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logger.error(f"🔻 Відповідь сервера: {e.response.text}")
+            return None
+
+    def attach_external_transaction(self, payment_id, transaction_uuid):
+        """Прив'язати зовнішню транзакцію до платежу за UUID"""
+        url = f"{self.base_url}/payments/{payment_id}/external-transactions"
+        try:
+            payload = {"transaction_uuid": transaction_uuid}
+            
+            logger.info(f"🔄 Прив'язуємо зовнішню транзакцію до платежу {payment_id}: {payload}")
+            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
+            
+            logger.info(f"📡 Статус відповіді: {response.status_code}")
+            logger.info(f"📡 Відповідь: {response.text}")
+            
+            response.raise_for_status()
+            result = response.json()
+            logger.info(f"✅ Зовнішня транзакція прив'язана до платежу {payment_id}")
+            return result
+        except requests.exceptions.RequestException as e:
+            logger.error(f"❌ Помилка при прив'язці зовнішньої транзакції: {e}")
             if hasattr(e, "response") and e.response is not None:
                 logger.error(f"🔻 Відповідь сервера: {e.response.text}")
             return None
