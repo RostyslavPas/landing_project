@@ -148,8 +148,16 @@ def send_ticket_email_with_pdf(order):
     # Генеруємо PDF з QR
     pdf_buffer = generate_ticket_pdf(order, qr_img)
 
+    # Формуємо посилання на бот з KeyCRM Lead ID
+    bot_url = "https://t.me/Pasue_club_bot"
+    if order.keycrm_lead_id:
+        bot_url = f"https://t.me/Pasue_club_bot?start={order.keycrm_lead_id}"
+
     # HTML шаблон
-    html_content = render_to_string('emails/ticket.html', {'order': order})
+    html_content = render_to_string('emails/ticket.html', {
+        'order': order,
+        'bot_url': bot_url
+    })
 
     # Plain text
     text_content = f"Ваш квиток на {order.event_name}\nНомер замовлення: {order.id}"

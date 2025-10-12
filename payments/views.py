@@ -2,8 +2,6 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from datetime import timedelta
 import hmac
 import time
 import hashlib
@@ -234,218 +232,6 @@ def submit_ticket_form(request):
     return JsonResponse({"success": False}, status=405)
 
 
-# @csrf_exempt
-# @require_http_methods(["POST"])
-# def wayforpay_callback(request):
-#     """Webhook від WayForPay"""
-#     try:
-#         data = json.loads(request.body.decode("utf-8"))
-#         logger.info("=== CALLBACK DATA ===")
-#         logger.info(json.dumps(data, indent=2, ensure_ascii=False))
-#         logger.info("=== END CALLBACK DATA ===")
-#
-#         order_reference = data.get("orderReference")
-#         transaction_status = data.get("transactionStatus")
-#         merchant_signature = data.get("merchantSignature")
-#
-#         if not order_reference:
-#             return HttpResponse("Missing orderReference", status=400)
-#
-#         try:
-#             order = TicketOrder.objects.get(wayforpay_order_reference=order_reference)
-#             logger.info(f"Знайдено замовлення #{order.id}, KeyCRM lead id: {order.keycrm_lead_id}")
-#         except TicketOrder.DoesNotExist:
-#             logger.info(f"Order not found: {order_reference}")
-#             return HttpResponse("Order not found", status=404)
-#
-#         # Перевірка на повторний callback
-#         if order.callback_processed and order.payment_status == "success":
-#             logger.info(f"ℹ️ Callback вже оброблено для замовлення #{order.id}")
-#             status = "accept"
-#             ts = int(time.time())
-#             sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
-#             response_signature = hmac.new(
-#                 settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
-#                 sig_source.encode("utf-8"),
-#                 hashlib.md5
-#             ).hexdigest()
-#             return JsonResponse({
-#                 "orderReference": order_reference,
-#                 "status": status,
-#                 "time": ts,
-#                 "signature": response_signature
-#             })
-#
-#         # Формуємо підпис для перевірки
-#         signature_fields = [
-#             data.get("merchantAccount", ""),
-#             data.get("orderReference", ""),
-#             str(data.get("amount", "")),
-#             data.get("currency", ""),
-#             str(data.get("authCode", "")),
-#             data.get("cardPan", ""),
-#             str(data.get("transactionStatus", "")),
-#             str(data.get("reasonCode", "")),
-#         ]
-#         signature_string = ";".join(signature_fields)
-#         expected_signature = hmac.new(
-#             settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
-#             signature_string.encode("utf-8"),
-#             hashlib.md5
-#         ).hexdigest()
-#
-#         logger.info("=== CALLBACK SIGNATURE DEBUG ===")
-#         logger.info(f"Expected signature: {expected_signature}")
-#         logger.info(f"Received signature: {merchant_signature}")
-#
-#         if expected_signature != merchant_signature:
-#             logger.error("=== SIGNATURE MISMATCH ===")
-#             return HttpResponse("Invalid signature", status=403)
-#
-#         logger.info("=== SIGNATURE VALID ===")
-#
-#         # Оновлюємо статус замовлення
-#         if transaction_status == "Approved":
-#             order.payment_status = "success"
-#             order.callback_processed = True
-#             order.name = data.get("clientFirstName", order.name)
-#             order.email = data.get("clientEmail", order.email)
-#             order.phone = data.get("clientPhone", order.phone)
-#             order.save()
-#
-#             logger.info(f"✅ Замовлення #{order.id} позначено як оплачене")
-#
-#             # Відправка email
-#             if order.email_status != "sent":
-#                 try:
-#                     send_ticket_email_with_pdf(order)
-#                     order.email_status = "sent"
-#                     order.save(update_fields=["email_status"])
-#                     logger.info(f"📧 Email відправлено для замовлення #{order.id}")
-#                 except Exception as e:
-#                     logger.error(f"❌ Помилка відправки email для замовлення #{order.id}: {e}")
-#             else:
-#                 logger.info(f"ℹ️ Email вже було відправлено для замовлення #{order.id}")
-#
-#             # === KeyCRM оновлення ===
-#             if order.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
-#                 try:
-#                     keycrm = KeyCRMAPI()
-#
-#                     # 1️⃣ Спочатку оновлюємо статус платежу на "paid"
-#                     payment_description = f"Замовлення #{order.wayforpay_order_reference}. Клієнт: {order.name}, {order.phone}, {order.email}"
-#
-#                     logger.info(f"🔄 Оновлюємо статус платежу {order.keycrm_payment_id} на 'paid'")
-#                     payment_update_result = keycrm.update_payment_status(
-#                         payment_id=order.keycrm_payment_id,
-#                         status="paid",
-#                         description=payment_description
-#                     )
-#
-#                     if payment_update_result:
-#                         logger.info(f"✅ Статус платежу {order.keycrm_payment_id} оновлено на 'paid'")
-#
-#                         # 2️⃣ Прив'язуємо зовнішню транзакцію за UUID
-#                         logger.info(f"🔄 Прив'язуємо зовнішню транзакцію {order.wayforpay_order_reference}")
-#                         transaction_result = keycrm.attach_external_transaction(
-#                             payment_id=order.keycrm_payment_id,
-#                             transaction_uuid=order.wayforpay_order_reference
-#                         )
-#
-#                         if transaction_result:
-#                             logger.info(f"✅ Зовнішня транзакція прив'язана до платежу {order.keycrm_payment_id}")
-#                         else:
-#                             # Якщо прив'язка по UUID не спрацювала, можна спробувати знайти транзакцію в списку
-#                             logger.warning(f"⚠️ Не вдалося прив'язати транзакцію за UUID")
-#                             logger.info(f"🔄 Спроба знайти транзакцію в списку зовнішніх транзакцій")
-#
-#                             # Шукаємо транзакцію по orderReference у description
-#                             transactions = keycrm.get_external_transactions(
-#                                 description=order.wayforpay_order_reference
-#                             )
-#
-#                             if transactions and transactions.get('data'):
-#                                 transaction_list = transactions['data']
-#                                 if len(transaction_list) > 0:
-#                                     transaction_id = transaction_list[0].get('id')
-#                                     logger.info(f"🔍 Знайдено транзакцію ID: {transaction_id}")
-#
-#                                     # Прив'язуємо за ID
-#                                     attach_result = keycrm.attach_external_transaction_by_id(
-#                                         payment_id=order.keycrm_payment_id,
-#                                         transaction_id=transaction_id
-#                                     )
-#
-#                                     if attach_result:
-#                                         logger.info(f"✅ Транзакцію {transaction_id} прив'язано до платежу")
-#                                     else:
-#                                         logger.warning(f"⚠️ Не вдалося прив'язати транзакцію за ID")
-#                                 else:
-#                                     logger.warning(f"⚠️ Транзакцію не знайдено в списку")
-#                             else:
-#                                 logger.warning(f"⚠️ Не вдалося отримати список транзакцій")
-#                     else:
-#                         logger.warning(f"⚠️ Не вдалося оновити статус платежу {order.keycrm_payment_id}")
-#
-#                 except Exception as e:
-#                     logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
-#                     import traceback
-#                     logger.error(f"Traceback: {traceback.format_exc()}")
-#             else:
-#                 if not order.keycrm_payment_id:
-#                     logger.warning(f"⚠️ KeyCRM payment_id відсутній для замовлення #{order.id}")
-#                 if not settings.KEYCRM_API_TOKEN:
-#                     logger.warning(f"⚠️ KEYCRM_API_TOKEN не налаштований")
-#
-#         elif transaction_status == "Declined":
-#             order.payment_status = "failed"
-#             order.callback_processed = True
-#             order.save()
-#             logger.info(f"❌ Оплата відхилена для замовлення #{order.id}")
-#
-#             # Опціонально: можна оновити статус платежу в KeyCRM на "declined"
-#             if order.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
-#                 try:
-#                     keycrm = KeyCRMAPI()
-#                     keycrm.update_payment_status(
-#                         payment_id=order.keycrm_payment_id,
-#                         status="declined",
-#                         description=f"Оплата відхилена. Причина: {data.get('reasonCode', 'Unknown')}"
-#                     )
-#                 except Exception as e:
-#                     logger.error(f"❌ Помилка при оновленні статусу відхиленого платежу: {e}")
-#
-#         else:
-#             order.payment_status = "failed"
-#             order.callback_processed = True
-#             order.save()
-#             logger.info(f"⚠️ Невідомий статус транзакції: {transaction_status}")
-#
-#         # Підтвердження для WayForPay
-#         status = "accept"
-#         ts = int(time.time())
-#         sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
-#
-#         response_signature = hmac.new(
-#             settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
-#             sig_source.encode("utf-8"),
-#             hashlib.md5
-#         ).hexdigest()
-#
-#         response_data = {
-#             "orderReference": order_reference,
-#             "status": status,
-#             "time": ts,
-#             "signature": response_signature,
-#         }
-#
-#         return JsonResponse(response_data, status=200)
-#
-#     except Exception as e:
-#         logger.error(f"❌ Callback error: {str(e)}")
-#         import traceback
-#         logger.error(f"Traceback: {traceback.format_exc()}")
-#         return HttpResponse(f"Error: {str(e)}", status=400)
 @csrf_exempt
 @require_http_methods(["POST"])
 def wayforpay_callback(request):
@@ -599,7 +385,7 @@ def wayforpay_callback(request):
                                     trans_created = trans.get('created_at', '')
 
                                     # Критерії для точної відповідності:
-                                    # 1. Сума співпадає
+                                    # 1. Сума збігається
                                     # 2. AuthCode або orderReference згадується в description або uuid
                                     matches_amount = abs(trans_amount - callback_amount) < 0.01
                                     matches_auth_code = callback_auth_code and callback_auth_code in trans_desc
@@ -880,4 +666,3 @@ def verify_ticket_page(request, ticket_id):
             'ticket': None,
             'error': 'Квиток не знайдено'
         })
-
