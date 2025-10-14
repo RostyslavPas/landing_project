@@ -323,23 +323,3 @@ function redirectToWayForPay(params) {
     document.body.appendChild(form);
     form.submit();
 }
-
-// document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
-//     e.preventDefault();
-//     const form = e.target;
-//     const formData = new FormData(form);
-//
-//     const response = await fetch('/submit-ticket/', {
-//         method: 'POST',
-//         body: formData,
-//         headers: { 'X-CSRFToken': getCookie('csrftoken') },
-//         credentials: 'include'
-//     });
-//
-//     const data = await response.json();
-//     if (data.success) {
-//         redirectToWayForPay(data.wayforpay_params);
-//     } else {
-//         alert('Помилка форми');
-//     }
-// });

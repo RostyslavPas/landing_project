@@ -1,5 +1,5 @@
 {% load static %}
-<!DOCTYPE html>
+{#<!DOCTYPE html>#}
 <html lang="uk">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,204 +12,35 @@
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="scale-wrapper">
         <section id="section-header" class="header-section">
           <header class="site-header">
-              <div class="menu-container">
-                  <img class="menu-toggle" src="{% static 'images/logo_burger.png' %}" alt="PASUE Club логотип" />
-                  <div class="dropdown-menu" id="dropdown-menu">
-                    <a href="#about-pasue" class="menu-item">Про PASUE Club</a>
-                    <a href="#about-event" class="menu-item">Про івент Grand Opening Party</a>
-                    <a href="#special-guest" class="menu-item">Виступ вечора</a>
-                    <a href="#get-your-ticket" class="menu-item">Купити квиток</a>
-                    <div class="social_links">
-                      <a href="https://instagram.com/pasue.club" class="social_link" target="_blank" aria-label="Instagram">
-                        <img src="{% static 'images/instagram.png' %}" alt="Instagram" />
-                      </a>
-                      <a href="#" class="social_link" target="_blank" aria-label="Telegram" onclick="openTelegram(event)">
-                        <img src="{% static 'images/telegram.png' %}" alt="Telegram" />
-                      </a>
-                      <a href="mailto:pasue.club@gmail.com" class="social_link" aria-label="Email">
-                        <img src="{% static 'images/email.png' %}" alt="Email" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
             <div class="logo">
               <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
               <span class="logo-text">закрите жіноче комʼюніті</span>
             </div>
           </header>
         </section>
-        <section id="section-hero">
-          <div class="hero-container">
-            <div class="hero-content">
-                <div class="event-info-container">
-                    <div class="event-info-item">
-                        <img src="{% static 'images/calendar.png' %}" alt="Calendar" class="event-icon">
-                        <div class="event-text">29 листопада</div>
-                    </div>
-                    <div class="event-info-item">
-                        <img src="{% static 'images/location.png' %}" alt="Location" class="event-icon">
-                        <div class="event-text">Київ, Heaven</div>
-                    </div>
-                    <div class="event-info-item">
-                        <img src="{% static 'images/people.png' %}" alt="People" class="event-icon">
-                        <div class="event-text">50 учасниць</div>
-                    </div>
-                </div>
-              <h1 class="hero-title">Grand Opening Party</h1>
-              <p class="hero-subtitle">Перша подія від PASUE Club - це більше, ніж вечірка<br>Це святкування відкриття нового жіночого комʼюніті</p>
-              <a href="#get-your-ticket" class="cta-button hero-cta">
-                <span class="cta-button-text">Стати учасницею події</span>
-                <div class="cta-button-key-1" aria-hidden="true"></div>
-              </a>
-              <p class="hero-description">Це твій вхід в унікальний простір,<br>який створений спеціально для тебе</p>
-            </div>
-            <div class="hero-visual">
-              <div class="hero-image-wrapper">
-                <img src="{% static 'images/logo_rabbit.png' %}" alt="A rabbit in a whimsical costume reading a scroll" class="hero-main-image">
-                <div class="hero-info-box"></div>
-                  <p class="hero-p">Незабутній виступ. Подарунки. Знайомства. Welcome-бар.</p>
-              </div>
-            </div>
-          </div>
-          <div class="hero-ps">
-            <img src="{% static 'images/letter.png' %}" alt="Envelope with a seal" class="hero-ps-envelope">
-            <p class="hero-ps-text" id="about-pasue">P.S. Ти знайшла місце яке тобі пасує.<br>Тут ти будеш почутою, побаченою,<br>важливою і потрібною</p>
-          </div>
-        </section>
-        <section id="section-about">
-          <div class="about-container">
-            <h2 class="about-title">Що таке</h2>
-            <img src="{% static 'images/main_logo_2.png' %}" alt="PASUE Club Logo" class="about-logo">
-          </div>
-        </section>
-        <section id="section-features">
-          <div class="features-grid">
-            <div class="feature-card">
-              <div class="feature-image-container">
-                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-                <img src="{% static 'images/heart.png' %}" alt="Heart with wings" class="feature-icon-image">
-              </div>
-              <h3 class="feature-title">Закрите комʼюніті</h3>
-              <p class="feature-description">Тут ти знайдеш підтримку, сестринство та безпечний простір без порівнянь, конкуренції чи осуду</p>
-            </div>
-            <div class="feature-card">
-              <div class="feature-image-container">
-                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-                <img src="{% static 'images/castle.png' %}" alt="Pink castle" class="feature-icon-image">
-              </div>
-              <h3 class="feature-title">PASUE City онлайн</h3>
-              <p class="feature-description">Віртуальне місто у Telegram - це територія спілкування, щоденних ритуалів та інсайтів від експертів</p>
-            </div>
-            <div class="feature-card">
-              <div class="feature-image-container">
-                <img src="{% static 'images/black_ellipse.png' %}" alt="Decorative circle" class="feature-bg-shape">
-                <img src="{% static 'images/mask.png' %}" alt="Venetian mask" class="feature-icon-image">
-              </div>
-              <h3 class="feature-title">Події з атмосферою</h3>
-              <p class="feature-description">Камерні вечори, ретрити і тематичні зустрічі, де ти зможеш відпочити та по-справжньому перезавантажитись</p>
-            </div>
-          </div>
-        </section>
-        <section>
-            <div>
-                <h2 class="highlights-title" id="about-event">Event Highlights</h2>
-                <p class="highlights-subtitle">Що на тебе чекає</p>
-            </div>
-        </section>
-        <section id="section-highlights">
-            <div class="highlights-container">
-                <div class="highlights-content-wrapper">
-                    <img src="{% static 'images/lamp.png' %}" alt="Chandelier" class="highlights-bg-image">
-                        <div class="highlight-card-1 left-top"><p><strong>Виступ, що зарядить енергією:</strong><br>колектив, який дарує легкість, вони виступають про нас і для нас - чесно, по-жіночому і з теплом</p>
-                        </div>
-                        <div class="highlight-card-2 left-bottom"><p><strong>Турбота у деталях:</strong><br>ексклюзивні подарунки для кожної, смачні частування, сюрпризи - все для твого задоволення</p>
-                        </div>
-                        <div class="highlight-card-3 right-top"><p><strong>Візуальна терапія:</strong><br>продумана атмосфера закритого клубу, таємничі послання, свічки та естетика в деталях</p>
-                        </div>
-                        <div class="highlight-card-4 right-bottom"><p><strong>Моменти, які хочеться зупинити:</strong><br>легка музика, welcome-бар, живе спілкування та щирі емоції - вечір, який ти згадуватимеш ще довго </p>
-                        </div>
-                        <div class="highlights-summary"><p><strong>І головне — перше знайомство з комʼюніті PASUE</strong><br>Ти зможеш приєднатися до простору, де можна бути собою, відчувати, творити й надихатися</p>
-                        </div>
-                    <a href="#get-your-ticket" class="cta-button-2"><span class="cta-button-2-text">Приєднатися до вечора</span>
-                        <div class="cta-button-2-key-2" aria-hidden="true"></div></a>
-                </div>
-            </div>
-        </section>
-        <section id="section-guest">
-          <div class="guest-container">
-            <div class="guest-visual">
-              <img src="{% static 'images/trio.png' %}" alt="background shape" class="guest-bg-shape-1">
-            </div>
-            <div class="guest-info">
-              <img src="{% static 'images/special_guest.png' %}" alt="Special Guest" class="guest-title-image" id="special-guest">
-              <p class="guest-subtitle">Виступ вечора:</p>
-            </div>
-            <div class="guest-description">
-              <p class="guest-description-item">«Тріо Різні» — жіночий колектив, який<br> перетворює простий вечір на той, який<br> захочеться згадувати знову й знову.</p>
-              <p class="guest-description-item">З ними ти станеш учасницею шоу<br> «Порадниця»: з тебе питання, а з дівчат -<br> чесна і смішна відповідь</p>
-              <p class="guest-description-item">Вони такі справжні та щирі, що в тебе<br> залишиться післясмак довгої розмови з<br> подругою</p>
-            </div>
-          </div>
-        </section>
-        <section id="section-ticket">
-          <div class="ticket-header">
-            <h2 class="ticket-title" id="get-your-ticket">Get your ticket</h2>
-            <p class="ticket-subtitle" id="ticket-form-text">Заповни форму і отримай свій квиток:</p>
-            <div class="ticket-info-main">
-                <p class="ticket-info">Дата проведення: <span class="bold">29 листопада 2025</span></p>
-                <p class="ticket-info">Час проведення: <span class="bold">17:00-20:00</span></p>
-            </div>
-          </div>
-          <div class="ticket-form-wrapper">
-            <div class="ticket-bg">
-              <img src="{% static 'images/ticket_new.png' %}" alt="Ticket background" class="ticket-bg-image">
-              <img src="{% static 'images/ticket_logo.png' %}" alt="PASUE Club logo" class="ticket-side-logo">
-            </div>
 
-            <form class="ticket-form" novalidate>
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="name">Прізвище та ім'я:</label>
-                <input type="text" id="name" name="name" placeholder="Введіть ваше прізвище та ім'я" autocomplete="name"/>
-                <div class="error-message" id="name-error" style="display: none;"></div>
+        <section id="section-coming-soon">
+            <div class="coming-soon">
+              <div class="coming-soon-background-wrapper">
+                <img src="{% static 'images/girls-picture.png' %}" alt="Two stylish women" class="coming-soon-main-image">
               </div>
-              <div class="form-row">
-                  <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email"/>
-                    <div class="error-message" id="email-error" style="display: none;"></div>
-                  </div>
-                  <div class="form-group">
-                    <label for="phone">Номер телефону:</label>
-                    <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel"/>
-                    <div class="error-message" id="phone-error" style="display: none;"></div>
-                  </div>
+              <div class="coming-soon-text-content">
+                <h2 class="coming-soon-subtitle">Новий простір для жінок</h2>
+                <h1 class="coming-soon-title">COMING SOON</h1>
+                <a href="{% url 'opening' %}" class="cta-button-soon">
+                  <span>Святкуй відкриття разом з нами</span>
+                  <img src="{% static 'images/heart_btn.png' %}" alt="Heart icon" class="cta-icon-soon">
+                </a>
               </div>
-
-              <input type="hidden" name="utm_source" id="utm_source">
-              <input type="hidden" name="utm_medium" id="utm_medium">
-              <input type="hidden" name="utm_campaign" id="utm_campaign">
-              <input type="hidden" name="utm_term" id="utm_term">
-              <input type="hidden" name="utm_content" id="utm_content">
-
-              <div class="form-group price-group">
-                <span class="price-label">2159</span>
-                <span class="price-label-2">UAH</span>
-                <button type="submit" class="submit-ticket-btn">
-                  <span class="text-wrapper-14">Отримати</span>
-                </button>
-              </div>
-            </form>
-          </div>
-          <p class="location-info">Місце проведення: <span class="bold">м.Київ, вул. Бориса Грінченка 7 (HEAVEN)</span></p>
+            </div>
         </section>
+
         <section id="section-footer">
           <footer class="site-footer">
             <div class="social-links">
@@ -271,15 +102,6 @@
         </ul>
       </div>
     </div>
-    <div class="event-marquee">
-        <span>Перша подія від PASUE Club <i class="fa-solid fa-calendar-days"></i>
-            29 листопада 2025 (17:00-20:00)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <i class="fa-solid fa-location-arrow"></i>
-            м.Київ, вул. Бориса Грінченка 7 (HEAVEN)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <i class="fa-solid fa-pen"></i>
-            Заповни форму і отримай свій квиток
-        </span>
-    </div>
     <!-- Підключаємо зовнішній JS -->
     <script src="{% static 'js/main.js' %}"></script>
     <script>
@@ -320,14 +142,9 @@
         const utms = getUTMFromCookies();
         const utmQuery = Object.keys(utms).map(k => utms[k] ? `${k}=${encodeURIComponent(utms[k])}` : "").filter(Boolean).join("&");
 
-        if (window.innerWidth < 1000 && !path.includes("/mobile/")) {
-          // редирект на мобільну
+        if (window.innerWidth < 1000 && path === "/") {
+          // редирект на мобільну версію головної сторінки
           window.location.href = "{% url 'mobile' %}" + (utmQuery ? `?${utmQuery}` : "");
-        }
-
-        if (window.innerWidth >= 1000 && path.includes("/mobile/")) {
-          // редирект на десктоп
-          window.location.href = "{% url 'index' %}" + (utmQuery ? `?${utmQuery}` : "");
         }
       }
 
