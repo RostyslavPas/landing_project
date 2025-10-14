@@ -10,7 +10,7 @@
 body {
   background-color: var(--background-light);
   font-family: var(--font-main);
-  color: var(--text-dark);
+  color: #000000;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -192,7 +192,7 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .logo-text {
   font-size: 24px;
-  color: var(--text-dark);
+  color: #000000;
   margin-top: -83px;
   margin-left: -179px;
   display: block;
@@ -770,7 +770,7 @@ h1, h2, h3, h4, h5, h6, p {
   top: -7px;
 }
 .form-group input {
-  border: 1px solid var(--text-dark);
+  border: 1px solid #000000;
   border-radius: 50px;
   height: 55px;
   padding: 0 20px;
@@ -1224,10 +1224,12 @@ html, body {
 }
 
 .coming-soon-main-image {
-  width: 591px;
-  height: 692px;
-  max-width: 100%;
-  object-fit: contain;
+    position: relative;
+    bottom: 12%;
+    width: 591px;
+    height: 692px;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .coming-soon-text-content {
@@ -1237,11 +1239,11 @@ html, body {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 450px; /* Pushes content down to overlap image */
+  margin-top: 15%; /* Pushes content down to overlap image */
 }
 
 .coming-soon-subtitle {
-  margin: 0;
+  margin: 42px 0 -29px;
   font-family: 'Cormorant SC', serif;
   font-weight: 700;
   font-size: 32px;
@@ -1249,7 +1251,7 @@ html, body {
 }
 
 .coming-soon-title {
-  margin: 20px 0 0;
+  margin: 20px 0 -15px;
   font-family: 'Caprasimo', cursive;
   font-weight: 400;
   font-size: clamp(60px, 10vw, 120px);
