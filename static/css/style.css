@@ -1199,3 +1199,144 @@ html, body {
   0% {transform: translateX(0);}
   100% {transform: translateX(-100%);}
 }
+/******************************New page coming soon**************************/
+ #section-coming-soon{
+     height: 100%;
+     padding-top: 0;
+ }
+ .coming-soon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 780px; /* Approximate height to contain elements */
+}
+
+.coming-soon-background-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.coming-soon-main-image {
+  width: 591px;
+  height: 692px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.coming-soon-text-content {
+  position: relative; /* To appear above the absolute image */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 450px; /* Pushes content down to overlap image */
+}
+
+.coming-soon-subtitle {
+  margin: 0;
+  font-family: 'Cormorant SC', serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: #000000;
+}
+
+.coming-soon-title {
+  margin: 20px 0 0;
+  font-family: 'Caprasimo', cursive;
+  font-weight: 400;
+  font-size: clamp(60px, 10vw, 120px);
+  line-height: 1.1;
+  color: #000000;
+}
+
+.cta-button-soon {
+  margin-top: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 40px;
+  background-color: #7c2537;
+  color: #ffffff;
+  border-radius: 100px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  min-width: 510px;
+  min-height: 85px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.cta-icon-soon {
+  width: 48px;
+  height: 48px;
+  transition: filter 0.2s ease;
+}
+
+.cta-button-soon:hover {
+  background-color: #ffffff;
+  border: 1px solid #7c2537;
+  color: #7c2537;
+}
+
+.cta-button-soon:hover .cta-icon-soon {
+  /* Фільтр для зміни білого серця на бордове */
+  filter: brightness(0) saturate(100%) invert(19%) sepia(47%) saturate(1679%) hue-rotate(318deg) brightness(91%) contrast(89%);
+}
+
+.cta-button-soon:active {
+  background-color: #7c2537;
+  border: 1px solid #7c2537;
+  color: #ffffff;
+}
+
+.cta-button-soon:active .cta-icon-soon {
+  filter: none;
+}
+
+@media (max-width: 1024px) {
+  .coming-soon-content {
+    min-height: 600px;
+  }
+  .coming-soon-text-content {
+    margin-top: 350px;
+  }
+  .cta-button-soon {
+    min-width: auto;
+    width: 90%;
+    max-width: 510px;
+  }
+}
+
+@media (max-width: 768px) {
+  .coming-soon-header {
+    margin-bottom: 32px;
+  }
+  .coming-soon-content {
+    min-height: 500px;
+  }
+  .coming-soon-text-content {
+    margin-top: 280px;
+  }
+  .coming-soon-subtitle {
+    font-size: 24px;
+  }
+  .cta-button-soon {
+    font-size: 18px;
+    padding: 16px 32px;
+    min-height: 70px;
+  }
+  .cta-icon-soon {
+    width: 32px;
+    height: 32px;
+  }
+}

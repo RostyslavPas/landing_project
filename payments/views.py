@@ -29,6 +29,15 @@ def mobile(request):
     return render(request, 'mobile.html')
 
 
+def opening(request):
+    """Сторінка Grand Opening Party (колишня index)"""
+    return render(request, "opening.html")
+
+def opening_mobile(request):
+    """Мобільна сторінка Grand Opening Party (колишня mobile)"""
+    return render(request, "opening_mobile.html")
+
+
 def generate_wayforpay_params(order):
     merchant_account = settings.WAYFORPAY_MERCHANT_ACCOUNT
     merchant_domain = settings.WAYFORPAY_DOMAIN.rstrip('/')
