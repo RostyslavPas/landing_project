@@ -15,8 +15,8 @@ html, body {
 body {
   margin: 0;
   font-family: 'Montserrat Alternates', sans-serif;
-  background-color: var(--light-bg);
-  color: var(--text-dark);
+  background-color: #fffdfa;
+  color: #000000;
   font-size: 14px;
 }
 /*advertiser line*/
@@ -60,8 +60,8 @@ section {
 }
 
 h1, h2, h3 {
-  font-family: var(--font-heading);
-  color: var(--brand-color);
+  font-family: 'New Rocker', cursive;
+  color: #8d3648;
   margin: 0;
   font-weight: 400;
 }
@@ -91,8 +91,8 @@ img {
   border-radius: 30px;
   font-weight: 600;
   font-size: 16px;
-  color: var(--text-light);
-  background-color: var(--dark-bg);
+  color: #ffffff;
+  background-color: #282828;
   position: relative;
   border: 1px solid transparent; /* Placeholder for alignment */
 }
@@ -104,7 +104,7 @@ img {
   left: 3px;
   right: 3px;
   bottom: 3px;
-  border: 1px dashed var(--text-light);
+  border: 1px dashed #ffffff;
   border-radius: 26px;
 }
 
@@ -365,10 +365,10 @@ img {
   right: -6px;
 }
 .about-title {
-  font-family: var(--font-body);
+  font-family: 'Montserrat Alternates', sans-serif;
   font-weight: 600;
   font-size: 16px;
-  color: var(--text-dark);
+  color: #000000;
   position: relative;
   top: -5px;
   right: -25px;
@@ -408,10 +408,10 @@ img {
   height: 90px;
 }
 .feature-text h3 {
-  font-family: var(--font-body);
+  font-family: 'Montserrat Alternates', sans-serif;
   font-weight: 600;
   font-size: 14px;
-  color: var(--text-dark);
+  color: #000000;
   margin-bottom: 7px;
 }
 .feature-text p {
@@ -624,7 +624,7 @@ img {
 .form-group input {
   width: 100%;
   height: 35px;
-  border: 1px solid var(--text-dark);
+  border: 1px solid #000000;
   border-radius: 50px;
   background-color: transparent;
   padding: 5px 20px;
@@ -662,7 +662,7 @@ img {
 .form-group input {
   width: 100%;
   height: 35px;
-  border: 1px solid var(--text-dark);
+  border: 1px solid #000000;
   border-radius: 50px;
   background-color: transparent;
   padding: 5px 20px;
@@ -798,7 +798,7 @@ img {
 .menu-item:active,
 .menu-item:focus {
   background-color: #f5f5f5;
-  color: var(--brand-color);
+  color: #8d3648;
 }
 .social_links {
   display: flex;
@@ -849,7 +849,7 @@ img {
   justify-content: center;
   gap: 20px;
   font-size: 14px;
-  margin: 20px 0;
+  margin: 45px 0;
 }
 .footer-nav a {
   color: #f3ecec;
@@ -884,7 +884,7 @@ img {
   margin-bottom: 30px;
   font-size: 16px;
   text-align: center;
-  font-family: var(--font-body);
+  font-family: 'Montserrat Alternates', sans-serif;
   font-weight: 600;
   line-height: 100%;
   color: #000000;
@@ -1473,10 +1473,10 @@ img {
       height: 114%;
     }
     .feature-text h3 {
-      font-family: var(--font-body);
+      font-family: 'Montserrat Alternates', sans-serif;
       font-weight: 600;
       font-size: 16px;
-      color: var(--text-dark);
+      color: #000000;
       margin-bottom: 7px;
     }
     .feature-text p {
@@ -1736,5 +1736,6 @@ img {
   color: var(--text-light);
   padding: 100px 0;
 }
+
 
 
