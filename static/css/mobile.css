@@ -1674,7 +1674,7 @@ img {
 /* Секція з контентом */
 #girls-content {
   flex: 1;
-  padding: 22px 20px 30px;
+  padding: 0 20px 30px;
   background-color: #ffffff;
 }
 
@@ -1694,7 +1694,7 @@ img {
   width: 196px;
   height: 229px;
   display: block;
-  margin-bottom: -70px;
+  margin-bottom: -62px;
 }
 
 .hero-subtitle-soon {
@@ -1703,7 +1703,7 @@ img {
   font-size: 14px;
   color: #000000;
   text-align: center;
-  margin: 0 0 -4px 0;
+  margin: 0 0 -5px 0;
   z-index: 2;
   position: relative;
 }
@@ -1714,7 +1714,7 @@ img {
   font-size: 40px;
   color: #000000;
   text-align: center;
-  margin: 0 0 13px 0;
+  margin: 0 0 5px 0;
   line-height: 1;
   z-index: 2;
   position: relative;
