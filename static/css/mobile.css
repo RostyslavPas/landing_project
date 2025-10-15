@@ -1630,111 +1630,143 @@ img {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  background-color: #ffffff;
 }
 
 .hero-wrapper-soon * {
   box-sizing: border-box;
 }
 
+/* Секція з логотипом */
+#hero-soon {
+  padding: 9px 20px 0;
+  background-color: #ffffff;
+}
 
 .hero-container-soon {
-    max-width: 440px;
-    margin: 0 auto;
-    padding: 0 20px;
-    overflow: hidden;
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .hero-content-wrapper-soon {
-    position: relative;
-    width: 100%;
-    min-height: 367px; /* Height to contain all absolute elements before the footer starts */
-}
-
-.hero-content-wrapper-soon > * {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
 .logo-image-soon {
-    top: 9px;
-    width: 196px;
-    height: 89px;
+  width: 196px;
+  height: 89px;
+  display: block;
 }
 
 .logo-subtitle-soon {
-    top: 73px;
-    left: 43%;
-    font-family: 'Montserrat Alternates', sans-serif;
-    font-weight: 400;
-    font-size: 7px;
-    color: #000000;
-    text-align: center;
-    width: 100px;
-    margin: 0;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 400;
+  font-size: 7px;
+  color: #000000;
+  text-align: center;
+  margin: -25px 50px 75px 0;
+}
+
+/* Секція з контентом */
+#girls-content {
+  flex: 1;
+  padding: 22px 20px 30px;
+  background-color: #ffffff;
+}
+
+.hero-container-soon-2 {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.hero-content-wrapper-soon-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
 .hero-background-image-soon {
-    top: 31px;
-    width: 196px;
-    height: 229px;
-    z-index: 1;
+  width: 196px;
+  height: 229px;
+  display: block;
+  margin-bottom: -70px;
 }
 
 .hero-subtitle-soon {
-    top: 196px;
-    font-family: 'Cormorant SC', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: #000000;
-    text-align: center;
-    width: 166px;
-    margin: 0;
-    z-index: 2;
+  font-family: 'Cormorant SC', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000000;
+  text-align: center;
+  margin: 0 0 -4px 0;
+  z-index: 2;
+  position: relative;
 }
 
 .hero-title-soon {
-    top: 207px;
-    font-family: 'Caprasimo', cursive;
-    font-weight: 400;
-    font-size: 40px;
-    color: #000000;
-    text-align: center;
-    width: 308px;
-    margin: 0;
-    z-index: 2;
+  font-family: 'Caprasimo', cursive;
+  font-weight: 400;
+  font-size: 40px;
+  color: #000000;
+  text-align: center;
+  margin: 0 0 13px 0;
+  line-height: 1;
+  z-index: 2;
+  position: relative;
 }
 
 .cta-button-soon {
-    top: 260px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    width: 305px;
-    height: 59px;
-    background-color: #7c2537;
-    border-radius: 100px;
-    text-decoration: none;
-    z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 305px;
+  height: 59px;
+  background-color: #7c2537;
+  border-radius: 100px;
+  text-decoration: none;
+  z-index: 2;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.cta-button-soon:active {
+  background-color: #7c2537;
+  border: 1px solid #7c2537;
+}
+
+.cta-button-soon:active .cta-text-soon {
+  color: #ffffff;
+}
+
+.cta-button-soon:active .cta-icon-soon {
+  filter: none;
 }
 
 .cta-text-soon {
-    font-family: 'Montserrat Alternates', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    color: #ffffff;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #ffffff;
+  transition: color 0.2s ease;
 }
 
 .cta-icon-soon {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
+  transition: filter 0.2s ease;
 }
+
 .site-footer-soon {
-  background-color: var(--dark-bg);
-  color: var(--text-light);
+  background-color: #1a1f2e;
+  color: #ffffff;
   padding: 30px 0;
+  margin-top: auto;
 }
 
 
