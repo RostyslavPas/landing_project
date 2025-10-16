@@ -115,10 +115,13 @@ WAYFORPAY_DOMAIN = os.getenv("WAYFORPAY_DOMAIN")
 WAYFORPAY_RETURN_URL = os.getenv("WAYFORPAY_RETURN_URL")
 WAYFORPAY_SERVICE_URL = os.getenv("WAYFORPAY_SERVICE_URL")
 
-# KeyCRM налаштування
+# KeyCRM налаштування для тікетів
 KEYCRM_API_TOKEN = os.getenv("KEYCRM_API_TOKEN")
 KEYCRM_PIPELINE_ID = int(os.getenv("KEYCRM_PIPELINE_ID"))
 KEYCRM_SOURCE_ID = int(os.getenv("KEYCRM_SOURCE_ID"))
+
+# KeyCRM налаштування для підписок
+KEYCRM_SUBSCRIPTION_PIPELINE_ID = int(os.getenv("KEYCRM_SUBSCRIPTION_PIPELINE_ID"))
 
 # Email налаштування
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

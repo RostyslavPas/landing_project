@@ -14,4 +14,6 @@ urlpatterns = [
     path('api/tickets/scan/<int:ticket_id>/', views.scan_ticket_api, name='scan_ticket'),
     path('scanner/', views.scanner_page, name='scanner'),
     path('verify-ticket/<int:ticket_id>/', views.verify_ticket_page, name='verify_ticket'),
+    path('submit-subscription/', views.submit_subscription_form, name='submit_subscription'),
+    path("payment/subscription-callback/", views.wayforpay_subscription_callback, name="wayforpay_subscription_callback"),
 ]
