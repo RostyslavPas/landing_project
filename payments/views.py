@@ -1266,6 +1266,8 @@ def send_subscription_confirmation_email(subscription):
     """Відправка email після успішної оплати підписки"""
     from django.core.mail import EmailMultiAlternatives
 
+    bot_url = f"https://t.me/Pasue_club_bot?start={subscription.keycrm_lead_id}"
+
     try:
         html_content = f"""
         <html>
@@ -1287,17 +1289,17 @@ def send_subscription_confirmation_email(subscription):
 
                 <h3>Що тебе чекає:</h3>
                 <ul>
-                    <li>🎉 Доступ до всіх заходів PASUE City протягом року</li>
+                    <li>🎉 Доступ до всіх заходів PASUE City протягом періоду підписки</li>
                     <li>🎫 Пріоритетне бронювання квитків</li>
                     <li>💰 Спеціальні знижки для підписників</li>
-                    <li>📧 Екскльузивні запрошення на закриті події</li>
+                    <li>📧 Ексклюзивні запрошення на закриті події</li>
                     <li>🎁 Персональні пропозиції та сюрпризи</li>
                 </ul>
 
                 <p>Слідкуй за нашими анонсами в соціальних мережах та готуйся до незабутніх вечорів!</p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://t.me/Pasue_club_bot" style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    <a href="{bot_url}" style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                         Приєднатися до Telegram
                     </a>
                 </div>
@@ -1316,7 +1318,7 @@ def send_subscription_confirmation_email(subscription):
 
         Привіт, {subscription.name}!
 
-        Дякуємо за довіру! Твоя річна підписка PASUE City успішно активована.
+        Дякуємо за довіру! Твоя підписка PASUE City успішно активована.
 
         Номер підписки: #{subscription.id}
         Email: {subscription.email}
