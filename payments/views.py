@@ -706,30 +706,6 @@ def wayforpay_subscription_callback(request):
             logger.info(f"⚠️ Підписку за order_reference '{order_reference}' не знайдено")
             logger.info(f"🔍 Шукаємо підписку за email: {client_email} та phone: {client_phone}")
 
-            if client_email and client_phone:
-                try:
-                    # Шукаємо найновішу підписку з таким email і телефоном, що ще не оплачена
-                    subscription = SubscriptionOrder.objects.filter(
-                        email=client_email,
-                        phone=client_phone,
-                        payment_status='pending',
-                        callback_processed=False
-                    ).order_by('-created_at').first()
-
-                    if subscription:
-                        logger.info(f"✅ Знайдено підписку за email+phone #{subscription.id}")
-                        # Зберігаємо order_reference для наступних callback
-                        subscription.wayforpay_order_reference = order_reference
-                        subscription.save()
-                    else:
-                        logger.warning(f"❌ Підписку за email+phone не знайдено")
-                except Exception as e:
-                    logger.error(f"❌ Помилка пошуку підписки: {e}")
-
-            if not subscription:
-                logger.error(f"❌ Підписку не знайдено ні за order_reference, ні за email+phone")
-                return HttpResponse("Subscription not found", status=404)
-
         logger.info(f"📋 Обробка підписки #{subscription.id}, KeyCRM lead: {subscription.keycrm_lead_id}, payment: {subscription.keycrm_payment_id}")
 
         # ✅ ПЕРЕВІРКА НА ПОВТОРНИЙ CALLBACK
@@ -1117,6 +1093,8 @@ def submit_subscription_form(request):
                 payment_status="pending",
                 device_type=device_type,
             )
+            subscription.wayforpay_order_reference = f"SUBSCRIPTION_{subscription.id}"
+            subscription.save()
 
             logger.info(f"📝 Створено замовлення підписки #{subscription.id}")
 
@@ -1129,7 +1107,7 @@ def submit_subscription_form(request):
                         "title": f"Підписка #{subscription.id}",
                         "pipeline_id": settings.KEYCRM_SUBSCRIPTION_PIPELINE_ID,
                         "source_id": settings.KEYCRM_SOURCE_ID,
-                        "manager_comment": "Лендінг: Річна підписка PASUE City",
+                        "manager_comment": "Лендінг: Місячна підписка PASUE City",
                         "contact": {
                             "full_name": name,
                             "email": email,
@@ -1143,7 +1121,7 @@ def submit_subscription_form(request):
                         "products": [
                             {
                                 "sku": f"subscription-{subscription.id}",
-                                "price": 2.00,  # Ціна річної підписки
+                                "price": 2.00,
                                 "quantity": 1,
                                 "unit_type": "шт",
                                 "name": "Річна підписка PASUE City"
