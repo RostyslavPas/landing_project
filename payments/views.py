@@ -695,6 +695,18 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
         except SubscriptionOrder.DoesNotExist:
             logger.info(f"⚠️ Підписку за order_reference '{order_reference}' не знайдено")
 
+            # 1.1. Перевіряємо, чи це наш custom orderReference (SUBSCRIPTION_*)
+            if order_reference.startswith('SUBSCRIPTION_'):
+                try:
+                    sub_id = int(order_reference.replace('SUBSCRIPTION_', ''))
+                    subscription = SubscriptionOrder.objects.get(id=sub_id)
+                    logger.info(f"✅ Знайдено підписку #{subscription.id} за custom orderReference")
+                    subscription.wayforpay_order_reference = order_reference
+                    subscription.save()
+                    return subscription
+                except (ValueError, SubscriptionOrder.DoesNotExist):
+                    logger.warning(f"⚠️ Не вдалося знайти підписку за custom orderReference")
+
     # 2. Пошук за email + phone (другий пріоритет)
     if client_email and client_phone:
         subscription = SubscriptionOrder.objects.filter(
@@ -723,6 +735,30 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
             subscription.wayforpay_order_reference = order_reference
             subscription.save()
             return subscription
+
+    # 4. НОВИЙ: Пошук за часом (якщо створено менше 10 хвилин тому)
+    from django.utils import timezone
+    from datetime import timedelta
+
+    if client_email or client_phone:
+        time_threshold = timezone.now() - timedelta(minutes=10)
+
+        recent_subscriptions = SubscriptionOrder.objects.filter(
+            payment_status='pending',
+            callback_processed=False,
+            created_at__gte=time_threshold
+        ).order_by('-created_at')
+
+        for sub in recent_subscriptions:
+            # Перевіряємо збіг email або phone
+            email_match = client_email and sub.email == client_email
+            phone_match = client_phone and sub.phone == client_phone
+
+            if email_match or phone_match:
+                logger.info(f"✅ Знайдено підписку #{sub.id} за часом створення (< 10 хв)")
+                sub.wayforpay_order_reference = order_reference
+                sub.save()
+                return sub
 
     return None
 
