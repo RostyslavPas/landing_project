@@ -1,0 +1,102 @@
+/* Form styles */
+.ticket-form-container {
+    background: rgba(141, 54, 72, 0.05);
+    border-radius: 20px;
+    padding: 45px;
+    border: 1px solid rgba(141, 54, 72, 0.1);
+    position: relative;
+    left: 32%;
+    top: 25px;
+    width: 35%;
+}
+
+.subscription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-dark);
+}
+
+.form-group input {
+  padding: 15px;
+  border: 2px solid rgba(141, 54, 72, 0.2);
+  border-radius: 10px;
+  background: var(--background-light);
+  color: var(--text-dark);
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-group input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.error-message {
+  color: #ff4757;
+  font-size: 14px;
+  margin-top: 5px;
+  display: none;
+}
+:root {
+  --primary-color: #8d3648;
+  --dark-bg: #282828;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --background-light: #fffdfa;
+  --font-main: 'Montserrat Alternates', sans-serif;
+  --font-display: 'New Rocker', cursive;
+}
+
+.submit-button {
+  background-color: #8d3648;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 30px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(141, 54, 72, 0.3);
+  background-color: #a03d56;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.text-wrapper-111 {
+  width: 155px;
+  font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 24px;
+  white-space: nowrap;
+  position: relative;
+  letter-spacing: 0;
+  line-height: normal;
+}
+

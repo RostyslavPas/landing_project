@@ -69,3 +69,16 @@ class TicketOrderForm(forms.Form):
         if email:
             return email.lower()
         return email
+
+
+class SubscriptionOrderForm(forms.Form):
+    name = forms.CharField(max_length=100, required=True)
+    email = forms.EmailField(required=True)
+    phone = forms.CharField(max_length=20, required=True)
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+        # Базова валідація телефону
+        if len(phone) < 10:
+            raise forms.ValidationError("Телефон повинен містити мінімум 10 цифр")
+        return phone

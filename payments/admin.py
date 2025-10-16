@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TicketOrder, TicketScanLog
+from .models import TicketOrder, TicketScanLog, SubscriptionOrder
 from django.utils.html import format_html
 
 
@@ -102,3 +102,12 @@ class TicketScanLogAdmin(admin.ModelAdmin):
         return f"#{obj.ticket.id}"
 
     ticket_id.short_description = 'Квиток'
+
+
+@admin.register(SubscriptionOrder)
+class SubscriptionOrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'email', 'phone', 'payment_status', 'device_type', 'created_at']
+    list_filter = ['payment_status', 'device_type', 'created_at']
+    search_fields = ['name', 'email', 'phone', 'wayforpay_order_reference']
+    readonly_fields = ['created_at', 'updated_at']
+    ordering = ['-created_at']

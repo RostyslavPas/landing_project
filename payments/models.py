@@ -117,3 +117,39 @@ class TicketScanLog(models.Model):
 
     def __str__(self):
         return f"Сканування #{self.ticket.id} - {self.scanned_at}"
+
+
+class SubscriptionOrder(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'В очікуванні'),
+        ('success', 'Успішно'),
+        ('failed', 'Неуспішно'),
+    ]
+
+    DEVICE_TYPE_CHOICES = [
+        ('desktop', 'Десктоп'),
+        ('mobile', 'Мобільний'),
+    ]
+
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    device_type = models.CharField(max_length=10, choices=DEVICE_TYPE_CHOICES, default='desktop')
+    wayforpay_order_reference = models.CharField(max_length=100, blank=True, null=True)
+    
+    keycrm_lead_id = models.IntegerField(blank=True, null=True, help_text="ID ліда в KeyCRM")
+    keycrm_payment_id = models.IntegerField(blank=True, null=True, help_text="ID платежу в KeyCRM")
+    keycrm_contact_id = models.IntegerField(blank=True, null=True, help_text="ID контакту в KeyCRM")
+    callback_processed = models.BooleanField(default=False, help_text="Чи оброблено callback від WayForPay")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Замовлення підписки"
+        verbose_name_plural = "Замовлення підписок"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Підписка #{self.id} - {self.name} ({self.email})"

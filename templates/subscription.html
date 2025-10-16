@@ -1,0 +1,435 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>PASUE Club - Grand Opening Party</title>
+    <meta
+      name="description"
+      content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
+    />
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/subscription.css' %}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="scale-wrapper">
+        <section id="section-header" class="header-section">
+          <header class="site-header">
+            <div class="logo">
+              <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
+              <span class="logo-text">закрите жіноче комʼюніті</span>
+            </div>
+          </header>
+        </section>
+
+        <section id="get-subscription" class="ticket-section">
+          <div class="ticket-container">
+            <div class="ticket-content">
+              <div class="ticket-form-container">
+                <form class="subscription-form" method="post">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="name">Ім'я:</label>
+                    <input type="text" id="name" name="name" required>
+                    <span class="error-message" id="name-error"></span>
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <span class="error-message" id="email-error"></span>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <span class="error-message" id="phone-error"></span>
+                  </div>
+
+                  <input type="hidden" id="utm_source" name="utm_source">
+                  <input type="hidden" id="utm_medium" name="utm_medium">
+                  <input type="hidden" id="utm_campaign" name="utm_campaign">
+                  <input type="hidden" id="utm_term" name="utm_term">
+                  <input type="hidden" id="utm_content" name="utm_content">
+
+                  <div style="text-align: center; margin-top: 20px;">
+                    <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" style="display:inline-block!important;background:#8d3648;background-size:cover;width: 256px!important;height:54px!important;border:none!important;border-radius:14px!important;padding:16px!important;text-decoration:none!important;box-shadow:3px 2px 8px rgba(71,66,66,0.22)!important;text-align:center!important;outline:none!important;" onmouseover="this.style.opacity='0.8';" onmouseout="this.style.opacity='1';">
+                      <span style="font-family:Montserrat Alternates, sans-serif!important;font-weight:bold!important;font-size:14px!important;color:#ffffff!important;line-height:18px!important;vertical-align:middle!important;">Оплатити</span>
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-footer">
+          <footer class="site-footer">
+            <div class="social-links">
+              <a href="https://instagram.com/pasue.club" class="footer-social-link" target="_blank" aria-label="Instagram">
+                  <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" />
+                  <span>@pasue.club</span>
+              </a>
+              <a href="mailto:pasue.club@gmail.com" class="footer-social-link" aria-label="Email">
+                  <img src="{% static 'images/email-icon.png' %}" alt="Email" />
+                  <span>pasue.club@gmail.com</span>
+              </a>
+              <a href="#" class="footer-social-link" target="_blank" aria-label="Telegram" onclick="openTelegram(event)">
+                  <img src="{% static 'images/telegram-icon.png' %}" alt="Telegram" />
+                  <span>+38 068 443 78 82</span>
+              </a>
+            </div>
+            <div class="footer-legal-links">
+              <a href="#" data-popup="offer">Правила та умови</a>
+              <a href="#" data-popup="privacy">Політика повернення коштів</a>
+            </div>
+            <p class="copyright">Всі права захищені</p>
+          </footer>
+        </section>
+    </div>
+    <div class="popup" id="popup-privacy">
+          <div class="popup-content desktop">
+            <span class="popup-close">&times;</span>
+            <h2>Політика повернення коштів</h2>
+            <ol>
+              <li>Повернення коштів за електронні квитки на події<br> не передбачене, окрім випадків скасування заходу з<br> ініціативи організатора.</li>
+              <li>Якщо подія перенесена, квиток залишається<br> дійсним. У разі неможливості відвідування —<br> прохання повідомити на email.</li>
+              <li>Замовлення можна скасувати до моменту оплати.</li>
+            </ol>
+          </div>
+    </div>
+    <div class="popup" id="popup-offer">
+      <div class="popup-content desktop">
+        <span class="popup-close">&times;</span>
+        <h2>Правила та умови</h2>
+
+        <p><b>Опис послуги:</b></p>
+        <p>Цей сайт є офіційною онлайн-платформою PASUE Club,<br> де Ви можете придбати квитки на заходи клубу.</p>
+
+        <p><b>Умови замовлення:</b></p>
+        <ul>
+            <li>Покупець зобов'язується надати достовірну<br> контактну інформацію.</li>
+            <li>Замовлення вважається дійсним лише після<br> підтвердження успішної оплати на email покупця.</li>
+        </ul>
+
+        <p><b>Оплата:</b></p>
+        <ul>
+            <li>Оплата здійснюється онлайн за допомогою<br> платіжної системи WayForPay.</li>
+            <li>Валюта платежу — гривня (UAH).</li>
+        </ul>
+
+        <p><b>Доставка:</b></p>
+        <ul>
+            <li>Електронні квитки надсилаються на email одразу<br> після підтвердження оплати.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- Підключаємо зовнішній JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // --- 1. Зберігаємо UTM у cookies ---
+      function saveUTMToCookies() {
+        const params = new URLSearchParams(window.location.search);
+        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
+        utms.forEach(name => {
+          const value = params.get(name);
+          if (value) {
+            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60*60*24*30}`;
+          }
+        });
+      }
+      // --- 2. Отримуємо UTM з cookies ---
+      function getUTMFromCookies() {
+        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
+        const result = {};
+        utms.forEach(name => {
+          const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+          result[name] = match ? decodeURIComponent(match[2]) : "";
+        });
+        return result;
+      }
+      // --- 3. Підставляємо UTM у форму ---
+      function fillUTMInForm() {
+        const utms = getUTMFromCookies();
+        Object.keys(utms).forEach(name => {
+          const input = document.getElementById(name);
+          if (input) input.value = utms[name];
+        });
+      }
+      // --- 4. Редирект між десктоп і мобільною версією ---
+      function checkScreenSize() {
+        saveUTMToCookies(); // зберігаємо UTM перед редиректом
+        const path = window.location.pathname;
+        const utms = getUTMFromCookies();
+        const utmQuery = Object.keys(utms).map(k => utms[k] ? `${k}=${encodeURIComponent(utms[k])}` : "").filter(Boolean).join("&");
+
+        if (window.innerWidth < 1000 && path === "/") {
+          // редирект на мобільну версію головної сторінки
+          window.location.href = "{% url 'mobile' %}" + (utmQuery ? `?${utmQuery}` : "");
+        }
+      }
+
+      // --- Виклики ---
+      fillUTMInForm();
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+
+    });
+    </script>
+    <script>
+      function openTelegram(e) {
+        e.preventDefault();
+        const phone = "380684437882";
+        const tgApp = `tg://resolve?phone=${phone}`;
+        const tgWeb = `https://t.me/+${phone}`;
+
+        window.location.href = tgApp;
+
+        setTimeout(() => {
+          window.open(tgWeb, "_blank");
+        }, 1000);
+      }
+    </script>
+    <script src="{% static 'js/subscription.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const form = document.querySelector('.subscription-form');
+          const payButton = document.querySelector('a[href*="wayforpay.com"]');
+
+          if (form && payButton) {
+            // Зберігаємо оригінальний URL кнопки
+            const originalButtonUrl = payButton.href;
+
+            // Перехоплюємо клік по кнопці оплати
+            payButton.addEventListener("click", async function (e) {
+              e.preventDefault(); // Зупиняємо стандартний перехід
+
+              // Валідація форми
+              const name = document.getElementById('name').value.trim();
+              const email = document.getElementById('email').value.trim();
+              const phone = document.getElementById('phone').value.trim();
+
+              if (!name || !email || !phone) {
+                alert('Заповніть всі поля перед оплатою');
+                return;
+              }
+
+              // Валідація email
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (!emailRegex.test(email)) {
+                alert('Введіть коректний email');
+                return;
+              }
+
+              // Валідація телефону
+              const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+              if (!phoneRegex.test(phone)) {
+                alert('Введіть коректний номер телефону');
+                return;
+              }
+
+              // Показуємо індикатор завантаження
+              const originalText = payButton.querySelector('span').textContent;
+              payButton.querySelector('span').textContent = 'Обробка...';
+              payButton.style.pointerEvents = 'none';
+              payButton.style.opacity = '0.6';
+
+              try {
+                // Відправляємо дані на сервер
+                const formData = new FormData(form);
+                const csrfToken = getCookie('csrftoken');
+
+                const response = await fetch('/submit-subscription/', {
+                  method: 'POST',
+                  body: formData,
+                  headers: {'X-CSRFToken': csrfToken},
+                  credentials: 'include'
+                });
+
+                if (response.ok) {
+                  const data = await response.json();
+                  if (data.success) {
+                    console.log('✅ Дані збережено, ID підписки:', data.subscription_id);
+
+                    // ✅ РЕДИРЕКТ НА СТАТИЧНУ КНОПКУ WAYFORPAY
+                    // Додаємо параметри до URL для передачі даних
+                    const wayforpayUrl = new URL(originalButtonUrl);
+                    wayforpayUrl.searchParams.set('clientFirstName', name);
+                    wayforpayUrl.searchParams.set('clientEmail', email);
+                    wayforpayUrl.searchParams.set('clientPhone', phone);
+                    wayforpayUrl.searchParams.set('orderReference', `SUBSCRIPTION_${data.subscription_id}`);
+
+                    // Переходимо на WayForPay
+                    window.location.href = wayforpayUrl.toString();
+
+                  } else {
+                    console.error('❌ Помилка збереження:', data.errors);
+                    alert('Помилка збереження даних. Спробуйте ще раз.');
+                    restoreButton();
+                  }
+                } else {
+                  console.error('❌ Помилка сервера:', response.status);
+                  alert('Помилка сервера. Спробуйте ще раз.');
+                  restoreButton();
+                }
+
+              } catch (error) {
+                console.error('❌ Помилка запиту:', error);
+                alert('Помилка з\'єднання. Перевірте інтернет.');
+                restoreButton();
+              }
+
+              function restoreButton() {
+                payButton.querySelector('span').textContent = originalText;
+                payButton.style.pointerEvents = 'auto';
+                payButton.style.opacity = '1';
+              }
+            });
+          }
+
+      // Функція для отримання CSRF токена
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+    });
+    </script>
+
+    <script>
+    // UTM tracking
+    document.addEventListener("DOMContentLoaded", () => {
+      function saveUTMToCookies() {
+        const params = new URLSearchParams(window.location.search);
+        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
+        utms.forEach(name => {
+          const value = params.get(name);
+          if (value) {
+            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60*60*24*30}`;
+          }
+        });
+      }
+      saveUTMToCookies();
+    });
+    </script>
+{#    <script>#}
+{#    document.addEventListener("DOMContentLoaded", () => {#}
+{#      const form = document.querySelector('.subscription-form');#}
+{#      const payButton = document.querySelector('a[href*="wayforpay.com"]');#}
+{#      #}
+{#      if (form && payButton) {#}
+{#        // Перехоплюємо клік по кнопці оплати#}
+{#        payButton.addEventListener("click", async function (e) {#}
+{#          e.preventDefault(); // Зупиняємо стандартний перехід#}
+{#          #}
+{#          // Валідація форми#}
+{#          const name = document.getElementById('name').value.trim();#}
+{#          const email = document.getElementById('email').value.trim();#}
+{#          const phone = document.getElementById('phone').value.trim();#}
+{##}
+{#          if (!name || !email || !phone) {#}
+{#            alert('Заповніть всі поля перед оплатою');#}
+{#            return;#}
+{#          }#}
+{##}
+{#          // Валідація email#}
+{#          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;#}
+{#          if (!emailRegex.test(email)) {#}
+{#            alert('Введіть коректний email');#}
+{#            return;#}
+{#          }#}
+{##}
+{#          // Показуємо індикатор завантаження#}
+{#          const originalText = payButton.querySelector('span').textContent;#}
+{#          payButton.querySelector('span').textContent = 'Обробка...';#}
+{#          payButton.style.pointerEvents = 'none';#}
+{##}
+{#          try {#}
+{#            // Відправляємо дані на сервер#}
+{#            const formData = new FormData(form);#}
+{#            const csrfToken = getCookie('csrftoken');#}
+{##}
+{#            const response = await fetch('/submit-subscription/', {#}
+{#              method: 'POST',#}
+{#              body: formData,#}
+{#              headers: {'X-CSRFToken': csrfToken},#}
+{#              credentials: 'include'#}
+{#            });#}
+{##}
+{#            if (response.ok) {#}
+{#              const data = await response.json();#}
+{#              if (data.success) {#}
+{#                console.log('✅ Дані збережено, ID підписки:', data.subscription_id);#}
+{#                // Переходимо на WayForPay#}
+{#                window.location.href = this.href;#}
+{#              } else {#}
+{#                console.error('❌ Помилка збереження:', data.errors);#}
+{#                alert('Помилка збереження даних');#}
+{#              }#}
+{#            } else {#}
+{#              console.error('❌ Помилка сервера:', response.status);#}
+{#              alert('Помилка сервера');#}
+{#            }#}
+{##}
+{#          } catch (error) {#}
+{#            console.error('❌ Помилка запиту:', error);#}
+{#            alert('Помилка з\'єднання');#}
+{#          } finally {#}
+{#            // Відновлюємо кнопку#}
+{#            payButton.querySelector('span').textContent = originalText;#}
+{#            payButton.style.pointerEvents = 'auto';#}
+{#          }#}
+{#        });#}
+{#      }#}
+{##}
+{#      // Функція для отримання CSRF токена#}
+{#      function getCookie(name) {#}
+{#        let cookieValue = null;#}
+{#        if (document.cookie && document.cookie !== '') {#}
+{#          const cookies = document.cookie.split(';');#}
+{#          for (let i = 0; i < cookies.length; i++) {#}
+{#            const cookie = cookies[i].trim();#}
+{#            if (cookie.substring(0, name.length + 1) === (name + '=')) {#}
+{#              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));#}
+{#              break;#}
+{#            }#}
+{#          }#}
+{#        }#}
+{#        return cookieValue;#}
+{#      }#}
+{#    });#}
+{#    </script>#}
+{#    <script>#}
+{#    document.addEventListener("DOMContentLoaded", () => {#}
+{#      // UTM tracking#}
+{#      function saveUTMToCookies() {#}
+{#        const params = new URLSearchParams(window.location.search);#}
+{#        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];#}
+{#        utms.forEach(name => {#}
+{#          const value = params.get(name);#}
+{#          if (value) {#}
+{#            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60*60*24*30}`;#}
+{#          }#}
+{#        });#}
+{#      }#}
+{#      saveUTMToCookies();#}
+{#    });#}
+{#    </script>#}
+  </body>
+</html>
