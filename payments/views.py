@@ -677,6 +677,148 @@ def verify_ticket_page(request, ticket_id):
         })
 
 
+def find_subscription_by_callback(order_reference, client_email, client_phone):
+    """
+    Знаходить підписку за різними критеріями по черзі.
+    Повертає підписку або None.
+    """
+    subscription = None
+
+    # 1. Пошук за order_reference (найнадійніший)
+    if order_reference:
+        try:
+            subscription = SubscriptionOrder.objects.get(
+                wayforpay_order_reference=order_reference
+            )
+            logger.info(f"✅ Знайдено підписку #{subscription.id} за order_reference")
+            return subscription
+        except SubscriptionOrder.DoesNotExist:
+            logger.info(f"⚠️ Підписку за order_reference '{order_reference}' не знайдено")
+
+    # 2. Пошук за email + phone (другий пріоритет)
+    if client_email and client_phone:
+        subscription = SubscriptionOrder.objects.filter(
+            email=client_email,
+            phone=client_phone,
+            payment_status='pending',
+            callback_processed=False
+        ).order_by('-created_at').first()
+
+        if subscription:
+            logger.info(f"✅ Знайдено підписку #{subscription.id} за email+phone")
+            subscription.wayforpay_order_reference = order_reference
+            subscription.save()
+            return subscription
+
+    # 3. Пошук за phone + статусом (резервний варіант)
+    if client_phone:
+        subscription = SubscriptionOrder.objects.filter(
+            phone=client_phone,
+            payment_status='pending',
+            callback_processed=False
+        ).order_by('-created_at').first()
+
+        if subscription:
+            logger.info(f"⚠️ Знайдено підписку #{subscription.id} за phone (резервний варіант)")
+            subscription.wayforpay_order_reference = order_reference
+            subscription.save()
+            return subscription
+
+    return None
+
+
+def update_keycrm_payment(subscription, wfp_data):
+    """
+    Оновлює платіж у KeyCRM після успішної транзакції WayForPay.
+    Працює з автоматичним пошуком транзакції та ручним апдейтом, якщо не знайдено.
+    """
+    if not (subscription.keycrm_lead_id and subscription.keycrm_payment_id and settings.KEYCRM_API_TOKEN):
+        logger.warning(f"⚠️ Відсутні дані для KeyCRM: lead_id={subscription.keycrm_lead_id}, payment_id={subscription.keycrm_payment_id}")
+        return
+
+    keycrm = KeyCRMAPI()
+    transaction_attached = False
+    callback_amount = float(wfp_data.get("amount", 0))
+    callback_auth_code = wfp_data.get("authCode", "")
+    order_reference = wfp_data.get("orderReference", "")
+
+    logger.info(f"📄 Пошук транзакції KeyCRM для subscription #{subscription.id}")
+
+    max_attempts = 3
+    wait_seconds = [2, 5, 10]
+
+    for attempt in range(max_attempts):
+        if transaction_attached:
+            break
+
+        if attempt > 0:
+            wait_time = wait_seconds[attempt - 1]
+            logger.info(f"⏳ Зачекаємо {wait_time} секунд перед спробою #{attempt + 1}")
+            import time as time_module
+            time_module.sleep(wait_time)
+
+        transactions_result = keycrm.get_external_transactions(limit=100)
+        transaction_list = transactions_result.get('data', transactions_result) if isinstance(transactions_result, dict) else transactions_result
+
+        if not transaction_list:
+            logger.warning(f"⚠️ Транзакцій не знайдено у спробі #{attempt + 1}")
+            continue
+
+        logger.info(f"📦 Отримано {len(transaction_list)} транзакцій у спробі #{attempt + 1}")
+
+        matching_transaction = None
+        for trans in transaction_list:
+            trans_amount = float(trans.get('amount', 0))
+            trans_desc = trans.get('description', '')
+            trans_uuid = trans.get('uuid', '')
+
+            matches_amount = abs(trans_amount - callback_amount) < 0.01
+            matches_auth_code = callback_auth_code and callback_auth_code in trans_desc
+            matches_order_ref = order_reference in trans_desc or order_reference in trans_uuid
+            matches_subscription_id = f"#{subscription.id}" in trans_desc
+
+            if matches_amount and (matches_auth_code or matches_order_ref):
+                matching_transaction = trans
+                logger.info(f"✅ Знайдено точну транзакцію: ID {trans.get('id')}")
+                break
+            elif matches_amount and matches_subscription_id and not matching_transaction:
+                matching_transaction = trans
+                logger.info(f"⚠️ Знайдено можливу відповідність по subscription.id")
+
+        if matching_transaction:
+            transaction_id = matching_transaction.get('id')
+            attach_result = keycrm.attach_external_transaction_by_id(
+                payment_id=subscription.keycrm_payment_id,
+                transaction_id=transaction_id
+            )
+            if attach_result:
+                logger.info(f"✅ Транзакцію {transaction_id} успішно прив'язано до платежу {subscription.keycrm_payment_id}")
+                transaction_attached = True
+                break
+            else:
+                logger.warning(f"⚠️ Не вдалось прив'язати транзакцію {transaction_id}")
+
+    if not transaction_attached:
+        logger.warning(f"⚠️ Транзакцію не знайдено після {max_attempts} спроб. Оновлюємо вручну.")
+        payment_description = (
+            f"Підписка #{order_reference}. "
+            f"Клієнт: {subscription.name or ''}, {subscription.phone or ''}, {subscription.email or ''}. "
+            f"AuthCode: {callback_auth_code}"
+        )
+        manual_update = keycrm.update_lead_payment_status(
+            lead_id=subscription.keycrm_lead_id,
+            payment_id=subscription.keycrm_payment_id,
+            status="paid",
+            description=payment_description
+        )
+        if manual_update:
+            logger.info(f"✅ Статус платежу {subscription.keycrm_payment_id} оновлено вручну на 'paid'")
+        else:
+            logger.error(f"❌ Не вдалось оновити статус платежу вручну")
+    else:
+        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлено у KeyCRM")
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def wayforpay_subscription_callback(request):
@@ -690,25 +832,22 @@ def wayforpay_subscription_callback(request):
         order_reference = data.get("orderReference")
         transaction_status = data.get("transactionStatus")
         merchant_signature = data.get("merchantSignature")
-        client_email = data.get("clientEmail")
-        client_phone = data.get("clientPhone")
+        client_email = data.get("clientEmail") or data.get("email")
+        client_phone = data.get("clientPhone") or data.get("phone")
 
         if not order_reference:
             return HttpResponse("Missing orderReference", status=400)
 
-        # ✅ СПОЧАТКУ ШУКАЄМО ЗА order_reference (якщо є)
-        subscription = None
-        try:
-            subscription = SubscriptionOrder.objects.get(wayforpay_order_reference=order_reference)
-            logger.info(
-                f"Знайдено підписку #{subscription.id}, KeyCRM lead id: {subscription.keycrm_lead_id}, payment id: {subscription.keycrm_payment_id}")
-        except SubscriptionOrder.DoesNotExist:
-            logger.info(f"⚠️ Підписку за order_reference '{order_reference}' не знайдено")
-            logger.info(f"🔍 Шукаємо підписку за email: {client_email} та phone: {client_phone}")
+        # --- КРИТИЧНО: Знаходимо підписку за різними критеріями ---
+        subscription = find_subscription_by_callback(order_reference, client_email, client_phone)
 
-        logger.info(f"📋 Обробка підписки #{subscription.id}, KeyCRM lead: {subscription.keycrm_lead_id}, payment: {subscription.keycrm_payment_id}")
+        if not subscription:
+            logger.error(f"❌ Підписку не знайдено! order_reference={order_reference}, email={client_email}, phone={client_phone}")
+            return HttpResponse("Subscription not found", status=404)
 
-        # ✅ ПЕРЕВІРКА НА ПОВТОРНИЙ CALLBACK
+        logger.info(f"📋 Обробка підписки #{subscription.id}")
+
+        # --- Перевірка на повторний callback ---
         if subscription.callback_processed and subscription.payment_status == "success":
             logger.info(f"ℹ️ Callback вже оброблено для підписки #{subscription.id}")
             status = "accept"
@@ -726,7 +865,7 @@ def wayforpay_subscription_callback(request):
                 "signature": response_signature
             })
 
-        # Формуємо підпис для перевірки
+        # --- Перевірка підпису WayForPay ---
         signature_fields = [
             data.get("merchantAccount", ""),
             data.get("orderReference", ""),
@@ -744,159 +883,35 @@ def wayforpay_subscription_callback(request):
             hashlib.md5
         ).hexdigest()
 
-        logger.info("=== CALLBACK SIGNATURE DEBUG ===")
         logger.info(f"Expected signature: {expected_signature}")
         logger.info(f"Received signature: {merchant_signature}")
-
         if expected_signature != merchant_signature:
             logger.error("=== SIGNATURE MISMATCH ===")
             return HttpResponse("Invalid signature", status=403)
-
         logger.info("=== SIGNATURE VALID ===")
 
-        # Оновлюємо статус підписки
+        # --- Оновлюємо статус підписки ---
         if transaction_status == "Approved":
             subscription.payment_status = "success"
-            subscription.callback_processed = True  # ✅ ВАЖЛИВО
-            subscription.wayforpay_order_reference = order_reference  # ✅ ЗБЕРІГАЄМО
+            subscription.callback_processed = True
+            subscription.wayforpay_order_reference = order_reference
 
-            # Оновлюємо дані клієнта (якщо змінилися в WayForPay)
-            if data.get("clientFirstName"):
-                subscription.name = data.get("clientFirstName")
-            if data.get("clientEmail"):
-                subscription.email = data.get("clientEmail")
-            if data.get("clientPhone"):
-                subscription.phone = data.get("clientPhone")
-
+            subscription.name = data.get("clientFirstName") or subscription.name
+            subscription.email = client_email or subscription.email
+            subscription.phone = client_phone or subscription.phone
             subscription.save()
 
             logger.info(f"✅ Підписка #{subscription.id} позначена як оплачена")
 
-            # Відправка email з підтвердженням підписки
+            # Відправка email з підтвердженням
             try:
                 send_subscription_confirmation_email(subscription)
                 logger.info(f"📧 Email підтвердження підписки відправлено для #{subscription.id}")
             except Exception as e:
                 logger.error(f"❌ Помилка відправки email для підписки #{subscription.id}: {e}")
 
-            # === KeyCRM оновлення (ПРАВИЛЬНИЙ ФЛОУ згідно з документацією) ===
-            if subscription.keycrm_lead_id and subscription.keycrm_payment_id and settings.KEYCRM_API_TOKEN:
-                try:
-                    keycrm = KeyCRMAPI()
-                    transaction_attached = False
-
-                    logger.info(f"📋 Дані з WayForPay callback:")
-                    logger.info(f"   - orderReference: {data.get('orderReference')}")
-                    logger.info(f"   - authCode: {data.get('authCode')}")
-                    logger.info(f"   - amount: {data.get('amount')}")
-                    logger.info(f"   - processingDate: {data.get('processingDate')}")
-                    logger.info(f"   - subscription.id: {subscription.id}")
-
-                    # СТРАТЕГІЯ: Пошук у списку зовнішніх транзакцій з retry
-                    logger.info(f"🔄 Пошук транзакції в списку зовнішніх транзакцій")
-
-                    # Спробуємо знайти транзакцію кілька разів з затримкою
-                    max_attempts = 3
-                    wait_seconds = [2, 5, 10]
-
-                    callback_amount = float(data.get('amount', 0))
-                    callback_auth_code = data.get('authCode', '')
-
-                    for attempt in range(max_attempts):
-                        if transaction_attached:
-                            break
-
-                        if attempt > 0:
-                            wait_time = wait_seconds[attempt - 1]
-                            logger.info(f"⏳ Зачекаємо {wait_time} секунд перед спробою #{attempt + 1}")
-                            import time as time_module
-                            time_module.sleep(wait_time)
-
-                        logger.info(f"🔍 Спроба #{attempt + 1}: Шукаємо транзакцію")
-
-                        transactions_result = keycrm.get_external_transactions(limit=100)
-
-                        if transactions_result:
-                            transaction_list = transactions_result.get('data', transactions_result) if isinstance(
-                                transactions_result, dict) else transactions_result
-
-                            if isinstance(transaction_list, list) and len(transaction_list) > 0:
-                                logger.info(f"📦 Отримано {len(transaction_list)} транзакцій для аналізу")
-
-                                matching_transaction = None
-
-                                for trans in transaction_list:
-                                    trans_id = trans.get('id')
-                                    trans_desc = trans.get('description', '')
-                                    trans_amount = float(trans.get('amount', 0))
-                                    trans_uuid = trans.get('uuid', '')
-
-                                    matches_amount = abs(trans_amount - callback_amount) < 0.01
-                                    matches_auth_code = callback_auth_code and callback_auth_code in trans_desc
-                                    matches_order_ref = order_reference in trans_desc or order_reference in trans_uuid
-                                    matches_subscription_id = f"#{subscription.id}" in trans_desc
-
-                                    logger.info(f"   🔍 Перевірка транзакції ID: {trans_id}")
-                                    logger.info(f"      - Amount: {trans_amount} (потрібно: {callback_amount})")
-                                    logger.info(f"      - Matches: amount={matches_amount}, auth={matches_auth_code}, order_ref={matches_order_ref}")
-
-                                    if matches_amount and (matches_auth_code or matches_order_ref):
-                                        matching_transaction = trans
-                                        logger.info(f"✅ ЗНАЙДЕНО ВІДПОВІДНУ ТРАНЗАКЦІЮ!")
-                                        break
-                                    elif matches_amount and matches_subscription_id and not matching_transaction:
-                                        matching_transaction = trans
-                                        logger.info(f"⚠️ Знайдено можливу відповідність по subscription.id")
-
-                                if matching_transaction:
-                                    transaction_id = matching_transaction.get('id')
-                                    logger.info(f"🎯 Використовуємо транзакцію ID: {transaction_id}")
-
-                                    attach_result = keycrm.attach_external_transaction_by_id(
-                                        payment_id=subscription.keycrm_payment_id,
-                                        transaction_id=transaction_id
-                                    )
-
-                                    if attach_result:
-                                        logger.info(f"✅ Транзакцію {transaction_id} успішно прив'язано до платежу {subscription.keycrm_payment_id}")
-                                        transaction_attached = True
-                                        break
-                                    else:
-                                        logger.warning(f"⚠️ Не вдалося прив'язати транзакцію {transaction_id}")
-                                else:
-                                    logger.warning(f"⚠️ Відповідну транзакцію не знайдено в спробі #{attempt + 1}")
-
-                    # Якщо після всіх спроб транзакцію не знайдено - оновлюємо статус вручну
-                    if not transaction_attached:
-                        logger.warning(f"⚠️ Зовнішню транзакцію не знайдено після {max_attempts} спроб")
-                        logger.info(f"🔄 Оновлення статусу платежу вручну")
-
-                        payment_description = f"Підписка #{order_reference}. Клієнт: {subscription.name}, {subscription.phone}, {subscription.email}. AuthCode: {callback_auth_code}"
-
-                        manual_update = keycrm.update_lead_payment_status(
-                            lead_id=subscription.keycrm_lead_id,
-                            payment_id=subscription.keycrm_payment_id,
-                            status="paid",
-                            description=payment_description
-                        )
-
-                        if manual_update:
-                            logger.info(f"✅ Статус платежу {subscription.keycrm_payment_id} оновлено вручну на 'paid'")
-                        else:
-                            logger.error(f"❌ Не вдалося оновити статус платежу вручну")
-                    else:
-                        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлений в KeyCRM")
-
-                except Exception as e:
-                    logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
-                    import traceback
-                    logger.error(f"Traceback: {traceback.format_exc()}")
-
-            else:
-                if not subscription.keycrm_payment_id:
-                    logger.warning(f"⚠️ KeyCRM payment_id відсутній для підписки #{subscription.id}")
-                if not settings.KEYCRM_API_TOKEN:
-                    logger.warning(f"⚠️ KEYCRM_API_TOKEN не налаштований")
+            # --- Оновлення KeyCRM ---
+            update_keycrm_payment(subscription, data)
 
         elif transaction_status == "Declined":
             subscription.payment_status = "failed"
@@ -904,7 +919,6 @@ def wayforpay_subscription_callback(request):
             subscription.wayforpay_order_reference = order_reference
             subscription.save()
             logger.info(f"❌ Оплата підписки відхилена #{subscription.id}")
-
         else:
             subscription.payment_status = "failed"
             subscription.callback_processed = True
@@ -912,11 +926,10 @@ def wayforpay_subscription_callback(request):
             subscription.save()
             logger.info(f"⚠️ Невідомий статус транзакції: {transaction_status}")
 
-        # Підтвердження для WayForPay
+        # --- Відправляємо підтвердження WayForPay ---
         status = "accept"
         ts = int(time.time())
         sig_source = f"{order_reference};{status};{settings.WAYFORPAY_SECRET_KEY}"
-
         response_signature = hmac.new(
             settings.WAYFORPAY_SECRET_KEY.encode("utf-8"),
             sig_source.encode("utf-8"),
@@ -929,7 +942,6 @@ def wayforpay_subscription_callback(request):
             "time": ts,
             "signature": response_signature,
         }
-
         logger.info(f"✅ Відправка підтвердження WayForPay: {response_data}")
         return JsonResponse(response_data, status=200)
 
@@ -1069,13 +1081,12 @@ def scan_ticket_api(request, ticket_id):
 def submit_subscription_form(request):
     if request.method == "POST":
         form = SubscriptionOrderForm(request.POST)
-        
+
         if form.is_valid():
             name = form.cleaned_data['name']
             email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
 
-            # Отримуємо UTM з POST або cookies
             utm_source = request.POST.get("utm_source") or request.COOKIES.get("utm_source", "")
             utm_medium = request.POST.get("utm_medium") or request.COOKIES.get("utm_medium", "")
             utm_campaign = request.POST.get("utm_campaign") or request.COOKIES.get("utm_campaign", "")
@@ -1085,7 +1096,6 @@ def submit_subscription_form(request):
             ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
             device_type = "mobile" if "mobi" in ua_string else "desktop"
 
-            # Створюємо замовлення підписки
             subscription = SubscriptionOrder.objects.create(
                 name=name,
                 email=email,
@@ -1093,12 +1103,9 @@ def submit_subscription_form(request):
                 payment_status="pending",
                 device_type=device_type,
             )
-            subscription.wayforpay_order_reference = f"SUBSCRIPTION_{subscription.id}"
-            subscription.save()
 
-            logger.info(f"📝 Створено замовлення підписки #{subscription.id}")
+            logger.info(f"🎫 Створено замовлення підписки #{subscription.id}")
 
-            # Створюємо лід в KeyCRM з платежем в масиві
             if settings.KEYCRM_API_TOKEN and settings.KEYCRM_SUBSCRIPTION_PIPELINE_ID and settings.KEYCRM_SOURCE_ID:
                 try:
                     keycrm = KeyCRMAPI()
@@ -1125,7 +1132,6 @@ def submit_subscription_form(request):
                                 "quantity": 1,
                                 "unit_type": "шт",
                                 "name": "Річна підписка PASUE City"
-                                # product_id видаляємо
                             }
                         ],
                         "payments": [
@@ -1142,37 +1148,35 @@ def submit_subscription_form(request):
                         ]
                     }
 
-                    logger.info(f"🔄 Відправка даних в KeyCRM для підписки #{subscription.id}")
+                    logger.info(f"📤 Відправка даних в KeyCRM для підписки #{subscription.id}")
                     lead = keycrm.create_pipeline_card(lead_data)
 
                     if lead and lead.get('id'):
                         subscription.keycrm_lead_id = lead['id']
-                        
-                        # Беремо contact_id з відповіді
+
                         lead_response = lead.get('response', {})
                         if lead_response.get('contact_id'):
                             subscription.keycrm_contact_id = lead_response['contact_id']
-                        
-                        # Беремо платежі з відповіді при створенні ліда
+
                         payments = lead_response.get('payments', [])
-                        
+
                         logger.info(f"🔍 В відповіді при створенні ліда знайдено {len(payments)} платежів")
-                        
+
                         if payments and len(payments) > 0:
                             subscription.keycrm_payment_id = payments[0].get('id')
                             logger.info(f"💾 Збережено payment_id з відповіді: {subscription.keycrm_payment_id}")
                         else:
                             logger.warning(f"⚠️ Платежі не знайдено в відповіді при створенні ліда")
-                        
+
                         subscription.save()
-                        logger.info(f"✅ Лід {lead['id']} створено для підписки {subscription.id}")
+                        logger.info(f"✅ Ліда {lead['id']} створено для підписки {subscription.id}")
                     else:
-                        logger.warning(f"⚠️ Не вдалося створити лід в KeyCRM для підписки {subscription.id}")
+                        logger.warning(f"⚠️ Не вдалось створити ліда у KeyCRM для підписки {subscription.id}")
                         logger.warning(f"Відповідь KeyCRM: {lead}")
 
                 except Exception as e:
-                    logger.error(f"❌ Помилка при створенні ліда в KeyCRM: {str(e)}")
-            
+                    logger.error(f"❌ Помилка при створенні ліда у KeyCRM: {str(e)}")
+
             return JsonResponse({"success": True, "subscription_id": subscription.id})
         else:
             return JsonResponse({
@@ -1188,17 +1192,16 @@ def send_subscription_confirmation_email(subscription):
     from django.core.mail import EmailMultiAlternatives
 
     try:
-        # HTML шаблон
         html_content = f"""
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
                 <h1 style="color: #2c3e50;">Вітаємо з оформленням підписки PASUE City!</h1>
-                
+
                 <p>Привіт, <strong>{subscription.name}</strong>!</p>
-                
+
                 <p>Дякуємо за довіру! Твоя річна підписка PASUE City успішно активована.</p>
-                
+
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h3 style="margin-top: 0;">Деталі підписки:</h3>
                     <p><strong>Номер підписки:</strong> #{subscription.id}</p>
@@ -1206,24 +1209,24 @@ def send_subscription_confirmation_email(subscription):
                     <p><strong>Телефон:</strong> {subscription.phone}</p>
                     <p><strong>Статус:</strong> Активна</p>
                 </div>
-                
+
                 <h3>Що тебе чекає:</h3>
                 <ul>
                     <li>🎉 Доступ до всіх заходів PASUE City протягом року</li>
                     <li>🎫 Пріоритетне бронювання квитків</li>
                     <li>💰 Спеціальні знижки для підписників</li>
-                    <li>📧 Ексклюзивні запрошення на закриті події</li>
-                    <li>🎁 Персональні пропозиції та сюрприzi</li>
+                    <li>📧 Екскльузивні запрошення на закриті події</li>
+                    <li>🎁 Персональні пропозиції та сюрпризи</li>
                 </ul>
-                
+
                 <p>Слідкуй за нашими анонсами в соціальних мережах та готуйся до незабутніх вечорів!</p>
-                
+
                 <div style="text-align: center; margin: 30px 0;">
                     <a href="https://t.me/Pasue_club_bot" style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                         Приєднатися до Telegram
                     </a>
                 </div>
-                
+
                 <p style="color: #666; font-size: 14px;">
                     З питаннями звертайся до нашої підтримки.<br>
                     Команда PASUE City ❤️
@@ -1233,30 +1236,28 @@ def send_subscription_confirmation_email(subscription):
         </html>
         """
 
-        # Plain text версія
         text_content = f"""
         Вітаємо з оформленням підписки PASUE City!
-        
+
         Привіт, {subscription.name}!
-        
+
         Дякуємо за довіру! Твоя річна підписка PASUE City успішно активована.
-        
+
         Номер підписки: #{subscription.id}
         Email: {subscription.email}
         Телефон: {subscription.phone}
         Статус: Активна
-        
+
         Що тебе чекає:
         - Доступ до всіх заходів PASUE City протягом року
         - Пріоритетне бронювання квитків
         - Спеціальні знижки для підписників
         - Ексклюзивні запрошення на закриті події
-        - Персональні пропозиції та сюрприzi
-        
+        - Персональні пропозиції та сюрпризи
+
         Команда PASUE City ❤️
         """
 
-        # Створюємо Email
         email = EmailMultiAlternatives(
             subject='🎉 Твоя підписка PASUE City активована!',
             body=text_content,
@@ -1264,10 +1265,7 @@ def send_subscription_confirmation_email(subscription):
             to=[subscription.email]
         )
 
-        # Додаємо HTML альтернативу
         email.attach_alternative(html_content, "text/html")
-
-        # Відправка
         email.send(fail_silently=False)
         logger.info(f"Email підтвердження підписки відправлено для #{subscription.id}")
 
