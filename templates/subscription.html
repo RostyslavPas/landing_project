@@ -204,14 +204,12 @@
           const payButton = document.querySelector('a[href*="wayforpay.com"]');
 
           if (form && payButton) {
-            // Зберігаємо оригінальний URL кнопки
             const originalButtonUrl = payButton.href;
 
-            // Перехоплюємо клік по кнопці оплати
             payButton.addEventListener("click", async function (e) {
-              e.preventDefault(); // Зупиняємо стандартний перехід
+              e.preventDefault();
 
-              // Валідація форми
+              // Валідація
               const name = document.getElementById('name').value.trim();
               const email = document.getElementById('email').value.trim();
               const phone = document.getElementById('phone').value.trim();
@@ -221,21 +219,19 @@
                 return;
               }
 
-              // Валідація email
               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
               if (!emailRegex.test(email)) {
                 alert('Введіть коректний email');
                 return;
               }
 
-              // Валідація телефону
               const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
               if (!phoneRegex.test(phone)) {
                 alert('Введіть коректний номер телефону');
                 return;
               }
 
-              // Показуємо індикатор завантаження
+              // Показуємо індикатор
               const originalText = payButton.querySelector('span').textContent;
               payButton.querySelector('span').textContent = 'Обробка...';
               payButton.style.pointerEvents = 'none';
@@ -258,12 +254,15 @@
                   if (data.success) {
                     console.log('✅ Дані збережено, ID підписки:', data.subscription_id);
 
-                    // ✅ РЕДИРЕКТ НА СТАТИЧНУ КНОПКУ WAYFORPAY
-                    // Додаємо параметри до URL для передачі даних
+                    // ✅ КРИТИЧНО: Передаємо дані через параметри URL кнопки WayForPay
                     const wayforpayUrl = new URL(originalButtonUrl);
+
+                    // Додаємо клієнтські дані
                     wayforpayUrl.searchParams.set('clientFirstName', name);
                     wayforpayUrl.searchParams.set('clientEmail', email);
                     wayforpayUrl.searchParams.set('clientPhone', phone);
+
+                    // ✅ ГОЛОВНЕ: Додаємо subscription_id як orderReference
                     wayforpayUrl.searchParams.set('orderReference', `SUBSCRIPTION_${data.subscription_id}`);
 
                     // Переходимо на WayForPay
@@ -294,22 +293,21 @@
             });
           }
 
-      // Функція для отримання CSRF токена
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
+          function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+                }
+              }
             }
+            return cookieValue;
           }
-        }
-        return cookieValue;
-      }
-    });
+        });
     </script>
 
     <script>
