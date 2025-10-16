@@ -684,7 +684,7 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
     """
     subscription = None
 
-    # 1. Пошук за order_reference (найнадійніший)
+    # 1. Пошук за order_reference (якщо він був збережений раніше)
     if order_reference:
         try:
             subscription = SubscriptionOrder.objects.get(
@@ -695,53 +695,33 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
         except SubscriptionOrder.DoesNotExist:
             logger.info(f"⚠️ Підписку за order_reference '{order_reference}' не знайдено")
 
-            # 1.1. Перевіряємо, чи це наш custom orderReference (SUBSCRIPTION_*)
-            if order_reference.startswith('SUBSCRIPTION_'):
-                try:
-                    sub_id = int(order_reference.replace('SUBSCRIPTION_', ''))
-                    subscription = SubscriptionOrder.objects.get(id=sub_id)
-                    logger.info(f"✅ Знайдено підписку #{subscription.id} за custom orderReference")
-                    subscription.wayforpay_order_reference = order_reference
-                    subscription.save()
-                    return subscription
-                except (ValueError, SubscriptionOrder.DoesNotExist):
-                    logger.warning(f"⚠️ Не вдалося знайти підписку за custom orderReference")
-
-    # 2. Пошук за email + phone (другий пріоритет)
+    # 2. ✅ ГОЛОВНЕ: Пошук за email + phone (найнадійніший для кнопки)
     if client_email and client_phone:
-        subscription = SubscriptionOrder.objects.filter(
+        # Нормалізуємо телефон (видаляємо всі символи крім цифр)
+        phone_digits = ''.join(filter(str.isdigit, client_phone))
+        
+        # Шукаємо за email та останніми 9 цифрами телефону
+        subscriptions = SubscriptionOrder.objects.filter(
             email=client_email,
-            phone=client_phone,
             payment_status='pending',
             callback_processed=False
-        ).order_by('-created_at').first()
+        ).order_by('-created_at')
+        
+        for sub in subscriptions:
+            sub_phone_digits = ''.join(filter(str.isdigit, sub.phone))
+            # Порівнюємо останні 9 цифр (без коду країни)
+            if phone_digits[-9:] == sub_phone_digits[-9:]:
+                logger.info(f"✅ Знайдено підписку #{sub.id} за email+phone")
+                sub.wayforpay_order_reference = order_reference
+                sub.save()
+                return sub
 
-        if subscription:
-            logger.info(f"✅ Знайдено підписку #{subscription.id} за email+phone")
-            subscription.wayforpay_order_reference = order_reference
-            subscription.save()
-            return subscription
-
-    # 3. Пошук за phone + статусом (резервний варіант)
-    if client_phone:
-        subscription = SubscriptionOrder.objects.filter(
-            phone=client_phone,
-            payment_status='pending',
-            callback_processed=False
-        ).order_by('-created_at').first()
-
-        if subscription:
-            logger.info(f"⚠️ Знайдено підписку #{subscription.id} за phone (резервний варіант)")
-            subscription.wayforpay_order_reference = order_reference
-            subscription.save()
-            return subscription
-
-    # 4. НОВИЙ: Пошук за часом (якщо створено менше 10 хвилин тому)
+    # 3. Пошук за часом створення (якщо email не збігся, але час недавній)
     from django.utils import timezone
     from datetime import timedelta
 
     if client_email or client_phone:
-        time_threshold = timezone.now() - timedelta(minutes=10)
+        time_threshold = timezone.now() - timedelta(minutes=15)  # Збільшено до 15 хв
 
         recent_subscriptions = SubscriptionOrder.objects.filter(
             payment_status='pending',
@@ -749,16 +729,37 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
             created_at__gte=time_threshold
         ).order_by('-created_at')
 
+        logger.info(f"🔍 Знайдено {recent_subscriptions.count()} недавніх підписок")
+
         for sub in recent_subscriptions:
-            # Перевіряємо збіг email або phone
-            email_match = client_email and sub.email == client_email
-            phone_match = client_phone and sub.phone == client_phone
+            # Порівнюємо email (case-insensitive)
+            email_match = client_email and sub.email.lower() == client_email.lower()
+            
+            # Порівнюємо телефони (останні 9 цифр)
+            phone_match = False
+            if client_phone:
+                client_phone_digits = ''.join(filter(str.isdigit, client_phone))
+                sub_phone_digits = ''.join(filter(str.isdigit, sub.phone))
+                phone_match = client_phone_digits[-9:] == sub_phone_digits[-9:]
 
             if email_match or phone_match:
-                logger.info(f"✅ Знайдено підписку #{sub.id} за часом створення (< 10 хв)")
+                logger.info(f"✅ Знайдено підписку #{sub.id} за часом створення (email={email_match}, phone={phone_match})")
                 sub.wayforpay_order_reference = order_reference
                 sub.save()
                 return sub
+
+    # 4. Останній варіант: якщо є лише 1 незавершена підписка за останні 15 хв
+    recent_single = SubscriptionOrder.objects.filter(
+        payment_status='pending',
+        callback_processed=False,
+        created_at__gte=timezone.now() - timedelta(minutes=15)
+    ).order_by('-created_at').first()
+
+    if recent_single:
+        logger.warning(f"⚠️ Використано резервний варіант: підписка #{recent_single.id}")
+        recent_single.wayforpay_order_reference = order_reference
+        recent_single.save()
+        return recent_single
 
     return None
 
@@ -868,10 +869,29 @@ def wayforpay_subscription_callback(request):
         order_reference = data.get("orderReference")
         transaction_status = data.get("transactionStatus")
         merchant_signature = data.get("merchantSignature")
-        client_email = data.get("clientEmail") or data.get("email")
-        client_phone = data.get("clientPhone") or data.get("phone")
+        
+        # ✅ Отримуємо email та phone з різних можливих полів
+        client_email = (
+            data.get("clientEmail") or 
+            data.get("email") or 
+            data.get("client_email") or
+            ""
+        ).strip().lower()  # Нормалізуємо email
+        
+        client_phone = (
+            data.get("clientPhone") or 
+            data.get("phone") or 
+            data.get("client_phone") or
+            ""
+        ).strip()
+
+        logger.info(f"🔍 Пошук підписки:")
+        logger.info(f"   - orderReference: {order_reference}")
+        logger.info(f"   - email: {client_email}")
+        logger.info(f"   - phone: {client_phone}")
 
         if not order_reference:
+            logger.error("❌ Відсутній orderReference у callback")
             return HttpResponse("Missing orderReference", status=400)
 
         # --- КРИТИЧНО: Знаходимо підписку за різними критеріями ---
@@ -879,9 +899,20 @@ def wayforpay_subscription_callback(request):
 
         if not subscription:
             logger.error(f"❌ Підписку не знайдено! order_reference={order_reference}, email={client_email}, phone={client_phone}")
+            
+            # Додаткова діагностика
+            logger.info("📊 Статистика незавершених підписок:")
+            pending_subs = SubscriptionOrder.objects.filter(
+                payment_status='pending',
+                callback_processed=False
+            ).order_by('-created_at')[:5]
+            
+            for sub in pending_subs:
+                logger.info(f"   - ID: {sub.id}, Email: {sub.email}, Phone: {sub.phone}, Created: {sub.created_at}")
+            
             return HttpResponse("Subscription not found", status=404)
 
-        logger.info(f"📋 Обробка підписки #{subscription.id}")
+        logger.info(f"✅ Знайдено підписку #{subscription.id}")
 
         # --- Перевірка на повторний callback ---
         if subscription.callback_processed and subscription.payment_status == "success":
@@ -919,12 +950,15 @@ def wayforpay_subscription_callback(request):
             hashlib.md5
         ).hexdigest()
 
-        logger.info(f"Expected signature: {expected_signature}")
-        logger.info(f"Received signature: {merchant_signature}")
+        logger.info(f"🔐 Перевірка підпису:")
+        logger.info(f"   Expected: {expected_signature}")
+        logger.info(f"   Received: {merchant_signature}")
+        
         if expected_signature != merchant_signature:
-            logger.error("=== SIGNATURE MISMATCH ===")
+            logger.error("❌ Підпис не збігається!")
             return HttpResponse("Invalid signature", status=403)
-        logger.info("=== SIGNATURE VALID ===")
+        
+        logger.info("✅ Підпис валідний")
 
         # --- Оновлюємо статус підписки ---
         if transaction_status == "Approved":
@@ -932,9 +966,14 @@ def wayforpay_subscription_callback(request):
             subscription.callback_processed = True
             subscription.wayforpay_order_reference = order_reference
 
-            subscription.name = data.get("clientFirstName") or subscription.name
-            subscription.email = client_email or subscription.email
-            subscription.phone = client_phone or subscription.phone
+            # Оновлюємо дані з callback (можуть бути точнішими)
+            if data.get("clientFirstName"):
+                subscription.name = data.get("clientFirstName")
+            if client_email:
+                subscription.email = client_email
+            if client_phone:
+                subscription.phone = client_phone
+            
             subscription.save()
 
             logger.info(f"✅ Підписка #{subscription.id} позначена як оплачена")
@@ -1164,16 +1203,16 @@ def submit_subscription_form(request):
                         "products": [
                             {
                                 "sku": f"subscription-{subscription.id}",
-                                "price": 2.00,
+                                "price": 1.00,
                                 "quantity": 1,
                                 "unit_type": "шт",
-                                "name": "Річна підписка PASUE City"
+                                "name": "Місячна підписка PASUE City"
                             }
                         ],
                         "payments": [
                             {
                                 "payment_method": "WayForPay",
-                                "amount": 2.00,
+                                "amount": 1.00,
                                 "description": "Очікування оплати",
                                 "status": "not_paid"
                             }
