@@ -1277,7 +1277,7 @@ def send_subscription_confirmation_email(subscription):
 
                 <p>Привіт, <strong>{subscription.name}</strong>!</p>
 
-                <p>Дякуємо за довіру! Твоя річна підписка PASUE City успішно активована.</p>
+                <p>Дякуємо за довіру! Твоя підписка PASUE City успішно активована.</p>
 
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h3 style="margin-top: 0;">Деталі підписки:</h3>
