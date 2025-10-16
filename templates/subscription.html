@@ -254,19 +254,14 @@
                   if (data.success) {
                     console.log('✅ Дані збережено, ID підписки:', data.subscription_id);
 
-                    // ✅ КРИТИЧНО: Передаємо дані через параметри URL кнопки WayForPay
-                    const wayforpayUrl = new URL(originalButtonUrl);
+                    // ✅ КРИТИЧНО: Зберігаємо ID підписки в localStorage для резервного пошуку
+                    localStorage.setItem('pending_subscription_id', data.subscription_id);
+                    localStorage.setItem('pending_subscription_email', email);
+                    localStorage.setItem('pending_subscription_phone', phone);
+                    localStorage.setItem('pending_subscription_time', new Date().getTime());
 
-                    // Додаємо клієнтські дані
-                    wayforpayUrl.searchParams.set('clientFirstName', name);
-                    wayforpayUrl.searchParams.set('clientEmail', email);
-                    wayforpayUrl.searchParams.set('clientPhone', phone);
-
-                    // ✅ ГОЛОВНЕ: Додаємо subscription_id як orderReference
-                    wayforpayUrl.searchParams.set('orderReference', `SUBSCRIPTION_${data.subscription_id}`);
-
-                    // Переходимо на WayForPay
-                    window.location.href = wayforpayUrl.toString();
+                    // Переходимо на WayForPay кнопку
+                    window.location.href = originalButtonUrl;
 
                   } else {
                     console.error('❌ Помилка збереження:', data.errors);
