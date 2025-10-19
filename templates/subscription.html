@@ -10,7 +10,6 @@
       content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
     />
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/subscription.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -68,6 +67,13 @@
             </div>
           </div>
         </section>
+
+        <div class="disco-ball">
+                      <img src="{% static 'images/disco_2.png' %}" alt="Disco ball">
+                    </div>
+        <div class="disco-ball-2">
+                      <img src="{% static 'images/disco_2.png' %}" alt="Disco ball">
+                    </div>
 
         <section id="section-footer">
           <footer class="site-footer">
@@ -319,6 +325,64 @@
         });
       }
       saveUTMToCookies();
+    });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <script>
+    const canvas = document.getElementById("discoBall3D");
+
+    // === Створюємо сцену ===
+    const scene = new THREE.Scene();
+
+    // === Камера ===
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.z = 3;
+
+    // === Рендерер ===
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(220, 220);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // === Геометрія кулі ===
+    const geometry = new THREE.SphereGeometry(1, 64, 64);
+
+    // === Матеріал (дзеркальний, блискучий) ===
+    const texture = new THREE.TextureLoader().load("{% static 'images/disco_texture.jpg' %}");
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+      metalness: 1.0,
+      roughness: 0.2,
+      envMapIntensity: 1.5
+    });
+
+    // === Куля ===
+    const ball = new THREE.Mesh(geometry, material);
+    scene.add(ball);
+
+    // === Освітлення ===
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+
+    const spotLight = new THREE.PointLight(0xffffff, 1.5);
+    spotLight.position.set(2, 2, 3);
+    scene.add(spotLight);
+
+    // === Анімація ===
+    function animate() {
+      requestAnimationFrame(animate);
+      ball.rotation.y += 0.005; // обертання
+      ball.rotation.x = Math.sin(Date.now() / 3000) * 0.1; // легке "похитування"
+      spotLight.position.x = Math.sin(Date.now() / 2000) * 2; // рух світла
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // === Адаптація при зміні розміру ===
+    window.addEventListener('resize', () => {
+      const size = Math.min(window.innerWidth, 220);
+      renderer.setSize(size, size);
+      camera.aspect = 1;
+      camera.updateProjectionMatrix();
     });
     </script>
   </body>
