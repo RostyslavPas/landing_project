@@ -460,6 +460,25 @@ def wayforpay_callback(request):
                     else:
                         logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлений в KeyCRM")
 
+                    # 🆕 ПЕРЕМІЩЕННЯ ЛІДА НА СТАТУС "ОПЛАТА"
+                    if hasattr(settings, 'KEYCRM_PAID_STATUS_ID'):
+                        paid_status_id = settings.KEYCRM_PAID_STATUS_ID
+                        logger.info(
+                            f"🔄 Переміщення ліда {order.keycrm_lead_id} на статус 'Оплата' (ID: {paid_status_id})")
+
+                        update_result = keycrm.update_lead_status(
+                            lead_id=order.keycrm_lead_id,
+                            status_id=paid_status_id
+                        )
+
+                        if update_result:
+                            logger.info(f"✅ Ліда успішно переміщено на статус 'Оплата'")
+                        else:
+                            logger.error(f"❌ Не вдалось перемістити ліда на статус 'Оплата'")
+                    else:
+                        logger.warning(
+                            "⚠️ KEYCRM_PAID_STATUS_ID не налаштовано в settings. Ліда не буде переміщено.")
+
                 except Exception as e:
                     logger.error(f"❌ Помилка при роботі з KeyCRM: {e}")
                     import traceback
@@ -854,6 +873,23 @@ def update_keycrm_payment(subscription, wfp_data):
             logger.error(f"❌ Не вдалось оновити статус платежу вручну")
     else:
         logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлено у KeyCRM")
+
+    # 🆕 ПЕРЕМІЩЕННЯ ЛІДА НА СТАТУС "ОПЛАТА" ДЛЯ ПІДПИСОК
+    if hasattr(settings, 'KEYCRM_SUBSCRIPTION_PAID_STATUS_ID'):
+        paid_status_id = settings.KEYCRM_SUBSCRIPTION_PAID_STATUS_ID
+        logger.info(
+            f"🔄 Переміщення ліда підписки {subscription.keycrm_lead_id} на статус 'Оплата' (ID: {paid_status_id})")
+
+        update_result = keycrm.update_lead_status(
+            lead_id=subscription.keycrm_lead_id, status_id=paid_status_id
+        )
+
+        if update_result:
+            logger.info(f"✅ Ліда підписки успішно переміщено на статус 'Оплата'")
+        else:
+            logger.error(f"❌ Не вдалось перемістити ліда підписки на статус 'Оплата'")
+    else:
+        logger.warning("⚠️ KEYCRM_SUBSCRIPTION_PAID_STATUS_ID не налаштовано в settings. Ліда не буде переміщено.")
 
 
 @csrf_exempt

@@ -1,13 +1,110 @@
-/* Form styles */
+body {
+  background-color: #fffdfa;
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.page-wrapper {
+  max-width: 1728px;
+  margin: 0 auto;
+  position: relative;
+}
+
+section {
+  padding: 92px 20px;
+  position: relative;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+/* Header Section */
+.header-section {
+  padding-top: 40px;
+  padding-bottom: 0;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  position: relative;
+  height: 120px;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.logo-bg {
+  width: 800px;
+  height: auto;
+}
+
+.logo-text {
+  font-size: 24px;
+  color: #000000;
+  margin-top: -83px;
+  margin-left: -179px;
+  display: block;
+}
+
+/* Subscription Section */
+#get-subscription {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.ticket-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ticket-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Form Styles */
 .ticket-form-container {
-    background: rgba(141, 54, 72, 0.05);
-    border-radius: 20px;
-    padding: 45px;
-    border: 1px solid rgba(141, 54, 72, 0.1);
-    position: relative;
-    left: 32%;
-    top: 25px;
-    width: 35%;
+  background: rgba(141, 54, 72, 0.05);
+  border-radius: 20px;
+  padding: 45px;
+  border: 1px solid rgba(141, 54, 72, 0.1);
+  position: relative;
+  width: 50%;
+  min-width: 400px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .subscription-form {
@@ -25,22 +122,22 @@
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 8px;
-  color: var(--text-dark);
+  color: #000000;
 }
 
 .form-group input {
   padding: 15px;
   border: 2px solid rgba(141, 54, 72, 0.2);
   border-radius: 10px;
-  background: var(--background-light);
-  color: var(--text-dark);
+  background: #fffdfa;
+  color: #000000;
   font-size: 16px;
   transition: border-color 0.3s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #8d3648;
 }
 
 .form-group input::placeholder {
@@ -52,15 +149,6 @@
   font-size: 14px;
   margin-top: 5px;
   display: none;
-}
-:root {
-  --primary-color: #8d3648;
-  --dark-bg: #282828;
-  --text-dark: #000000;
-  --text-light: #ffffff;
-  --background-light: #fffdfa;
-  --font-main: 'Montserrat Alternates', sans-serif;
-  --font-display: 'New Rocker', cursive;
 }
 
 .submit-button {
@@ -88,6 +176,7 @@
   cursor: not-allowed;
   transform: none;
 }
+
 .text-wrapper-111 {
   width: 155px;
   font-family: 'Montserrat Alternates', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -100,3 +189,420 @@
   line-height: normal;
 }
 
+/* Payment Button Styling */
+.form-group a[href*="wayforpay"] {
+  display: inline-block !important;
+  background: #8d3648 !important;
+  background-size: cover;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 54px !important;
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  text-decoration: none !important;
+  box-shadow: 3px 2px 8px rgba(71, 66, 66, 0.22) !important;
+  text-align: center !important;
+  outline: none !important;
+  transition: opacity 0.3s ease;
+}
+
+.form-group a[href*="wayforpay"]:hover {
+  opacity: 0.8 !important;
+}
+
+.form-group a[href*="wayforpay"] span {
+  font-family: 'Montserrat Alternates', sans-serif !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+  line-height: 18px !important;
+  vertical-align: middle !important;
+}
+
+/* Footer Section */
+#section-footer {
+  background-color: #282828;
+  padding: 50px 20px;
+}
+
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 215px;
+  position: relative;
+  left: 1%;
+}
+
+.footer-social-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 8px;
+}
+
+.footer-social-link img {
+  height: 48px;
+  width: auto;
+  transition: transform 0.3s;
+}
+
+.footer-social-link:hover img {
+  transform: scale(1.1);
+}
+
+.footer-social-link span {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.footer-legal-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.footer-legal-links a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: #ffffff;
+  opacity: .3;
+}
+
+.copyright {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+
+/* Popup Styles */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.active {
+  display: flex;
+}
+
+.popup-content.desktop {
+  background: #D9D9D9;
+  border-radius: 20px;
+  padding: 25px 50px;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: #000000;
+}
+
+.popup-content.desktop h2 {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  font-size: 20px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 100%;
+  color: #000000;
+}
+
+.popup-content.desktop p b,
+.popup-content.desktop p strong {
+  font-weight: 700;
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.popup-content.desktop p:first-of-type b,
+.popup-content.desktop p:first-of-type strong {
+  margin-top: 0;
+}
+
+.popup-content.desktop p {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 0;
+  color: #000000;
+  text-align: left;
+}
+
+.popup-content.desktop li {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  margin-top: 0;
+  color: #000000;
+  text-align: left;
+  display: list-item;
+}
+
+.popup-content.desktop ul li {
+  list-style-type: disc;
+  margin-left: 0;
+}
+
+.popup-content.desktop ol li {
+  list-style-type: decimal;
+  margin-left: 0;
+}
+
+.popup-content.desktop li:last-child {
+  margin-bottom: 20px;
+}
+
+.popup-content.desktop ul {
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.popup-content.desktop ol {
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style: decimal;
+  padding-left: 20px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+  color: #8d3648;
+}
+
+.popup-content.desktop {
+  line-height: 1.5;
+}
+
+.popup-content.desktop p:not(:first-of-type) {
+  margin-top: 25px;
+}
+
+/* Scaling Wrapper */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.scale-wrapper {
+  transform-origin: top left;
+  width: 1800px;
+  height: auto;
+  position: relative;
+}
+
+.input-error {
+  border: 2px solid red !important;
+  outline: none;
+}
+
+/***********************************************************************/
+.disco-ball {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    bottom: 855px;
+    left: 20%;
+}
+
+.disco-ball img {
+  display: block;
+  width: 200px; /* або як у тебе */
+  height: auto;
+  border-radius: 50%; /* для круглого ефекту */
+}
+
+ /*Блиск */
+.disco-ball::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(25deg);
+  animation: shine 3s infinite;
+}
+
+.disco-ball-2 {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    bottom: 855px;
+    left: 56%;
+}
+
+.disco-ball-2 img {
+  display: block;
+  width: 200px; /* або як у тебе */
+  height: auto;
+  border-radius: 50%; /* для круглого ефекту */
+}
+
+/* Блиск */
+.disco-ball-2::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(25deg);
+  animation: shine 3s infinite;
+}
+
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(25deg);
+  }
+}
+
+/***********************************************************************/
+
+/* Responsive Design */
+@media screen and (max-width: 1000px) {
+  .scale-wrapper {
+    transform: scale(0.6);
+    width: 1800px;
+  }
+  
+  .ticket-form-container {
+    width: 50%;
+    min-width: 350px;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  /* На мобільних пристроях відключаємо масштабування і переходимо на мобільну версію */
+  .scale-wrapper {
+    transform: none;
+    width: 100%;
+  }
+  
+  .ticket-form-container {
+    width: 90%;
+    min-width: auto;
+    padding: 30px 20px;
+  }
+
+  .ticket-container {
+      max-width: 1200px;
+      margin: -20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+  .logo-bg {
+      width: 140%;
+      max-width: 300px;
+      position: relative;
+      left: -16%;
+      top: -25px;
+  }
+  
+  .logo-text {
+    font-size: 10px;
+    margin-top: -56px;
+    margin-left: -60px;
+  }
+  
+  .social-links {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .footer-legal-links {
+    font-size: 16px;
+  }
+
+  .footer-social-link img {
+      height: 30px;
+      width: auto;
+      transition: transform 0.3s;
+    }
+
+  .footer-social-link span {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #ffffff;
+      opacity: 0.8;
+    }
+
+  .disco-ball {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    bottom: 42px;
+    left: 22%;
+    }
+
+  .disco-ball-2 {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    bottom: 45px;
+    left: 22%;
+    }
+}
