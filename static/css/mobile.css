@@ -926,13 +926,6 @@ img {
   text-align: center;
   color: #000;
 }
-.focused-input {
-  border: 2px solid #ff9ec7;
-  outline: none;
-  background-color: #fff7fa;
-  transition: all 0.3s ease;
-}
-
 @media screen and (max-width: 370px) {
   .hero-image {
     position: absolute;
