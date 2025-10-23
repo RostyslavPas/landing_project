@@ -104,5 +104,18 @@
 
         <a href="{% url 'opening' %}" class="back-button">Повернутися на головну</a>
     </div>
+    <!-- Meta Pixel: Purchase Event -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof fbq === 'function') {
+          fbq('track', 'Purchase', {
+            value: {{ order.amount|floatformat:2 }},       // 💰 сума замовлення
+            currency: 'UAH',                               // 💵 валюта
+            content_name: '{{ order.event_name|escapejs }}' // 🎟️ назва події
+          });
+          console.log('✅ Meta Pixel: Purchase event sent');
+        }
+      });
+    </script>
 </body>
 </html>

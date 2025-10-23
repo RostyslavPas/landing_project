@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
             const textWrapper = submitBtn.querySelector('.text-wrapper-14');
 
-            if (submitBtn.disabled) return; // запобігаємо повторному кліку
+            if (submitBtn.disabled) return;
             submitBtn.disabled = true;
             if (textWrapper) textWrapper.textContent = 'Обробка...';
 
@@ -237,20 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     credentials: 'include'
                 });
 
-                if (!response.ok) {
-                    console.log("❌ Помилка від сервера:", response.status);
-                    submitBtn.disabled = false;
-                    if (textWrapper) textWrapper.textContent = 'Оплатити';
-                    return;
-                }
-
                 const data = await response.json();
 
                 if (data.success && data.wayforpay_params) {
-                    // --- Виклик WayForPay ---
+                    // ✅ Якщо все добре — відправляємо на оплату 👇 Відправляємо подію в Meta Pixel
+
+                    if (typeof fbq === 'function') {
+                        fbq('track', 'Lead');
+                    }
+
                     redirectToWayForPay(data.wayforpay_params);
+
+                } else if (data.redirect_url) {
+                    // ✅ Якщо квитки закінчились — редирект
+                    window.location.href = data.redirect_url;
+
                 } else {
-                    console.log("❌ Сервер повернув помилку:", data.errors);
+                    console.log("❌ Сервер повернув помилку:", data.errors || data.error);
                     submitBtn.disabled = false;
                     if (textWrapper) textWrapper.textContent = 'Оплатити';
                 }
@@ -332,23 +335,3 @@ function redirectToWayForPay(params) {
     document.body.appendChild(form);
     form.submit();
 }
-
-document.querySelector('.ticket-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-
-    const response = await fetch('/submit-ticket/', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-CSRFToken': getCookie('csrftoken') },
-        credentials: 'include'
-    });
-
-    const data = await response.json();
-    if (data.success) {
-        redirectToWayForPay(data.wayforpay_params);
-    } else {
-        alert('Помилка форми');
-    }
-});

@@ -148,89 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return cookieValue;
     }
 
-    // --- Сабміт форми підписки ---
-    if (form) {
-        form.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const textWrapper = submitBtn.querySelector('.text-wrapper-14');
-
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            if (textWrapper) textWrapper.textContent = 'Обробка...';
-
-            if (!validateEmail() || !validatePhone() || !validateName()) {
-                submitBtn.disabled = false;
-                if (textWrapper) textWrapper.textContent = 'Оформити підписку';
-                return;
-            }
-
-            const formData = new FormData(form);
-            const csrfToken = getCookie('csrftoken');
-
-            try {
-                const response = await fetch('/submit-subscription/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {'X-CSRFToken': csrfToken},
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    console.log("❌ Помилка від сервера:", response.status);
-                    submitBtn.disabled = false;
-                    if (textWrapper) textWrapper.textContent = 'Оформити підписку';
-                    return;
-                }
-
-                const data = await response.json();
-
-                if (data.success && data.wayforpay_params) {
-                    redirectToWayForPay(data.wayforpay_params);
-                } else {
-                    console.log("❌ Сервер повернув помилку:", data.errors);
-                    submitBtn.disabled = false;
-                    if (textWrapper) textWrapper.textContent = 'Оформити підписку';
-                }
-            } catch (error) {
-                console.error("❌ Помилка запиту:", error);
-                submitBtn.disabled = false;
-                if (textWrapper) textWrapper.textContent = 'Оформити підписку';
-            }
-        });
-    }
-
-    // --- Функція редиректу на WayForPay ---
-    function redirectToWayForPay(params) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://secure.wayforpay.com/pay';
-
-        Object.keys(params).forEach(key => {
-            const value = params[key];
-
-            if (Array.isArray(value)) {
-                value.forEach(item => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = item;
-                    form.appendChild(input);
-                });
-            } else {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                form.appendChild(input);
-            }
-        });
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-
     // --- Telegram функція ---
     window.openTelegram = function(event) {
         event.preventDefault();
@@ -252,4 +169,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    // --- Масштабування сторінки для desktop ---
+    const wrapper = document.querySelector('.scale-wrapper');
+    if (wrapper && window.innerWidth > 1024) {
+        function scalePage() {
+            const baseWidth = 1800;
+            let scale = window.innerWidth / baseWidth;
+            wrapper.style.transform = `scale(${scale}) translateX(-50%)`;
+            wrapper.style.transformOrigin = 'top left';
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '0';
+            wrapper.style.left = '50%';
+            document.body.style.height = (wrapper.offsetHeight * scale) + 'px';
+            document.body.style.width = '100%';
+            document.body.style.margin = '0';
+            document.body.style.padding = '0';
+            document.body.style.overflowX = 'hidden';
+        }
+
+        window.addEventListener('resize', scalePage);
+        window.addEventListener('load', scalePage);
+        scalePage();
+    }
 });
