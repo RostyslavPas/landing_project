@@ -4,77 +4,273 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
-    <title>PASUE Club - Grand Opening Party</title>
+    <title>PASUE Club - Жіночий клуб, який тобі пасує</title>
     <meta
       name="description"
-      content="Перша подія від PASUE Club - закрите жіноче комʼюніті. Приєднуйся до Grand Opening Party!"
+      content="PASUE Club - закрите жіноче комʼюніті. Жіночий клуб, який тобі пасує"
     />
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/subscription.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Katibeh&family=Kaushan+Script&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="scale-wrapper">
-        <section id="section-header" class="header-section">
-          <header class="site-header">
-            <div class="logo">
-              <img src="{% static 'images/main_logo.png' %}" alt="PASUE Club Logo background" class="logo-bg">
-              <span class="logo-text">закрите жіноче комʼюніті</span>
+        <header id="header" class="main-container">
+            <div class="header-content">
+                <nav class="main-nav">
+                    <a href="#"><img src="{% static 'images/menu_header_icon.png' %}" alt="Menu"></a>
+                    <a href="https://instagram.com/pasue.club"><img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram"></a>
+                    <a href="#"><img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram" onclick="openTelegram(event)"></a>
+                    <a href="mailto:pasue.club@gmail.com"><img src="{% static 'images/email_header_icon.png' %}" alt="Email"></a>
+                </nav>
             </div>
-          </header>
-        </section>
-
-        <section id="get-subscription" class="ticket-section">
-          <div class="ticket-container">
-            <div class="ticket-content">
-              <div class="ticket-form-container">
-                <form class="subscription-form" method="post">
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <label for="name">Ім'я:</label>
-                    <input type="text" id="name" name="name" required>
-                    <span class="error-message" id="name-error"></span>
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                    <span class="error-message" id="email-error"></span>
-                  </div>
-                  <div class="form-group">
-                    <label for="phone">Телефон:</label>
-                    <input type="tel" id="phone" name="phone" required>
-                    <span class="error-message" id="phone-error"></span>
-                  </div>
-
-                  <input type="hidden" id="utm_source" name="utm_source">
-                  <input type="hidden" id="utm_medium" name="utm_medium">
-                  <input type="hidden" id="utm_campaign" name="utm_campaign">
-                  <input type="hidden" id="utm_term" name="utm_term">
-                  <input type="hidden" id="utm_content" name="utm_content">
-
-                  <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" style="display:inline-block!important;background:#8d3648;background-size:cover;width: 256px!important;height:54px!important;border:none!important;border-radius:14px!important;padding:16px!important;text-decoration:none!important;box-shadow:3px 2px 8px rgba(71,66,66,0.22)!important;text-align:center!important;outline:none!important;" onmouseover="this.style.opacity='0.8';" onmouseout="this.style.opacity='1';">
-                      <span style="font-family:Montserrat Alternates, sans-serif!important;font-weight:bold!important;font-size:14px!important;color:#ffffff!important;line-height:18px!important;vertical-align:middle!important;">Оплатити</span>
-                    </a>
-                  </div>
-                </form>
-              </div>
+        </header>
+        <section id="hero" class="main-container">
+            <div class="hero-background-elements">
+                <div class="disco-ball disco-ball-1">
+                  <div class="string"></div>
+                  <div class="shine"></div>
+                  <img src="{% static 'images/disco-ball-1.png' %}" alt="Disco Ball">
+                </div>
+                <div class="disco-ball disco-ball-2">
+                  <div class="string"></div>
+                  <div class="shine"></div>
+                  <img src="{% static 'images/disco-ball-2.png' %}" alt="Disco Ball">
+                </div>
+                <div class="disco-ball disco-ball-3">
+                  <div class="string"></div>
+                  <div class="shine"></div>
+                  <img src="{% static 'images/disco-ball-3.png' %}" alt="Disco Ball">
+                </div>
+                <div class="hero-bg-text">
+                    <img src="{% static 'images/self.png' %}" alt="SELF" class="bg-text-self">
+                    <img src="{% static 'images/love.png' %}" alt="LOVE" class="bg-text-love">
+                    <img src="{% static 'images/club.png' %}" alt="CLUB" class="bg-text-club">
+                </div>
             </div>
-          </div>
+            <div class="hero-content-wrapper">
+                <div class="hero-image-container">
+                    <img src="{% static 'images/pink_frame.png' %}" alt="Pink Frame" class="hero-frame">
+                    <img src="{% static 'images/pasue-club-logo.png' %}" alt="Pasue Club Logo" class="hero-logo">
+                    <img src="{% static 'images/women-laughing.png' %}" alt="Women laughing" class="hero-image">
+                </div>
+                <div class="hero-text-content">
+                    <h1 class="hero-subtitle">Жіночий клуб, який тобі пасує</h1>
+                    <p class="hero-description">Це простір, де ти — головна героїня свого життя.<br> Тут усе, що ти любиш: глибокі розмови, естетика,<br> підтримка, натхнення та трохи магії</p>
+                </div>
+                <a href="#get-subscription" class="btn btn-light hero-cta">
+                    <span>Приєднатися до клубу</span>
+                    <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
+                </a>
+                <img src="{% static 'images/kiss.png' %}" alt="Kiss mark" class="kiss-mark">
+            </div>
         </section>
+        <section id="about" class="main-container">
+            <div class="about-intro">
+                <h2>Що на тебе чекає у</h2>
+                <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="Pasue Club Logo" class="about-logo">
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
+                    <h3>Середовище, що підтримує</h3>
+                    <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомились</p>
+                </div>
+                <div class="feature-card">
+                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
+                    <h3>Контент, який надихає</h3>
+                    <p>Теми, які хочеться зберігати та перечитувати від таких експертів, як: психологиня, астрологиня, нутриціологиня, тренерка та інших</p>
+                </div>
+                <div class="feature-card">
+                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
+                    <h3>Формати, де ти можеш звучати</h3>
+                    <p>PASUE Club — це не лише слухати, а й говорити. Ти можеш стати ведучою, спікеркою або просто поділитися своєю справою, яка тебе надихає</p>
+                </div>
+                <div class="feature-card">
+                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
+                    <h3>Події, що не залишають байдужою</h3>
+                    <p>Камерні зустрічі, глибокі розмови, тепла атмосфера — кожен івент наче м'яка пауза в потоці життя, де ти можеш зупинитись і побути собою</p>
+                </div>
+                <div class="feature-card">
+                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
+                    <h3>Простір трансформацій</h3>
+                    <p>Неважливо, на якому ти етапі — у пошуку, у паузі або на піку. PASUE Club приймає тебе всю. З твоїми питаннями, сумнівами, мріями і силами</p>
+                </div>
+            </div>
+        </section>
+        <section id="city" class="main-container">
+            <div class="city-intro">
+                <div class="city-title">
+                    <span class="city-title-welcome">Welcome to</span>
+                    <img src="{% static 'images/pasue.png' %}" alt="PASUE" class="city-title-pasue">
+                    <span class="city-title-city">City</span>
+                </div>
+                <p class="city-tagline">це місто, в якому хочеться залишитись</p>
+                <div class="city-passport-container">
+                    <img src="{% static 'images/city-passport.png' %}" alt="Passport" class="city-passport">
+                    <p>Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram ти<br> отримаєш паспорт мешканки PASUE City — з<br> ним усе змінюється. Ти — частина простору,<br> який відчуває, приймає й розвиває</p>
+                </div>
+                <img src="{% static 'images/pink-airplane.png' %}" alt="Pink airplane" class="city-plane">
+            </div>
+            <p class="city-map-title">А далі — подорож вулицями унікального жіночого міста:</p>
+            <div class="city-map-section">
+                <div class="city-map-background">
 
-        <div class="disco-ball">
-                      <img src="{% static 'images/disco_2.png' %}" alt="Disco ball">
+                    <div class="city-map-content">
+                        <!--merged image-->
+                        <div class="map-stops-container">
+                            <div class="map-stop stop-1">
+                                <img src="{% static 'images/map-2.png' %}" alt="Map Pin" class="map-pin">
+                                <h4>Astro Boulevard</h4>
+                                <div class="stop-description">
+                                    <p>тут на тебе чекають щотижневі гороскопи, розбір впливу планет і глибокі інсайти про себе</p>
+                                </div>
+                            </div>
+                            <div class="map-stop stop-2">
+                                <img src="{% static 'images/map-1.png' %}" alt="Map Pin" class="map-pin">
+                                <h4>Stretch & Shine Street</h4>
+                                <div class="stop-description">
+                                    <p>заходь сюди тричі на тиждень на заняття зі стрейчингу, а також отримуй корисні поради від нутриціологині</p>
+                                </div>
+                            </div>
+                            <div class="map-stop stop-3">
+                                <img src="{% static 'images/map-1.png' %}" alt="Map Pin" class="map-pin">
+                                <h4>Beauty & Mood Station</h4>
+                                <div class="stop-description">
+                                    <p>місце, щоб обрати фільм на вечір, музику для настрою, або образ, який надихає. Переглядай рекомендації, або рекомендуй сама</p>
+                                </div>
+                            </div>
+                            <div class="map-stop stop-4">
+                                <img src="{% static 'images/map-2.png' %}" alt="Map Pin" class="map-pin">
+                                <h4>Soul Therapy Square</h4>
+                                <div class="stop-description">
+                                    <p>щотижнева відео практика із психологом на тему місяця і завдання у форматі челенджів</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-        <div class="disco-ball-2">
-                      <img src="{% static 'images/disco_2.png' %}" alt="Disco ball">
-                    </div>
+                </div>
+                <div class="city-map-outro">
+                    <h4>Це контент, який хочеться не гортати, а проживати</h4>
+                    <p>Тут ти не просто читаєш — ти впливаєш: ділишся результатами<br> та думками, обираєш теми, можеш ініціювати рубрику або стати<br> голосом каналу</p>
+                </div>
+            </div>
 
+            <div class="city-contacts-section">
+                <div class="city-contacts-bg-text">
+                    <img src="{% static 'images/pasue-contacts-1.png' %}" alt="PASUE" class="contacts-bg-pasue">
+                    <img src="{% static 'images/pasue-contacts-2.png' %}" alt="CONTACTS" class="contacts-bg-contacts">
+                </div>
+                <div class="city-contacts-content">
+                    <p>А ще в PASUE City існує унікальне місце, де<br> мешканки діляться своїми талантами,<br> справами та контактами, щоб знаходити<br> одна одну не лише за інтересами,<br> а й за потребами</p>
+                    <div class="contacts-description-box">
+                        <p>Хтось — кондитерка й залишає посилання на свої десерти.<br> Хтось — фотографиня, яку можна запросити на сімейну зйомку.<br> Хтось шиє сумки або веде масажну практику.<br> Кожна з нас може представити себе — і бути знайденою.<br> Це не реклама, це жіноча підтримка у форматі спільноти, де твоя<br> сусідка по каналу стає клієнткою, партнеркою або навіть подругою</p>
+                    </div>
+                </div>
+                <a href="#get-subscription" class="btn btn-light city-contacts-cta">
+                    <span>Приєднатися до клубу</span>
+                    <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
+                </a>
+            </div>
+        </section>
+        <section id="events" class="main-container">
+            <div class="events-intro">
+                <div class="events-title">
+                    <span class="events-title-welcome">Welcome to</span>
+                    <img src="{% static 'images/pasue.png' %}" alt="PASUE" class="events-title-pasue">
+                    <span class="events-title-events">Events</span>
+                </div>
+                <p class="events-tagline">події, які стають історією твого життя</p>
+                <p class="events-description">Є місця, куди хочеться повертатись, і це події PASUE Events — зустрічі, щоб відчути справжнє: теплі розмови, сміх, енергію та підтримку</p>
+                <p class="events-discount">А для учасниць клубу на всі заходи діє знижка 10 %</p>
+            </div>
+
+            <div class="events-calendar-prompt">
+                <p>Скоро у твоєму календарі:</p>
+            </div>
+
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="{% static 'images/edition-illustration.png' %}" alt="PASUE Edition illustration">
+                    </div>
+                    <h3>PASUE Edition</h3>
+                    <p>вечори з інтерактивами, подарунками, цікавими гостями та естетикою в деталях. Тут хочеться бути у красивому, сміятись і зберігати кожну мить</p>
+                </div>
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="{% static 'images/circle-illustration.png' %}" alt="PASUE Circle illustration">
+                    </div>
+                    <h3>PASUE Circle</h3>
+                    <p>камерні зустрічі з art-терапією, бажаннями та історіями. Атмосфера, яка надихає, відкриває в тобі нові грані й ти проявляєшся в колі підтримки</p>
+                </div>
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="{% static 'images/reset-illustration.png' %}" alt="PASUE Reset illustration">
+                    </div>
+                    <h3>PASUE Reset</h3>
+                    <p>виїзди, ретріти, сповільнення, де тіло й душа видихають. Коли хочеться відключити шум міста, скинути темп і згадати себе справжню</p>
+                </div>
+            </div>
+        </section>
+        <section id="join-faq" class="main-container">
+            <div class="join-form-section">
+                <h2 class="join-form-title" id="get-subscription">Іноді достатньо опинитись у правильному місці — і все починає змінюватись</h2>
+                <div class="form-container">
+                    <img src="{% static 'images/form-background.png' %}" alt="Form background" class="form-bg-image">
+
+                    <form class="subscription-form" method="post">
+                        {% csrf_token %}
+                        <div class="form-field">
+                            <label for="name">Прізвище та імʼя:</label>
+                            <input type="text" id="name" name="name">
+                            <span class="error-message" id="name-error"></span>
+                        </div>
+                        <div class="form-field">
+                            <label for="phone">Номер телефону:</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel">
+                            <span class="error-message" id="phone-error"></span>
+                        </div>
+                        <div class="form-field">
+                            <label for="email">E-mail:</label>
+                            <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email">
+                            <span class="error-message" id="email-error"></span>
+                        </div>
+
+                        <input type="hidden" id="utm_source" name="utm_source">
+                        <input type="hidden" id="utm_medium" name="utm_medium">
+                        <input type="hidden" id="utm_campaign" name="utm_campaign">
+                        <input type="hidden" id="utm_term" name="utm_term">
+                        <input type="hidden" id="utm_content" name="utm_content">
+
+                        <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" class="btn btn-dark form-submit-btn">
+                            <span>Приєднатися до клубу</span>
+                            <img src="{% static 'images/heart_btn.png' %}" alt="Heart icon">
+                        </a>
+                    </form>
+                </div>
+            </div>
+            <div class="faq-section">
+                <img src="{% static 'images/faq.png' %}" alt="FAQ" class="faq-title">
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <p><strong>Що я отримую одразу після оплати?</strong><br>Лист на email з посиланням на чат-бот → авторизація → паспорт мешканки → доступ у PASUE CITY</p>
+                    </div>
+                    <div class="faq-item">
+                        <p><strong>Скільки коштує підписка?</strong><br>759 грн / місяць. Підписку можна відмінити в будь-який час</p>
+                    </div>
+                    <div class="faq-item">
+                        <p><strong>Як часто виходить контент на каналі?</strong><br>Кожного дня. У форматі листів, відео, аудіо та мудбордів</p>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="section-footer">
           <footer class="site-footer">
             <div class="social-links">
@@ -137,7 +333,7 @@
       </div>
     </div>
     <!-- Підключаємо зовнішній JS -->
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/subscription.js' %}"></script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
       // --- 1. Зберігаємо UTM у cookies ---
@@ -190,6 +386,208 @@
     });
     </script>
     <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.querySelector('.subscription-form');
+      const payButton = document.querySelector('a[href*="wayforpay.com"]');
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+
+      // ✅ Автододавання +38 при фокусі
+      phoneInput.addEventListener('focus', () => {
+        if (!phoneInput.value.startsWith('+38')) {
+          phoneInput.value = '+38';
+        }
+        if (phoneInput.selectionStart < 3) {
+          phoneInput.setSelectionRange(3, 3);
+        }
+      });
+
+      phoneInput.addEventListener('click', () => {
+        if (phoneInput.selectionStart < 3) {
+          phoneInput.setSelectionRange(3, 3);
+        }
+      });
+
+      phoneInput.addEventListener('keyup', () => {
+        if (phoneInput.selectionStart < 3) {
+          phoneInput.setSelectionRange(3, 3);
+        }
+      });
+
+      // ✅ Форматування номера під час введення
+      phoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value === "") {
+          e.target.value = "+38";
+          phoneInput.setSelectionRange(3, 3);
+          return;
+        }
+        if (!value.startsWith("38")) value = "38" + value;
+        value = "+" + value;
+        if (value.length >= 4) value = value.replace(/(\+38)(\d{3})/, '$1($2)');
+        if (value.length >= 9) value = value.replace(/(\+38\(\d{3}\))(\d{3})/, '$1$2-');
+        if (value.length >= 13) value = value.replace(/(\+38\(\d{3}\)\d{3}-)(\d{2})/, '$1$2-');
+        e.target.value = value.substring(0, 17);
+        validatePhone();
+      });
+
+      // ✅ Захист від видалення +38
+      phoneInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          let pos = phoneInput.selectionStart;
+          let val = phoneInput.value;
+          if (pos <= 3) {
+            e.preventDefault();
+            return;
+          }
+          if (pos > 0 && /[\-\(\)]/.test(val[pos - 1])) {
+            e.preventDefault();
+            phoneInput.value = val.slice(0, pos - 1) + val.slice(pos);
+            phoneInput.setSelectionRange(pos - 1, pos - 1);
+          }
+          if (phoneInput.value === "+38") {
+            e.preventDefault();
+            phoneInput.setSelectionRange(3, 3);
+          }
+        }
+      });
+
+      // ✅ Функції валідації
+      function validateName() {
+        const nameValue = nameInput.value.trim();
+        const nameError = document.getElementById('name-error');
+        if (nameValue === "") {
+          nameError.textContent = "Прізвище та Ім'я є обов'язковим полем";
+          nameError.style.display = "block";
+          nameInput.classList.add("input-error");
+          return false;
+        }
+        nameError.style.display = "none";
+        nameInput.classList.remove("input-error");
+        return true;
+      }
+
+      function validateEmail() {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailError = document.getElementById('email-error');
+        if (!pattern.test(emailInput.value.trim())) {
+          emailError.textContent = "Введіть коректну email адресу";
+          emailError.style.display = "block";
+          emailInput.classList.add("input-error");
+          return false;
+        }
+        emailError.style.display = "none";
+        emailInput.classList.remove("input-error");
+        return true;
+      }
+
+      function validatePhone() {
+        const digits = phoneInput.value.replace(/\D/g, "");
+        const phoneError = document.getElementById('phone-error');
+        if (!/^380\d{9}$/.test(digits)) {
+          phoneError.textContent = "Номер телефону має бути у форматі +380XXXXXXXXX";
+          phoneError.style.display = "block";
+          phoneInput.classList.add("input-error");
+          return false;
+        }
+        phoneError.style.display = "none";
+        phoneInput.classList.remove("input-error");
+        return true;
+      }
+
+      // ✅ Валідація в реальному часі
+      nameInput.addEventListener("input", validateName);
+      emailInput.addEventListener("input", validateEmail);
+      phoneInput.addEventListener("input", validatePhone);
+
+      // ✅ Обробка кліку на кнопку оплати
+      if (form && payButton) {
+        const originalButtonUrl = payButton.href;
+
+        payButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+
+          const name = nameInput.value.trim();
+          const email = emailInput.value.trim();
+          const phone = phoneInput.value.trim();
+
+          // Валідація
+          if (!validateName() || !validateEmail() || !validatePhone()) {
+            return;
+          }
+
+          // Індикатор завантаження
+          const originalText = payButton.querySelector('span').textContent;
+          payButton.querySelector('span').textContent = 'Обробка...';
+          payButton.style.pointerEvents = 'none';
+          payButton.style.opacity = '0.6';
+
+          try {
+            const formData = new FormData(form);
+            const csrfToken = getCookie('csrftoken');
+
+            const response = await fetch('/submit-subscription/', {
+              method: 'POST',
+              body: formData,
+              headers: {'X-CSRFToken': csrfToken},
+              credentials: 'include'
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success) {
+                console.log('✅ Дані збережено, ID підписки:', data.subscription_id);
+
+                // ✅ Резервне збереження в localStorage
+                localStorage.setItem('pending_subscription_id', data.subscription_id);
+                localStorage.setItem('pending_subscription_email', email);
+                localStorage.setItem('pending_subscription_phone', phone);
+                localStorage.setItem('pending_subscription_time', new Date().getTime());
+
+                // Перехід на WayForPay
+                window.location.href = originalButtonUrl;
+              } else {
+                console.error('❌ Помилка збереження:', data.errors);
+                alert('Помилка збереження даних. Спробуйте ще раз.');
+                restoreButton();
+              }
+            } else {
+              console.error('❌ Помилка сервера:', response.status);
+              alert('Помилка сервера. Спробуйте ще раз.');
+              restoreButton();
+            }
+          } catch (error) {
+            console.error('❌ Помилка запиту:', error);
+            alert('Помилка з\'єднання. Перевірте інтернет.');
+            restoreButton();
+          }
+
+          function restoreButton() {
+            payButton.querySelector('span').textContent = originalText;
+            payButton.style.pointerEvents = 'auto';
+            payButton.style.opacity = '1';
+          }
+        });
+      }
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+    });
+    </script>
+    <script>
       function openTelegram(e) {
         e.preventDefault();
         const phone = "380684437882";
@@ -202,130 +600,6 @@
           window.open(tgWeb, "_blank");
         }, 1000);
       }
-    </script>
-    <script src="{% static 'js/subscription.js' %}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const form = document.querySelector('.subscription-form');
-          const payButton = document.querySelector('a[href*="wayforpay.com"]');
-
-          if (form && payButton) {
-            const originalButtonUrl = payButton.href;
-
-            payButton.addEventListener("click", async function (e) {
-              e.preventDefault();
-
-              // Валідація
-              const name = document.getElementById('name').value.trim();
-              const email = document.getElementById('email').value.trim();
-              const phone = document.getElementById('phone').value.trim();
-
-              if (!name || !email || !phone) {
-                alert('Заповніть всі поля перед оплатою');
-                return;
-              }
-
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-              if (!emailRegex.test(email)) {
-                alert('Введіть коректний email');
-                return;
-              }
-
-              const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
-              if (!phoneRegex.test(phone)) {
-                alert('Введіть коректний номер телефону');
-                return;
-              }
-
-              // Показуємо індикатор
-              const originalText = payButton.querySelector('span').textContent;
-              payButton.querySelector('span').textContent = 'Обробка...';
-              payButton.style.pointerEvents = 'none';
-              payButton.style.opacity = '0.6';
-
-              try {
-                // Відправляємо дані на сервер
-                const formData = new FormData(form);
-                const csrfToken = getCookie('csrftoken');
-
-                const response = await fetch('/submit-subscription/', {
-                  method: 'POST',
-                  body: formData,
-                  headers: {'X-CSRFToken': csrfToken},
-                  credentials: 'include'
-                });
-
-                if (response.ok) {
-                  const data = await response.json();
-                  if (data.success) {
-                    console.log('✅ Дані збережено, ID підписки:', data.subscription_id);
-
-                    // ✅ КРИТИЧНО: Зберігаємо ID підписки в localStorage для резервного пошуку
-                    localStorage.setItem('pending_subscription_id', data.subscription_id);
-                    localStorage.setItem('pending_subscription_email', email);
-                    localStorage.setItem('pending_subscription_phone', phone);
-                    localStorage.setItem('pending_subscription_time', new Date().getTime());
-
-                    // Переходимо на WayForPay кнопку
-                    window.location.href = originalButtonUrl;
-
-                  } else {
-                    console.error('❌ Помилка збереження:', data.errors);
-                    alert('Помилка збереження даних. Спробуйте ще раз.');
-                    restoreButton();
-                  }
-                } else {
-                  console.error('❌ Помилка сервера:', response.status);
-                  alert('Помилка сервера. Спробуйте ще раз.');
-                  restoreButton();
-                }
-
-              } catch (error) {
-                console.error('❌ Помилка запиту:', error);
-                alert('Помилка з\'єднання. Перевірте інтернет.');
-                restoreButton();
-              }
-
-              function restoreButton() {
-                payButton.querySelector('span').textContent = originalText;
-                payButton.style.pointerEvents = 'auto';
-                payButton.style.opacity = '1';
-              }
-            });
-          }
-
-          function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-                }
-              }
-            }
-            return cookieValue;
-          }
-        });
-    </script>
-
-    <script>
-    // UTM tracking
-    document.addEventListener("DOMContentLoaded", () => {
-      function saveUTMToCookies() {
-        const params = new URLSearchParams(window.location.search);
-        const utms = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"];
-        utms.forEach(name => {
-          const value = params.get(name);
-          if (value) {
-            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60*60*24*30}`;
-          }
-        });
-      }
-      saveUTMToCookies();
-    });
     </script>
   </body>
 </html>

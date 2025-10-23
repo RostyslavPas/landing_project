@@ -225,14 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.success && data.wayforpay_params) {
-              redirectToWayForPay(data.wayforpay_params);
+              // ✅ Якщо все добре — викликаємо WayForPay 👇 Відправляємо подію в Meta Pixel
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Lead');
+                }
+                redirectToWayForPay(data.wayforpay_params);
+            } else if (data.redirect_url) {
+              // 🚨 Якщо квитки закінчилися — редирект на сторінку sold-out
+              window.location.href = data.redirect_url;
             } else {
+              // ⚠️ Якщо є помилки у валідації
               if (data.errors?.name) nameInput.classList.add("input-error");
               if (data.errors?.email) emailInput.classList.add("input-error");
               if (data.errors?.phone) phoneInput.classList.add("input-error");
               console.log("❌ Сервер повернув помилку:", data.errors);
             }
-
           } catch (err) {
             console.log("❌ Fetch error:", err);
           } finally {

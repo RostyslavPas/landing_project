@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Усі квитки розпродані — PASUE Club</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pink-light: #ffe9f2;
+      --pink-dark: #d36da1;
+      --text-dark: #5a2c3f;
+      --text-light: #ffffff;
+      --shadow: rgba(210, 97, 141, 0.2);
+      --font-main: 'Montserrat', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: linear-gradient(180deg, var(--pink-light) 0%, #ffd6e8 100%);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      color: var(--text-dark);
+    }
+
+    .card {
+      background: #fff8fb;
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 25px var(--shadow);
+      max-width: 520px;
+      width: 90%;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .heart {
+      font-size: 34px;
+      margin-bottom: 12px;
+      animation: pulse 1.8s infinite;
+    }
+
+    h2 {
+      color: var(--pink-dark);
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    a {
+      color: var(--pink-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: #9f2b68;
+    }
+
+    .button-back {
+      display: inline-block;
+      background: var(--pink-dark);
+      color: white;
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .button-back:hover {
+      background: #bb4d87;
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* --- Адаптивність для мобільних --- */
+    @media (max-width: 480px) {
+      body {
+        padding: 20px;
+      }
+
+      .card {
+        padding: 25px 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .button-back {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="heart">💗</div>
+    <h2>Усі квитки на подію розпродані</h2>
+    <p>Можливо, не всі ще завершили оплату або хтось відмовиться від свого квитка 💫</p>
+    <p>Якщо хочеш потрапити до списку очікування — напиши нам на<br>
+      <a href="mailto:pasue.club@gmail.com">pasue.club@gmail.com</a>
+    </p>
+    <a href="/opening/" class="button-back">Повернутися на головну</a>
+  </div>
+</body>
+</html>

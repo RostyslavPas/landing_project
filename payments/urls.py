@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
 
+from .views import get_order_by_token
 
 urlpatterns = [
     path('opening/', views.opening, name='opening'),
@@ -16,4 +18,6 @@ urlpatterns = [
     path('verify-ticket/<int:ticket_id>/', views.verify_ticket_page, name='verify_ticket'),
     path('submit-subscription/', views.submit_subscription_form, name='submit_subscription'),
     path("payment/subscription-callback/", views.wayforpay_subscription_callback, name="wayforpay_subscription_callback"),
+    path("sold-out/", TemplateView.as_view(template_name="sold_out.html"), name="sold_out"),
+    path("api/get_order_by_token/", get_order_by_token, name="get_order_by_token"),
 ]

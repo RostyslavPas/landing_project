@@ -1,6 +1,14 @@
 from django.contrib import admin
-from .models import TicketOrder, TicketScanLog, SubscriptionOrder
+from .models import TicketScanLog, SubscriptionOrder, Event, TicketOrder
 from django.utils.html import format_html
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ("title", "date", "location", "price", "max_tickets", "is_active")
+    list_editable = ("is_active",)
+    search_fields = ("title",)
+    ordering = ("-date",)
 
 
 @admin.register(TicketOrder)
@@ -10,6 +18,8 @@ class TicketOrderAdmin(admin.ModelAdmin):
         'name',
         'email',
         'phone',
+        'ticket_number',
+        'event',
         'payment_status',
         'email_status',
         'device_type',

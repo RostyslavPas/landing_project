@@ -10,8 +10,12 @@ from .keycrm_api import KeyCRMAPI
 from .forms import TicketOrderForm, SubscriptionOrderForm
 import logging
 from django.shortcuts import render
-from .models import TicketOrder, SubscriptionOrder
+from .models import TicketOrder, SubscriptionOrder, Event
 from .ticket_utils import send_ticket_email_with_pdf
+from django.db import transaction
+from django.utils import timezone
+from datetime import timedelta
+from .models import BotAccessToken
 
 
 logger = logging.getLogger(__name__)
@@ -38,7 +42,7 @@ def opening_mobile(request):
     return render(request, "opening_mobile.html")
 
 
-def generate_wayforpay_params(order):
+def generate_wayforpay_params(order, product_name=None):
     merchant_account = settings.WAYFORPAY_MERCHANT_ACCOUNT
     merchant_domain = settings.WAYFORPAY_DOMAIN.rstrip('/')
     secret_key = settings.WAYFORPAY_SECRET_KEY
@@ -57,7 +61,7 @@ def generate_wayforpay_params(order):
         "orderDate": str(int(time.time())),
         "amount": f"{amount:.2f}",
         "currency": "UAH",
-        "productName[]": ["PASUE Club - Grand Opening Party Ticket"],
+        "productName[]": [product_name or "Квиток PASUE Club"],
         "productCount[]": ["1"],
         "productPrice[]": [f"{amount:.2f}"],
         "clientFirstName": order.name,
@@ -142,17 +146,50 @@ def submit_ticket_form(request):
             ua_string = request.META.get("HTTP_USER_AGENT", "").lower()
             device_type = "mobile" if "mobi" in ua_string else "desktop"
 
-            # Створюємо замовлення
-            order = TicketOrder.objects.create(
-                name=name,
-                email=email,
-                phone=phone,
-                payment_status="pending",
-                amount=1.00,
-                device_type=device_type,
-            )
+            # === Перевірка ліміту квитків ===
+            with transaction.atomic():
+                # Отримуємо активну подію з блокуванням запису
+                event = Event.objects.select_for_update().filter(is_active=True).first()
+                if not event:
+                    return JsonResponse({"success": False, "error": "Подію не знайдено."}, status=400)
 
-            logger.info(f"📝 Створено замовлення #{order.id}")
+                # ⏳ Задаємо ліміт часу для броні (наприклад, 10 хв)
+                expiration_time = timezone.now() - timedelta(minutes=1)
+
+                # оновлюємо старі броні
+                expired_count = TicketOrder.objects.filter(
+                    payment_status="pending",
+                    created_at__lt=expiration_time
+                ).update(payment_status="expired")
+
+                if expired_count:
+                    logger.info(f"🕓 Автоматично оновлено {expired_count} старих броней у статус 'expired'")
+
+                # 🔥 Рахуємо тільки актуальні квитки (успішні + pending не старші 10 хв)
+                active_orders = TicketOrder.objects.filter(
+                    event=event,
+                    payment_status__in=["success", "pending"],
+                ).exclude(
+                    payment_status="pending",
+                    created_at__lt=expiration_time
+                ).count()
+
+                if active_orders >= event.max_tickets:
+                    return JsonResponse({"success": False, "redirect_url": "/sold-out/"})
+
+                # Створюємо замовлення
+                order = TicketOrder.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    payment_status="pending",
+                    amount=event.price,
+                    device_type=device_type,
+                    event=event,
+                    ticket_number=active_orders + 1
+                )
+
+                logger.info(f"📝 Створено замовлення #{order.id} (квиток №{order.ticket_number})")
 
             # Створюємо лід в KeyCRM з платежем в масиві
             if settings.KEYCRM_API_TOKEN and settings.KEYCRM_PIPELINE_ID and settings.KEYCRM_SOURCE_ID:
@@ -228,8 +265,12 @@ def submit_ticket_form(request):
                 except Exception as e:
                     logger.error(f"❌ Помилка при створенні ліда в KeyCRM: {str(e)}")
 
+            # Додаємо інформацію про квиток у назву продукту
+            order_description = f"{event.title} — Квиток №{order.ticket_number} із {event.max_tickets}"
+
             # Генеруємо параметри для оплати
-            params = generate_wayforpay_params(order)
+            params = generate_wayforpay_params(order, product_name=order_description)
+
             return JsonResponse({"success": True, "wayforpay_params": params})
 
         else:
@@ -1349,3 +1390,27 @@ def send_subscription_confirmation_email(subscription):
     except Exception as e:
         logger.error(f"Помилка відправки email підписки: {str(e)}")
         raise
+
+
+@csrf_exempt
+def get_order_by_token(request):
+    """API: отримання даних по токену для Telegram-бота"""
+    token = request.GET.get("token")
+    if not token:
+        return JsonResponse({"error": "Missing token"}, status=400)
+
+    try:
+        token_obj = BotAccessToken.objects.select_related('order').get(token=token, is_active=True)
+        order = token_obj.order
+        return JsonResponse({
+            "lead_id": order.keycrm_lead_id,
+            "name": order.name,
+            "email": order.email,
+            "phone": order.phone,
+            "event": order.event_name,
+            "funnel": token_obj.funnel_tag,
+            "payment_status": order.payment_status,
+            "ticket_status": order.ticket_status,
+        })
+    except BotAccessToken.DoesNotExist:
+        return JsonResponse({"error": "Invalid or inactive token"}, status=404)

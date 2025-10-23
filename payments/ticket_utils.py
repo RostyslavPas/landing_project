@@ -1,4 +1,6 @@
 import io
+import uuid
+
 import qrcode
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -12,6 +14,9 @@ from reportlab.pdfbase import pdfmetrics
 from django.conf import settings
 import os
 from PIL import Image
+import base64
+import json
+from .models import BotAccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -140,20 +145,27 @@ def generate_ticket_pdf(order, qr_img):
     return pdf_buffer
 
 
-def send_ticket_email_with_pdf(order):
-    """Відправка email з PDF і QR"""
-    # Генеруємо QR для перевірки
+def send_ticket_email_with_pdf(order, funnel_tag="night-29-11"):
+    """Відправка email з PDF і QR + посилання на Telegram-бота"""
+    # === 1. Генеруємо QR для перевірки ===
     qr_img = generate_ticket_qr(order)
 
-    # Генеруємо PDF з QR
+    # === 2. Генеруємо PDF з QR ===
     pdf_buffer = generate_ticket_pdf(order, qr_img)
 
-    # Формуємо посилання на бот з KeyCRM Lead ID
-    bot_url = "https://t.me/Pasue_club_bot"
+    # === 3. Формуємо посилання на бот ===
     if order.keycrm_lead_id:
-        bot_url = f"https://t.me/Pasue_club_bot?start={order.keycrm_lead_id}"
+        # --- Генеруємо або отримуємо токен ---
+        token_obj, _ = BotAccessToken.objects.get_or_create(
+            order=order,
+            funnel_tag=funnel_tag,
+            defaults={"token": uuid.uuid4().hex[:12]}
+        )
+        bot_url = f"https://t.me/Pasue_club_bot?start={token_obj.token}"
+    else:
+        bot_url = "https://t.me/Pasue_club_bot"
 
-    # HTML шаблон
+    # === 4. Формуємо HTML контент листа ===
     html_content = render_to_string('emails/ticket.html', {
         'order': order,
         'bot_url': bot_url
@@ -162,7 +174,7 @@ def send_ticket_email_with_pdf(order):
     # Plain text
     text_content = f"Ваш квиток на {order.event_name}\nНомер замовлення: {order.id}"
 
-    # Створюємо Email
+    # === 5. Формуємо та надсилаємо лист ===
     email = EmailMultiAlternatives(
         subject='Вітаємо у PASUE Club - Твій квиток на атмосферний вечір',
         body=text_content,
@@ -170,12 +182,8 @@ def send_ticket_email_with_pdf(order):
         to=[order.email]
     )
 
-    # Додаємо HTML альтернативу
     email.attach_alternative(html_content, "text/html")
-
-    # Додаємо PDF
     email.attach(f'ticket_{order.id}.pdf', pdf_buffer.read(), 'application/pdf')
-
-    # Відправка
     email.send(fail_silently=False)
-    logger.info(f"Email з PDF та QR відправлено для замовлення {order.id}")
+
+    logger.info(f"📩 Email з PDF, QR і посиланням на бота відправлено для замовлення #{order.id}")
