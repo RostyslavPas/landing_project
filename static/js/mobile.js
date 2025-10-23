@@ -330,3 +330,24 @@ function redirectToWayForPay(params) {
     document.body.appendChild(form);
     form.submit();
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const inputs = document.querySelectorAll("input[type='text'], input[type='email'], input[type='tel']");
+
+  inputs.forEach((input) => {
+    input.addEventListener("focus", () => {
+      // Трохи затримки для стабільності на мобільних
+      setTimeout(() => {
+        input.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        input.classList.add("focused-input");
+      }, 200);
+    });
+
+    input.addEventListener("blur", () => {
+      input.classList.remove("focused-input");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+});
