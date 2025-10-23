@@ -1,6 +1,5 @@
 import io
 import uuid
-
 import qrcode
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -14,8 +13,6 @@ from reportlab.pdfbase import pdfmetrics
 from django.conf import settings
 import os
 from PIL import Image
-import base64
-import json
 from .models import BotAccessToken
 
 logger = logging.getLogger(__name__)

@@ -27,7 +27,7 @@ class Event(models.Model):
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        default=1.00,
+        default=1559.00,
         verbose_name="Ціна квитка"
     )
     max_tickets = models.PositiveIntegerField(
@@ -69,7 +69,7 @@ class TicketOrder(models.Model):
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        default=1.00
+        default=1559.00
     )
     ticket_status = models.CharField(
         max_length=20,

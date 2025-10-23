@@ -154,7 +154,7 @@ def submit_ticket_form(request):
                     return JsonResponse({"success": False, "error": "Подію не знайдено."}, status=400)
 
                 # ⏳ Задаємо ліміт часу для броні (наприклад, 10 хв)
-                expiration_time = timezone.now() - timedelta(minutes=1)
+                expiration_time = timezone.now() - timedelta(minutes=10)
 
                 # оновлюємо старі броні
                 expired_count = TicketOrder.objects.filter(
