@@ -1,3 +1,4 @@
+{% load l10n %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -109,9 +110,9 @@
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof fbq === 'function') {
           fbq('track', 'Purchase', {
-            value: {{ order.amount|floatformat:2 }},       // 💰 сума замовлення
-            currency: 'UAH',                               // 💵 валюта
-            content_name: '{{ order.event_name|escapejs }}' // 🎟️ назва події
+            value: parseFloat('{{ order.amount|unlocalize }}'),
+            currency: 'UAH',
+            content_name: '{{ order.event_name|escapejs }}'
           });
           console.log('✅ Meta Pixel: Purchase event sent');
         }
