@@ -126,9 +126,9 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof fbq === 'function') {
-          const amount = {{ order.amount|unlocalize|floatformat:2 }};
-          const currency = 'UAH'.trim(); // очищує від пробілів
-          const contentName = '{{ order.event_name|escapejs }}'.trim();
+          const amount = {{ order.amount|stringformat:"f" }};
+          const currency = 'UAH';
+          const contentName = '{{ order.event_name|escapejs }}';
 
           fbq('track', 'Purchase', {
             value: amount,
@@ -142,6 +142,5 @@
         }
       });
     </script>
-
 </body>
 </html>
