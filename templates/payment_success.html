@@ -125,10 +125,10 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof fbq === 'function') {
-          const amount = parseFloat('{{ order.amount|stringformat:"f" }}');
+          const amount = parseFloat('{{ order.amount|floatformat:2 }}');
           fbq('track', 'Purchase', {
             value: amount,
-            currency: 'UAH',
+            currency: "UAH",
             content_name: '{{ order.event_name|escapejs }}'
           });
           console.log('✅ Meta Pixel: Purchase event sent');
