@@ -125,7 +125,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof fbq === 'function') {
-          const amount = parseFloat('{{ order.amount|stringformat:"f" }}');
+          const amount = parseFloat('{{ order.amount }}'.replace(',', '.'));
           fbq('track', 'Purchase', {
             value: amount,
             currency: 'UAH',
