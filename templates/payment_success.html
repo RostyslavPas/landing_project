@@ -1,4 +1,3 @@
-{% load l10n %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -109,12 +108,15 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof fbq === 'function') {
+          const amount = parseFloat('{{ order.amount|stringformat:"f" }}');
           fbq('track', 'Purchase', {
-            value: parseFloat('{{ order.amount|unlocalize }}'),
+            value: amount,
             currency: 'UAH',
             content_name: '{{ order.event_name|escapejs }}'
           });
           console.log('✅ Meta Pixel: Purchase event sent');
+        } else {
+          console.warn('⚠️ Meta Pixel not loaded');
         }
       });
     </script>
