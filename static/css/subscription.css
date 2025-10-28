@@ -73,10 +73,9 @@ body {
 }
 
 .pink-menu a:hover {
-    color: #c13f73;
-    /*color: #fff;*/
-    letter-spacing: 0.7px;
-
+    /*color: #c13f73;*/
+    color: #fff;
+    letter-spacing: 1.4px;
 }
 
 /* Для красивої появи */
@@ -912,6 +911,23 @@ body {
     position: relative;
     left: 5%;
 }
+.subscription-form input:valid {
+  border: 1px solid #2ecc71; /* Зелений border */
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.25);
+}
+
+/* Якщо поле порожнє або некоректне */
+.subscription-form input:invalid {
+  border: 1px dashed #ff4d6d;
+  box-shadow: 0 0 8px rgba(255, 77, 109, 0.25);
+}
+
+/* Щоб зелений колір не з'являвся до першої взаємодії */
+.subscription-form input:placeholder-shown {
+  border: 1px dashed #000000;
+  box-shadow: none;
+}
+
 
 .faq-section {
     padding: 25px 20px;
@@ -1038,6 +1054,9 @@ body {
 
 .popup.active {
   display: flex;
+}
+.popup.show {
+    display:flex;
 }
 
 .popup-content.desktop {

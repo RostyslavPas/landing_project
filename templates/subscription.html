@@ -277,17 +277,17 @@
                         {% csrf_token %}
                         <div class="form-field">
                             <label for="name">Прізвище та імʼя:</label>
-                            <input type="text" id="name" name="name">
+                            <input type="text" id="name" name="name" required>
                             <span class="error-message" id="name-error"></span>
                         </div>
                         <div class="form-field">
                             <label for="phone">Номер телефону:</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel">
+                            <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel" required>
                             <span class="error-message" id="phone-error"></span>
                         </div>
                         <div class="form-field">
                             <label for="email">E-mail:</label>
-                            <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email">
+                            <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email" required>
                             <span class="error-message" id="email-error"></span>
                         </div>
 
@@ -382,7 +382,7 @@
     </div>
     <!-- Підключаємо зовнішній JS -->
     <script src="{% static 'js/subscription.js' %}"></script>
-{#    Випадаюче меню#}
+{#    Випадаюче меню   #}
     <script>
         const menuToggle = document.getElementById("menu-toggle");
         const dropdownMenu = document.getElementById("dropdownMenu");
@@ -414,7 +414,6 @@
           });
         });
     </script>
-
     <script>
     document.addEventListener("DOMContentLoaded", () => {
       // --- 1. Зберігаємо UTM у cookies ---
