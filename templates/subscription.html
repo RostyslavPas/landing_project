@@ -126,11 +126,11 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <h3>Середовище, що підтримує</h3>
-                    <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомились</p>
+                    <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомилися</p>
                 </div>
                 <div class="feature-card">
                     <h3>Контент, який надихає</h3>
-                    <p>Теми, які хочеться зберігати та перечитувати від таких експертів, як: психологиня, астрологиня, нутриціологиня, тренерка та інших</p>
+                    <p>Теми, які хочеться зберігати та перечитувати від таких експерток, як психологиня, астрологиня, нутриціологиня, тренерка та інших</p>
                 </div>
                 <div class="feature-card">
                     <h3>Формати, де ти можеш звучати</h3>
@@ -159,7 +159,7 @@
                 <p class="city-tagline">це місто, в якому хочеться залишитись</p>
                 <div class="city-passport-container">
                     <img src="{% static 'images/city-passport.png' %}" alt="Passport" class="city-passport">
-                    <p>Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram ти<br> отримаєш паспорт мешканки PASUE City — з<br> ним усе змінюється. Ти — частина простору,<br> який відчуває, приймає й розвиває</p>
+                    <p>Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram ти<br> отримаєш паспорт мешканки PASUE City — з<br> ним усе змінюється. Ти — частина простору,<br> який відчуває, приймає і розвиває</p>
                 </div>
                 <img src="{% static 'images/pink-airplane.png' %}" alt="Pink airplane" class="city-plane">
             </div>
@@ -311,7 +311,7 @@
                         <p><strong>Що я отримую одразу після оплати?</strong><br>Лист на email з посиланням на чат-бот → авторизація → паспорт мешканки → доступ у PASUE CITY</p>
                     </div>
                     <div class="faq-item">
-                        <p><strong>Скільки коштує підписка?</strong><br>759 грн / місяць. Підписку можна відмінити в будь-який час</p>
+                        <p><strong>Скільки коштує підписка?</strong><br>759 грн / місяць. Підписку можна скасувати будь-коли</p>
                     </div>
                     <div class="faq-item">
                         <p><strong>Як часто виходить контент на каналі?</strong><br>Кожного дня. У форматі листів, відео, аудіо та мудбордів</p>
@@ -398,7 +398,7 @@
           dropdownMenu.classList.toggle("show", isOpen);
         });
 
-        // Закривати меню при кліку поза ним
+        // Закривати меню при click поза ним
         document.addEventListener("click", (e) => {
           if (isOpen && !dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
             dropdownMenu.classList.remove("show");
@@ -406,7 +406,7 @@
           }
         });
 
-        // Закриття по кліку на пункт меню
+        // Закриття по click на пункт меню
         dropdownMenu.querySelectorAll("a").forEach(link => {
           link.addEventListener("click", () => {
             dropdownMenu.classList.remove("show");
@@ -495,7 +495,7 @@
         }
       });
 
-      // ✅ Форматування номера під час введення
+      // ✅ Форматування номера в момент заповнення поля
       phoneInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, '');
         if (value === "") {
@@ -581,7 +581,7 @@
       emailInput.addEventListener("input", validateEmail);
       phoneInput.addEventListener("input", validatePhone);
 
-      // ✅ Обробка кліку на кнопку оплати
+      // ✅ Обробка click на кнопку оплати
       if (form && payButton) {
         const originalButtonUrl = payButton.href;
 
