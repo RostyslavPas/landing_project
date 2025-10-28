@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dropdownMenu.classList.toggle('show');
         });
 
-        // Закриття меню при кліку поза ним
+        // Закриття меню при click поза ним
         document.addEventListener('click', (e) => {
             if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
                 dropdownMenu.classList.remove('show');
@@ -80,14 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateName() {
         const name = nameInput.value.trim();
         const nameError = document.getElementById('name-error');
-        
+
         if (name.length < 2) {
             nameError.textContent = 'Ім\'я повинно містити мінімум 2 символи';
             nameError.style.display = 'block';
             nameInput.style.borderColor = '#ff4757';
             return false;
         }
-        
+
         nameError.style.display = 'none';
         nameInput.style.borderColor = 'rgba(243, 236, 236, 0.2)';
         return true;
@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value.trim();
         const emailError = document.getElementById('email-error');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
+
         if (!emailRegex.test(email)) {
             emailError.textContent = 'Введіть коректний email';
             emailError.style.display = 'block';
             emailInput.style.borderColor = '#ff4757';
             return false;
         }
-        
+
         emailError.style.display = 'none';
         emailInput.style.borderColor = 'rgba(243, 236, 236, 0.2)';
         return true;
@@ -113,15 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function validatePhone() {
         const phone = phoneInput.value.trim();
         const phoneError = document.getElementById('phone-error');
-        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
-        
+        const phoneRegex = /^\+?[0-9\s\-()]{10,}$/;
+
         if (!phoneRegex.test(phone)) {
             phoneError.textContent = 'Введіть коректний номер телефону';
             phoneError.style.display = 'block';
             phoneInput.style.borderColor = '#ff4757';
             return false;
         }
-        
+
         phoneError.style.display = 'none';
         phoneInput.style.borderColor = 'rgba(243, 236, 236, 0.2)';
         return true;
@@ -132,23 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emailInput) emailInput.addEventListener('blur', validateEmail);
     if (phoneInput) phoneInput.addEventListener('blur', validatePhone);
 
-    // --- Функція для отримання CSRF токена ---
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    // --- Telegram функція ---
+// --- Telegram функція ---
     window.openTelegram = function(event) {
         event.preventDefault();
         window.open('https://t.me/+380684437882', '_blank');

@@ -16,6 +16,104 @@ body {
     position: relative;
 }
 
+/************************main-dropdown-menu*****************************/
+/* Блок меню поверх контенту */
+.pink-menu {
+    position: absolute;
+    top: 259%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28%;
+    height: 200%;
+    background: rgb(232 187 200);
+    border: 1px solid #d58ca5;
+    border-radius: 5px;
+    padding: 30px 30px;
+    box-shadow: 0 4px 25px rgba(213, 140, 165, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 30;
+}
+
+.pink-menu.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pink-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pink-menu li {
+  margin: 12px 0;
+  opacity: 1;
+  text-align: center;
+  transform: translateY(10px);
+  animation: menuFadeIn 0.6s ease forwards;
+}
+
+.pink-menu a {
+    font-family: 'Montserrat Alternates', sans-serif;
+    text-decoration: none;
+    position: relative;
+    top: -55px;
+    color: #411a2d;
+    font-weight: 600;
+    font-size: 1.4em;
+    letter-spacing: 0.2px;
+    transition: all 0.3s ease;
+}
+.pink-menu img {
+    position: relative;
+    top: 12px;
+    background: rgb(223 176 187);
+}
+
+.pink-menu a:hover {
+    /*color: #c13f73;*/
+    color: #fff;
+    letter-spacing: 1.4px;
+}
+
+/* Для красивої появи */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.pink-menu.show {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Іконка меню поверх усього */
+#menu-toggle {
+  position: relative;
+  z-index: 50;
+}
+.menu-icon {
+  width: 38px;
+  transition: transform 0.5s ease, filter 0.4s ease;
+    background: rgb(242 222 228);
+}
+/*************************end-dropdown-menu*************************/
+.kiss-deco {
+    position: absolute;
+    z-index: -1;
+}
+.kiss-1 {
+    width: 271px;
+    top: 23px;
+    right: 18%;
+}
+.kiss-2 {
+    width: 283px;
+    top: 137px;
+    left: 11%;
+}
+
 .btn {
     display: inline-flex;
     justify-content: center;
@@ -41,9 +139,8 @@ body {
 }
 
 .btn-dark {
-    background-color: #8d3648;
-    border: 1px solid #7c2537;
-    color: #ffffff;
+    background-color: #FAE6ED;
+    color: #000000;
 }
 
 
@@ -284,14 +381,6 @@ body {
     height: 48px;
 }
 
-.kiss-mark {
-    position: absolute;
-    width: 271px;
-    height: 198px;
-    left: 1273px;
-    top: 700px;
-}
-
 /*@media (max-width: 768px) {*/
 /*    .main-nav { gap: 10px; padding: 8px 15px; }*/
 /*    .main-nav a img { width: 30px; height: 30px; }*/
@@ -306,9 +395,8 @@ body {
 /*    .disco-ball-3 { display: none; }*/
 /*}*/
 
-
-
 #about {
+    position: relative;
     padding: 50px 20px;
     text-align: center;
 }
@@ -327,14 +415,14 @@ body {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 80px 30px;
-    max-width: 1600px;
+    max-width: 1650px;
     margin: 0 auto;
 }
 .feature-card {
     position: relative;
-    border: 3px solid #8d3648;
-    border-radius: 100px;
-    padding: 70px 30px 40px;
+    border: 1px dashed #8d3648;
+    border-radius: 30px;
+    padding: 40px 30px 40px;
     text-align: center;
 }
 
@@ -356,13 +444,29 @@ body {
     grid-column: 4 / 6;
     grid-row-start: 2;
 }
-.feature-bow {
+/* Бантики */
+.feature-bow-1,
+.feature-bow-2,
+.feature-bow-3 {
     position: absolute;
     width: 115px;
-    height: 116px;
-    top: -58px;
-    left: 50%;
-    transform: translateX(-50%);
+    height: auto;
+    z-index: 2;
+}
+/* Позиції бантиків */
+.feature-bow-1 {
+    top: 36%;
+    left: 30.4%;
+}
+
+.feature-bow-2 {
+    top: 36%;
+    left: 63%;
+}
+
+.feature-bow-3 {
+    top: 74%;
+    left: 46.7%;
 }
 .feature-card h3 {
     font-size: 22px;
@@ -468,11 +572,12 @@ body {
     text-align: center;
 }
 .city-passport {
-    width: 187px;
-    transform: rotate(0.3deg);
+    width: 205px;
+    transform: rotate(20deg);
     flex-shrink: 0;
     position: relative;
     top: -12px;
+    left: 102%;
 }
 .city-passport-container p {
     font-size: 20px;
@@ -480,14 +585,14 @@ body {
 }
 .city-plane {
     position: absolute;
-    width: 556px;
-    right: 45px;
-    top: -10px;
+    width: 554px;
+    left: 151px;
+    top: -15px;
 }
 
 .city-map-section {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 231, 238, 0.5) 50%, rgba(255, 242, 245, 0.5) 75%, rgba(255, 255, 255, 0.5) 100%);
-    padding: 50px 0;
+    padding: 0 0;
 }
 .city-map-background {
     background-image: url(/static/images/city_map_background_cloud.png);
@@ -527,9 +632,15 @@ body {
 .stop-4 { top: 106px; left: 76%; }
 
 .city-map-outro {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* центрує по горизонталі */
+  text-align: center; /* центрує текст */
+}
+
+.contacts-deco {
+    width: 88px;
+    height: 97px;
 }
 .city-map-outro h4 {
     font-size: 24px;
@@ -583,7 +694,7 @@ body {
     max-width: 500px;
     position: relative;
     left: 20%;
-    top: -15px;
+    top: -20px;
 }
 .contacts-description-box {
     border: 1px dashed #000000;
@@ -614,8 +725,6 @@ body {
 /*    .city-map-content { display: block; }*/
 /*    .city-contacts-bg-text { font-size: 60px; left: 5%; }*/
 /*}*/
-
-
 
 #events {
     padding: 100px 20px;
@@ -668,7 +777,7 @@ body {
 .events-grid {
     display: flex;
     justify-content: center;
-    gap: 80px;
+    gap: 125px;
     flex-wrap: wrap;
 }
 .event-card {
@@ -678,7 +787,7 @@ body {
 .event-image-wrapper {
     width: 376px;
     height: 376px;
-    border: 3px solid #8d3648;
+    border: 1px solid #8d3648;
     border-radius: 50%;
     margin-bottom: 30px;
     overflow: hidden;
@@ -715,7 +824,7 @@ body {
     padding: 50px 20px;
 }
 .join-form-section {
-    text-align: center;
+    text-align: left;
     margin-bottom: 100px;
 }
 .join-form-title {
@@ -783,18 +892,42 @@ body {
     height: 48px;
 }
 .form-submit-btn span {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
 }
 .form-submit-btn:hover {
     background-color: #8d3648;
+    color: #ffffff;
 }
+.form-submit-btn:hover img {
+  content: url("/static/images/heart_btn.png");
+}
+
 .error-message {
-  color: #ff4757;
-  font-size: 14px;
-  margin-top: 5px;
-  display: none;
+    color: #ff4757;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+    position: relative;
+    left: 5%;
 }
+.subscription-form input:valid {
+  border: 1px solid #2ecc71; /* Зелений border */
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.25);
+}
+
+/* Якщо поле порожнє або некоректне */
+.subscription-form input:invalid {
+  border: 1px dashed #ff4d6d;
+  box-shadow: 0 0 8px rgba(255, 77, 109, 0.25);
+}
+
+/* Щоб зелений колір не з'являвся до першої взаємодії */
+.subscription-form input:placeholder-shown {
+  border: 1px dashed #000000;
+  box-shadow: none;
+}
+
 
 .faq-section {
     padding: 25px 20px;
@@ -921,6 +1054,9 @@ body {
 
 .popup.active {
   display: flex;
+}
+.popup.show {
+    display:flex;
 }
 
 .popup-content.desktop {

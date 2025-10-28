@@ -22,14 +22,62 @@
   <body>
     <div class="scale-wrapper">
         <header id="header" class="main-container">
-            <div class="header-content">
-                <nav class="main-nav">
-                    <a href="#"><img src="{% static 'images/menu_header_icon.png' %}" alt="Menu"></a>
-                    <a href="https://instagram.com/pasue.club"><img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram"></a>
-                    <a href="#"><img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram" onclick="openTelegram(event)"></a>
-                    <a href="mailto:pasue.club@gmail.com"><img src="{% static 'images/email_header_icon.png' %}" alt="Email"></a>
-                </nav>
-            </div>
+          <div class="header-content">
+            <nav class="main-nav">
+              <a href="#" id="menu-toggle">
+                <img src="{% static 'images/menu_header_icon.png' %}" alt="Menu" />
+              </a>
+              <a href="https://instagram.com/pasue.club" target="_blank">
+                <img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram" />
+              </a>
+              <a href="#" onclick="openTelegram(event)">
+                <img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram" />
+              </a>
+              <a href="mailto:pasue.club@gmail.com">
+                <img src="{% static 'images/email_header_icon.png' %}" alt="Email" />
+              </a>
+            </nav>
+          </div>
+          <div class="pink-menu" id="dropdownMenu">
+              <ul>
+                <li>
+                  <a href="#about">
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon">
+                    <span>Про клуб</span>
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon after">
+                  </a>
+                </li>
+                <li>
+                  <a href="#city">
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon">
+                    <span>PASUE City</span>
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon after">
+                  </a>
+                </li>
+                <li>
+                  <a href="#city-contacts">
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon">
+                    <span>PASUE Contacts</span>
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon after">
+                  </a>
+                </li>
+                <li>
+                  <a href="#events">
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon">
+                    <span>PASUE Events</span>
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon after">
+                  </a>
+                </li>
+                <li>
+                  <a href="#get-subscription">
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon">
+                    <span>Приєднатися</span>
+                    <img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="menu-icon after">
+                  </a>
+                </li>
+              </ul>
+          </div>
+
         </header>
         <section id="hero" class="main-container">
             <div class="hero-background-elements">
@@ -68,7 +116,6 @@
                     <span>Приєднатися до клубу</span>
                     <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
                 </a>
-                <img src="{% static 'images/kiss.png' %}" alt="Kiss mark" class="kiss-mark">
             </div>
         </section>
         <section id="about" class="main-container">
@@ -78,31 +125,29 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
                     <h3>Середовище, що підтримує</h3>
-                    <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомились</p>
+                    <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомилися</p>
                 </div>
                 <div class="feature-card">
-                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
                     <h3>Контент, який надихає</h3>
-                    <p>Теми, які хочеться зберігати та перечитувати від таких експертів, як: психологиня, астрологиня, нутриціологиня, тренерка та інших</p>
+                    <p>Теми, які хочеться зберігати та перечитувати від таких експерток, як психологиня, астрологиня, нутриціологиня, тренерка та інших</p>
                 </div>
                 <div class="feature-card">
-                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
                     <h3>Формати, де ти можеш звучати</h3>
                     <p>PASUE Club — це не лише слухати, а й говорити. Ти можеш стати ведучою, спікеркою або просто поділитися своєю справою, яка тебе надихає</p>
                 </div>
                 <div class="feature-card">
-                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
                     <h3>Події, що не залишають байдужою</h3>
                     <p>Камерні зустрічі, глибокі розмови, тепла атмосфера — кожен івент наче м'яка пауза в потоці життя, де ти можеш зупинитись і побути собою</p>
                 </div>
                 <div class="feature-card">
-                    <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow">
                     <h3>Простір трансформацій</h3>
                     <p>Неважливо, на якому ти етапі — у пошуку, у паузі або на піку. PASUE Club приймає тебе всю. З твоїми питаннями, сумнівами, мріями і силами</p>
                 </div>
             </div>
+            <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow-1">
+            <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow-2">
+            <img src="{% static 'images/feature-bow.png' %}" alt="Bow" class="feature-bow-3">
         </section>
         <section id="city" class="main-container">
             <div class="city-intro">
@@ -114,7 +159,7 @@
                 <p class="city-tagline">це місто, в якому хочеться залишитись</p>
                 <div class="city-passport-container">
                     <img src="{% static 'images/city-passport.png' %}" alt="Passport" class="city-passport">
-                    <p>Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram ти<br> отримаєш паспорт мешканки PASUE City — з<br> ним усе змінюється. Ти — частина простору,<br> який відчуває, приймає й розвиває</p>
+                    <p>Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram ти<br> отримаєш паспорт мешканки PASUE City — з<br> ним усе змінюється. Ти — частина простору,<br> який відчуває, приймає і розвиває</p>
                 </div>
                 <img src="{% static 'images/pink-airplane.png' %}" alt="Pink airplane" class="city-plane">
             </div>
@@ -159,6 +204,7 @@
                 <div class="city-map-outro">
                     <h4>Це контент, який хочеться не гортати, а проживати</h4>
                     <p>Тут ти не просто читаєш — ти впливаєш: ділишся результатами<br> та думками, обираєш теми, можеш ініціювати рубрику або стати<br> голосом каналу</p>
+                    <div id="city-contacts"><img src="{% static 'images/flier-de-liss.png' %}" alt="Decoration" class="contacts-deco"></div>
                 </div>
             </div>
 
@@ -180,6 +226,8 @@
             </div>
         </section>
         <section id="events" class="main-container">
+            <img src="{% static 'images/kiss.png' %}" alt="Kiss mark" class="kiss-deco kiss-1">
+            <img src="{% static 'images/kiss-2.png' %}" alt="Kiss mark" class="kiss-deco kiss-2">
             <div class="events-intro">
                 <div class="events-title">
                     <span class="events-title-welcome">Welcome to</span>
@@ -229,17 +277,17 @@
                         {% csrf_token %}
                         <div class="form-field">
                             <label for="name">Прізвище та імʼя:</label>
-                            <input type="text" id="name" name="name">
+                            <input type="text" id="name" name="name" required>
                             <span class="error-message" id="name-error"></span>
                         </div>
                         <div class="form-field">
                             <label for="phone">Номер телефону:</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel">
+                            <input type="tel" id="phone" name="phone" placeholder="+38(xxx)xxx-xx-xx" autocomplete="tel" required>
                             <span class="error-message" id="phone-error"></span>
                         </div>
                         <div class="form-field">
                             <label for="email">E-mail:</label>
-                            <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email">
+                            <input type="email" id="email" name="email" placeholder="user@example.com" autocomplete="email" required>
                             <span class="error-message" id="email-error"></span>
                         </div>
 
@@ -251,7 +299,7 @@
 
                         <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" class="btn btn-dark form-submit-btn">
                             <span>Приєднатися до клубу</span>
-                            <img src="{% static 'images/heart_btn.png' %}" alt="Heart icon">
+                            <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
                         </a>
                     </form>
                 </div>
@@ -263,7 +311,7 @@
                         <p><strong>Що я отримую одразу після оплати?</strong><br>Лист на email з посиланням на чат-бот → авторизація → паспорт мешканки → доступ у PASUE CITY</p>
                     </div>
                     <div class="faq-item">
-                        <p><strong>Скільки коштує підписка?</strong><br>759 грн / місяць. Підписку можна відмінити в будь-який час</p>
+                        <p><strong>Скільки коштує підписка?</strong><br>759 грн / місяць. Підписку можна скасувати будь-коли</p>
                     </div>
                     <div class="faq-item">
                         <p><strong>Як часто виходить контент на каналі?</strong><br>Кожного дня. У форматі листів, відео, аудіо та мудбордів</p>
@@ -334,6 +382,38 @@
     </div>
     <!-- Підключаємо зовнішній JS -->
     <script src="{% static 'js/subscription.js' %}"></script>
+{#    Випадаюче меню   #}
+    <script>
+        const menuToggle = document.getElementById("menu-toggle");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+
+        let isOpen = false;
+
+        // Відкрити або закрити меню без зсуву контенту
+        menuToggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          isOpen = !isOpen;
+          dropdownMenu.classList.toggle("show", isOpen);
+        });
+
+        // Закривати меню при click поза ним
+        document.addEventListener("click", (e) => {
+          if (isOpen && !dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove("show");
+            isOpen = false;
+          }
+        });
+
+        // Закриття по click на пункт меню
+        dropdownMenu.querySelectorAll("a").forEach(link => {
+          link.addEventListener("click", () => {
+            dropdownMenu.classList.remove("show");
+            isOpen = false;
+          });
+        });
+    </script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
       // --- 1. Зберігаємо UTM у cookies ---
@@ -415,7 +495,7 @@
         }
       });
 
-      // ✅ Форматування номера під час введення
+      // ✅ Форматування номера в момент заповнення поля
       phoneInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, '');
         if (value === "") {
@@ -501,7 +581,7 @@
       emailInput.addEventListener("input", validateEmail);
       phoneInput.addEventListener("input", validatePhone);
 
-      // ✅ Обробка кліку на кнопку оплати
+      // ✅ Обробка click на кнопку оплати
       if (form && payButton) {
         const originalButtonUrl = payButton.href;
 
