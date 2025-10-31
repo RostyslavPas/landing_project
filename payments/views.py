@@ -37,9 +37,26 @@ def opening(request):
     """Сторінка Grand Opening Party (колишня index)"""
     return render(request, "opening.html")
 
+
 def opening_mobile(request):
     """Мобільна сторінка Grand Opening Party (колишня mobile)"""
     return render(request, "opening_mobile.html")
+
+
+def subscription(request):
+    user_agent = request.META.get("HTTP_USER_AGENT", "").lower()
+
+    # перевірка на мобільні пристрої
+    is_mobile = any(keyword in user_agent for keyword in [
+        "iphone", "android", "mobile", "ipad", "ipod", "opera mini", "blackberry"
+    ])
+
+    if is_mobile:
+        template_name = "subscription_mobile.html"
+    else:
+        template_name = "subscription.html"
+
+    return render(request, template_name)
 
 
 def generate_wayforpay_params(order, product_name=None):

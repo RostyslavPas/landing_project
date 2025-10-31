@@ -381,20 +381,6 @@ body {
     height: 48px;
 }
 
-/*@media (max-width: 768px) {*/
-/*    .main-nav { gap: 10px; padding: 8px 15px; }*/
-/*    .main-nav a img { width: 30px; height: 30px; }*/
-/*    .hero-image-container { width: 90vw; height: 65vw; margin-top: 0; }*/
-/*    .hero-logo { width: 50%; height: auto; top: 10%; }*/
-/*    .hero-image { width: 65%; height: auto; bottom: 10%; }*/
-/*    .hero-bg-text { font-size: 60px; top: 350px; }*/
-/*    .hero-cta { width: 90%; }*/
-/*    .kiss-mark { display: none; }*/
-/*    .disco-ball-1 { width: 200px; left: -50px; }*/
-/*    .disco-ball-2 { width: 120px; right: -20px; }*/
-/*    .disco-ball-3 { display: none; }*/
-/*}*/
-
 #about {
     position: relative;
     padding: 50px 20px;
@@ -478,44 +464,6 @@ body {
     line-height: 1.4;
     margin: 0;
 }
-
-/*@media (max-width: 1200px) {*/
-/*    .features-grid {*/
-/*        grid-template-columns: repeat(2, 1fr);*/
-/*        gap: 80px 40px;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(4),*/
-/*    .features-grid > .feature-card:nth-child(5) {*/
-/*        margin: 0;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(3) {*/
-/*        grid-column: 1 / -1;*/
-/*        width: 50%;*/
-/*        justify-self: center;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(4) {*/
-/*        grid-column-start: 1;*/
-/*        grid-row-start: 3;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(5) {*/
-/*        grid-column-start: 2;*/
-/*        grid-row-start: 3;*/
-/*    }*/
-/*}*/
-
-/*@media (max-width: 768px) {*/
-/*    .features-grid {*/
-/*        grid-template-columns: 1fr;*/
-/*        gap: 80px;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(3) {*/
-/*        width: 100%;*/
-/*    }*/
-/*    .features-grid > .feature-card:nth-child(4),*/
-/*    .features-grid > .feature-card:nth-child(5) {*/
-/*        margin: 0;*/
-/*    }*/
-/*}*/
 
 #city {
     padding: 35px 0;
@@ -711,21 +659,6 @@ body {
     height: 48px;
 }
 
-/*@media (max-width: 1200px) {*/
-/*    .city-plane { display: none; }*/
-/*    .city-map-background { background-size: cover; height: auto; padding-bottom: 50%; }*/
-/*    .map-stop { position: static; width: 90%; margin: 40px auto; }*/
-/*    .map-stops-container { display: flex; flex-direction: column; align-items: center; }*/
-/*}*/
-/*@media (max-width: 768px) {*/
-/*    .city-passport-container { flex-direction: column; }*/
-/*    .city-title-pasue { font-size: 90px; }*/
-/*    .city-title-city { font-size: 40px; margin-left: 80px; margin-top: -30px; }*/
-/*    .city-map-background { display: none; }*/
-/*    .city-map-content { display: block; }*/
-/*    .city-contacts-bg-text { font-size: 60px; left: 5%; }*/
-/*}*/
-
 #events {
     padding: 100px 20px;
     text-align: center;
@@ -810,15 +743,6 @@ body {
     line-height: 1.5;
     margin: 0;
 }
-
-/*@media (max-width: 768px) {*/
-/*    .events-title-pasue { font-size: 90px; }*/
-/*    .events-title-events { font-size: 40px; margin-top: -30px; }*/
-/*    .event-card { width: 100%; }*/
-/*    .event-image-wrapper { width: 100%; height: auto; aspect-ratio: 1 / 1; }*/
-/*}*/
-
-
 
 #join-faq {
     padding: 50px 20px;
@@ -930,7 +854,7 @@ body {
 
 
 .faq-section {
-    padding: 25px 20px;
+    padding: 0 20px 85px 20px;
 }
 .faq-title {
     display: block;
@@ -1185,42 +1109,4 @@ html, body {
 .input-error {
   border: 2px solid red !important;
   outline: none;
-}
-
-/* Responsive Design */
-/*@media (max-width: 768px) {*/
-/*    .join-form-title { font-size: 22px; }*/
-/*    .form-container { min-height: 450px; }*/
-/*    .form-bg-image { display: none; }*/
-/*    .subscription-form { position: static; background: #fff8fa; border-radius: 30px; padding: 40px 20px; }*/
-/*    .form-field { width: 100%; }*/
-/*    .form-submit-btn { width: 100%; }*/
-/*    .faq-title { font-size: 90px; text-align: center; }*/
-/*}*/
-
-
-@media screen and (max-width: 480px) {
-  /* На мобільних пристроях відключаємо масштабування і переходимо на мобільну версію */
-  .social-links {
-      flex-direction: column;
-      gap: 20px;
-  }
-  
-  .footer-legal-links {
-      font-size: 16px;
-  }
-
-  .footer-social-link img {
-      height: 30px;
-      width: auto;
-      transition: transform 0.3s;
-    }
-
-  .footer-social-link span {
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #ffffff;
-      opacity: 0.8;
-    }
 }

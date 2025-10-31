@@ -267,7 +267,7 @@
                 </div>
             </div>
         </section>
-        <section id="join-faq" class="main-container">
+        <section id="join" class="main-container">
             <div class="join-form-section">
                 <h2 class="join-form-title" id="get-subscription">Іноді достатньо опинитись у правильному місці — і все починає змінюватись</h2>
                 <div class="form-container">
@@ -304,6 +304,8 @@
                     </form>
                 </div>
             </div>
+        </section>
+        <section id="faq" class="main-container">
             <div class="faq-section">
                 <img src="{% static 'images/faq.png' %}" alt="FAQ" class="faq-title">
                 <div class="faq-list">
@@ -445,24 +447,6 @@
           if (input) input.value = utms[name];
         });
       }
-      // --- 4. Редирект між десктоп і мобільною версією ---
-      function checkScreenSize() {
-        saveUTMToCookies(); // зберігаємо UTM перед редиректом
-        const path = window.location.pathname;
-        const utms = getUTMFromCookies();
-        const utmQuery = Object.keys(utms).map(k => utms[k] ? `${k}=${encodeURIComponent(utms[k])}` : "").filter(Boolean).join("&");
-
-        if (window.innerWidth < 1000 && path === "/") {
-          // редирект на мобільну версію головної сторінки
-          window.location.href = "{% url 'mobile' %}" + (utmQuery ? `?${utmQuery}` : "");
-        }
-      }
-
-      // --- Виклики ---
-      fillUTMInForm();
-      checkScreenSize();
-      window.addEventListener("resize", checkScreenSize);
-
     });
     </script>
     <script>
