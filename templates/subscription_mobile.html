@@ -20,6 +20,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="global-string-1"></div>
+    <div class="global-string-2"></div>
+    <div class="global-string-3"></div>
     <section id="hero" class="hero-section">
       <div class="page-wrapper">
         <header class="hero-header">
@@ -37,6 +40,38 @@
                 <img src="{% static 'images/email_header_icon.png' %}" alt="Email" class="icon-email">
               </a>
           </nav>
+
+          <div class="pink-menu" id="dropdownMenu">
+          <div class="menu-header">
+              <button id="closeMenu" aria-label="Закрити меню">×</button>
+              <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="menu-brand-logo">
+          </div>
+
+          <div class="menu-divider top"></div>
+
+          <ul class="menu-links">
+            <li><a href="#features">Про клуб</a></li>
+            <li><a href="#city">PASUE City</a></li>
+            <li><a href="#city-contacts">PASUE Contacts</a></li>
+            <li><a href="#events">PASUE Events</a></li>
+            <li><a href="#form">Приєднатися</a></li>
+          </ul>
+
+          <div class="menu-divider bottom"></div>
+
+          <div class="menu-socials">
+            <a href="https://instagram.com/pasue.club" target="_blank">
+              <img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram">
+            </a>
+            <a href="#" onclick="openTelegram(event)">
+              <img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram">
+            </a>
+            <a href="mailto:pasue.club@gmail.com">
+              <img src="{% static 'images/email_header_icon.png' %}" alt="Email">
+            </a>
+          </div>
+        </div>
+
         </header>
 
         <div class="mb-disco mb-disco-1">
@@ -177,7 +212,7 @@
         <div class="community-intro text-center">
           <h2 class="community-intro-title">Це контент, який хочеться не гортати, а проживати</h2>
           <p class="community-intro-text">Тут ти не просто читаєш — ти впливаєш: ділишся результатами та думками, обираєш теми, можеш ініціювати рубрику або стати голосом каналу</p>
-          <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="community-deco">
+          <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="community-deco" id="city-contacts">
           <p class="community-talent-text">А ще в PASUE City існує унікальне місце, де мешканки діляться своїми талантами, справами та контактами, щоб знаходити одна одну не лише за інтересами, а й за потребами</p>
         </div>
 
@@ -569,6 +604,29 @@
         return cookieValue;
       }
     });
+    </script>
+    <script>
+      const menuToggle = document.getElementById("menu-toggle");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+      const closeMenu = document.getElementById("closeMenu");
+
+      // Відкрити меню
+      menuToggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        dropdownMenu.classList.add("active");
+      });
+
+      // Закрити меню
+      closeMenu.addEventListener("click", () => {
+        dropdownMenu.classList.remove("active");
+      });
+
+      // Закривати при кліку на пункт
+      dropdownMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          dropdownMenu.classList.remove("active");
+        });
+      });
     </script>
 </body>
 </html>

@@ -148,16 +148,44 @@ body {
   border-radius: 50%;
   z-index: 2;
 }
+/* --- Глобальні нитки (не в контейнері) --- */
+.global-string-1 {
+  position: absolute;
+  top: 0;
+  left: 62px;
+  width: 1px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -2;
+}
+.global-string-2 {
+  position: absolute;
+  top: 0;
+  right: 78.7px;
+  width: 1px;
+  height: 75px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -2;
+}
+.global-string-3 {
+  position: absolute;
+  top: 0;
+  right: 43.5px;
+  width: 1px;
+  height: 115px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -2;
+}
+
 
 /* НИТКА */
 .mb-disco .string {
-  position: absolute;
-  left: 50%;
-  width: 1px;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
-  pointer-events: none;
-  z-index: 1;
+    position: absolute;
+    transform: translateX(-50%);
+    background: #000000;
+    z-index: -1;
+    pointer-events: none;
+    border: 1px solid #000000;
 }
 .mb-disco-1 .string { top: -110px; height: 110px; }
 .mb-disco-2 .string { top: -85px; height: 85px; }
@@ -873,29 +901,252 @@ body {
   text-align: center;
   color: #000;
 }
+
+/* ===== 🎀 Випадаюче меню для мобільних ===== */
+.pink-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 91%;
+  height: 92vh;
+  background: #fff7f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 40px 20px;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-30px);
+  transition: all 0.4s ease-in-out;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.pink-menu.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Верхній блок */
+.menu-header {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Лого PASUE у меню */
+.menu-brand-logo {
+  height: 110px;
+  width: auto;
+  margin-right: 10px;
+}
+
+#closeMenu {
+  background: none;
+  border: none;
+  font-size: 36px;
+  color: #000;
+  cursor: pointer;
+  font-weight: 300;
+  transform: rotate(0);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+#closeMenu:hover {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+
+.menu-brand {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #000;
+  text-transform: uppercase;
+}
+
+/* Роздільні лінії */
+.menu-divider {
+  width: 80%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 30px 0;
+  opacity: 0;
+  animation: dividerFade 0.8s ease forwards;
+}
+
+.menu-divider.top {
+  animation-delay: 0.2s;
+}
+
+.menu-divider.bottom {
+  animation-delay: 0.6s;
+}
+
+@keyframes dividerFade {
+  from { width: 0; opacity: 0; }
+  to { width: 80%; opacity: 1; }
+}
+
+/* Пункти меню */
+.menu-links {
+  list-style: none;
+  padding: 0;
+  margin: 40px 0;
+  text-align: center;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menu-links li {
+  margin: 18px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.menu-links li:nth-child(1) { animation-delay: 0.25s; }
+.menu-links li:nth-child(2) { animation-delay: 0.35s; }
+.menu-links li:nth-child(3) { animation-delay: 0.45s; }
+.menu-links li:nth-child(4) { animation-delay: 0.55s; }
+.menu-links li:nth-child(5) { animation-delay: 0.65s; }
+
+.menu-links a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.menu-links a:hover {
+  color: #7c2537;
+  transform: scale(1.05);
+}
+
+/* Соціальні іконки */
+.menu-socials {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 30px 40px 30px;
+    transform: scale(1);
+}
+
+.menu-socials img {
+  width: 36px;
+  filter: brightness(0);
+}
+
+.menu-socials img:hover {
+  transform: scale(1.15);
+  filter: brightness(0.3) sepia(1) hue-rotate(-20deg) saturate(6);
+}
+
+/* Анімації */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 350px) and (max-width: 369px) {
+    .social-nav {
+        transform: scale(0.7);
+    }
+    .pink-menu {
+        padding: 30px 17px;
+    }
+    .menu-header {
+        transform: scale(0.8);
+    }
+    .menu-socials {
+        transform: scale(0.8);
+    }
+    .menu-links {
+        transform: scale(0.8);
+    }
+    .menu-divider {
+        margin: 20px 0;
+    }
+    .hero-collage {
+        transform: scale(0.8);
+        left: 15px;
+    }
+    .hero-logo {
+        transform: scale(0.8);
+        left: 64px;
+        top: 43px;
+    }
+}
 @media (min-width: 370px) and (max-width: 375px) {
+    .social-nav {
+        transform: scale(0.8);
+    }
+    .pink-menu {
+        padding: 30px 17px;
+    }
+    .menu-header {
+        transform: scale(0.8);
+    }
+    .menu-socials {
+        transform: scale(0.8);
+    }
+    .menu-links {
+        transform: scale(0.8);
+    }
+    .menu-divider {
+        margin: 3px 0;
+    }
+    .hero-collage {
+        transform: scale(0.83);
+        left: 23px;
+        top: 72px;
+    }
+    .hero-logo {
+        transform: scale(0.8);
+        left: 70px;
+        top: 41px;
+    }
     .form-bg-image {
         width: 555px;
         left: -86%;
     }
 }
 @media (min-width: 376px) and (max-width: 383px) {
+    .social-nav {
+        transform: scale(0.8);
+    }
     .form-bg-image {
         width: 555px;
         left: -86%;
     }
 }
 @media (min-width: 384px) and (max-width: 388px) {
-    .mb-disco-1 {
-        left: -3px;
+    .social-nav {
+        transform: scale(0.8);
     }
-    .mb-disco-2 {
-        top: 37px;
-        right: 43px;
+    .hero-collage {
+        transform: scale(0.86);
+        left: 28px;
     }
-    .mb-disco-3 {
-        top: 57px;
-        right: 0;
+    .hero-logo {
+        transform: scale(0.86);
+        left: 75px;
+        top: 38px;
     }
     .hero-title {
         font-size: 20px;
@@ -906,6 +1157,19 @@ body {
     }
 }
 @media (min-width: 389px) and (max-width: 410px) {
+    .social-nav {
+        transform: scale(0.9);
+    }
+    .hero-collage {
+        transform: scale(0.89);
+        left: 31px;
+        top: 70px;
+    }
+    .hero-logo {
+        transform: scale(0.9);
+        left: 78px;
+        top: 39px;
+    }
     .hero-title {
         font-size: 20px;
     }
@@ -921,15 +1185,6 @@ body {
     .icon-menu {
         height: 27px;
     }
-    .mb-disco-1 {
-        left: -2px;
-    }
-    .mb-disco-2 {
-        right: 48px;
-    }
-    .mb-disco-3 {
-        right: 0;
-    }
     .city-journey-intro {
         padding: 20px 40px;
     }
@@ -938,15 +1193,17 @@ body {
     }
 }
 @media (min-width: 411px) and (max-width: 427px) {
-    .mb-disco-1 {
-        left: -1px;
+    .social-nav {
+        transform: scale(0.9);
     }
-    .mb-disco-2 {
-        top: 37px;
-        right: 53px;
+    .hero-collage {
+        transform: scale(0.95);
+        left: 41px;
+        top: 71px;
     }
-    .mb-disco-3 {
-        right: 3px;
+    .hero-logo {
+        transform: scale(0.9);
+        left: 89px;
     }
     .city-journey-intro {
         padding: 20px 50px;
@@ -955,10 +1212,31 @@ body {
         left: -73%;
     }
 }
+@media (min-width: 760px) and (max-width: 799px) {
+    .global-string-1 {
+      left: 226px;
+    }
+    .global-string-2 {
+      right: 242.7px;
+    }
+    .global-string-3 {
+      right: 207.5px;
+    }
+}
 @media (min-width: 800px) and (max-width: 1025px) {
     .form-bg-image {
         width: 690px;
         left: -65%;
     }
+    .global-string-1 {
+      left: 252px;
+    }
+    .global-string-2 {
+      right: 268.7px;
+    }
+    .global-string-3 {
+      right: 233.5px;
+    }
+
 }
 

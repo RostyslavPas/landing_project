@@ -21,5 +21,5 @@ urlpatterns = [
     path("subscription/", views.subscription, name="subscription"),
 
     # ✅ залишай include в кінці — Django читає зверху вниз
-    path("payments/", include("payments.urls")),
+    path("", include("payments.urls")),
 ]
