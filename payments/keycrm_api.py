@@ -21,7 +21,7 @@ class KeyCRMAPI:
         url = f"{self.base_url}/pipelines/cards"
         try:
             logger.info(f"➡️ Надсилаю запит на створення картки в KeyCRM: {data}")
-            response = requests.post(url, json=data, headers=self.headers, timeout=10)
+            response = requests.post(url, json=data, headers=self.headers, timeout=30)
             response.raise_for_status()
 
             result = response.json()
