@@ -965,6 +965,9 @@ body {
   height: 1px;
   background-color: rgba(0, 0, 0, 0.15);
   margin: 127px 0;
+  opacity: 1 !important;
+  display: block !important;
+  animation: none !important;
 }
 
 .divider-top {
