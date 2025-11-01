@@ -42,34 +42,36 @@
           </nav>
 
           <div class="pink-menu" id="dropdownMenu">
-          <div class="menu-header">
-              <button id="closeMenu" aria-label="Закрити меню">×</button>
-              <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="menu-brand-logo">
-          </div>
+              <div class="menu-header">
+                <button id="closeMenu" aria-label="Закрити меню">×</button>
+                <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="menu-brand-logo">
+              </div>
 
-          <div class="menu-divider top"></div>
+              <div class="menu-divider divider-top"></div>
 
-          <ul class="menu-links">
-            <li><a href="#features">Про клуб</a></li>
-            <li><a href="#city">PASUE City</a></li>
-            <li><a href="#city-contacts">PASUE Contacts</a></li>
-            <li><a href="#events">PASUE Events</a></li>
-            <li><a href="#form">Приєднатися</a></li>
-          </ul>
+              <ul class="menu-links">
+                <li><a href="#features">Про клуб</a></li>
+                <li><a href="#city">PASUE City</a></li>
+                <li><a href="#city-contacts">PASUE Contacts</a></li>
+                <li><a href="#events">PASUE Events</a></li>
+                <li><a href="#form">Приєднатися</a></li>
+              </ul>
 
-          <div class="menu-divider bottom"></div>
+              <div class="menu-socials">
+                <a href="https://instagram.com/pasue.club" target="_blank">
+                  <img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram">
+                </a>
+                <a href="#" onclick="openTelegram(event)">
+                  <img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram">
+                </a>
+                <a href="mailto:pasue.club@gmail.com">
+                  <img src="{% static 'images/email_header_icon.png' %}" alt="Email">
+                </a>
+              </div>
 
-          <div class="menu-socials">
-            <a href="https://instagram.com/pasue.club" target="_blank">
-              <img src="{% static 'images/instagram_header_icon.png' %}" alt="Instagram">
-            </a>
-            <a href="#" onclick="openTelegram(event)">
-              <img src="{% static 'images/telegram_header_icon.png' %}" alt="Telegram">
-            </a>
-            <a href="mailto:pasue.club@gmail.com">
-              <img src="{% static 'images/email_header_icon.png' %}" alt="Email">
-            </a>
-          </div>
+            <div class="menu-divider divider-bottom"></div>
+
+            <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="menu-decor">
         </div>
 
         </header>
