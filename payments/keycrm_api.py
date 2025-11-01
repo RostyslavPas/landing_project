@@ -40,7 +40,7 @@ class KeyCRMAPI:
         """Отримати список воронок"""
         url = f"{self.base_url}/pipelines"
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, timeout=30)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -51,7 +51,7 @@ class KeyCRMAPI:
         """Отримати список джерел"""
         url = f"{self.base_url}/sources"
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, timeout=30)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -79,7 +79,7 @@ class KeyCRMAPI:
             logger.info(f"📤 URL: {url}")
             logger.info(f"📤 Payload: {payload}")
 
-            response = requests.put(url, headers=self.headers, json=payload, timeout=10)
+            response = requests.put(url, headers=self.headers, json=payload, timeout=30)
 
             logger.info(f"📡 Статус відповіді: {response.status_code}")
             logger.info(f"📡 Відповідь: {response.text}")
@@ -112,7 +112,7 @@ class KeyCRMAPI:
                 params["description"] = description
 
             logger.info(f"🔄 Отримуємо список зовнішніх транзакцій")
-            response = requests.get(url, headers=self.headers, params=params, timeout=10)
+            response = requests.get(url, headers=self.headers, params=params, timeout=30)
             response.raise_for_status()
 
             result = response.json()
@@ -142,7 +142,7 @@ class KeyCRMAPI:
             logger.info(f"📤 URL: {url}")
             logger.info(f"📤 Payload: {payload}")
 
-            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
+            response = requests.post(url, headers=self.headers, json=payload, timeout=30)
 
             logger.info(f"📡 Статус відповіді: {response.status_code}")
             logger.info(f"📡 Відповідь: {response.text}")
@@ -175,7 +175,7 @@ class KeyCRMAPI:
             logger.info(f"📤 URL: {url}")
             logger.info(f"📤 Payload: {payload}")
 
-            response = requests.post(url, headers=self.headers, json=payload, timeout=10)
+            response = requests.post(url, headers=self.headers, json=payload, timeout=30)
 
             logger.info(f"📡 Статус відповіді: {response.status_code}")
             logger.info(f"📡 Відповідь: {response.text}")
