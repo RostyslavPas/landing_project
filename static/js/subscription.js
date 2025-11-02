@@ -176,3 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
         scalePage();
     }
 });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/service-worker.js')
+      .then(() => console.log('✅ Service Worker активний'))
+      .catch((err) => console.log('❌ Service Worker error:', err));
+  });
+}
+
