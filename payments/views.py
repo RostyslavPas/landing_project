@@ -283,7 +283,8 @@ def submit_ticket_form(request):
                     logger.error(f"❌ Помилка при створенні ліда в KeyCRM: {str(e)}")
 
             # Додаємо інформацію про квиток у назву продукту
-            order_description = f"{event.title} — Квиток №{order.ticket_number} із {event.max_tickets}"
+            # order_description = f"{event.title} — Квиток №{order.ticket_number} із {event.max_tickets}"
+            order_description = f"{event.title}"
 
             # Генеруємо параметри для оплати
             params = generate_wayforpay_params(order, product_name=order_description)
