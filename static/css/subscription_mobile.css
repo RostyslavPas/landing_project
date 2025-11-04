@@ -1270,6 +1270,30 @@ body {
     .form-bg-image {
         left: -85%;
     }
+    .bow-1 {
+        width: 66px;
+        top: -29px;
+        left: -31px;
+    }
+    .bow-2 {
+        width: 64px;
+        top: -48px;
+        right: -26px;
+    }
+    .bow-3 {
+        width: 66px;
+        top: -31px;
+        left: -21px;
+    }
+    .bow-4 {
+        width: 63px;
+        top: -46px;
+        right: -21px;
+    }
+    .bow-5 {
+        width: 65px;
+        top: -41px;
+    }
 }
 @media (min-width: 411px) and (max-width: 427px) {
     .social-nav {
