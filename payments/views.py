@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
@@ -170,6 +171,23 @@ def submit_ticket_form(request):
                 if not event:
                     return JsonResponse({"success": False, "error": "Подію не знайдено."}, status=400)
 
+                # --- Перевірка промокоду ---
+                promo_code_value = form.cleaned_data.get("promo_code", "").strip().upper()
+
+                if promo_code_value == settings.PROMO_CODE:
+                    discount_percent = settings.PROMO_DISCOUNT
+                    logger.info(f"🎟️ Промокод {promo_code_value} застосовано — {discount_percent}% знижка")
+                elif promo_code_value:
+                    discount_percent = 0
+                    logger.warning(f"❌ Промокод {promo_code_value} недійсний")
+                else:
+                    discount_percent = 0
+
+                # --- Розрахунок фінальної суми з урахуванням промокоду ---
+                base_price = event.price
+                final_amount = (base_price * (Decimal(1) - Decimal(discount_percent) / Decimal(100))).quantize(
+                    Decimal("0.01"))
+
                 # ⏳ Задаємо ліміт часу для броні (наприклад, 10 хв)
                 expiration_time = timezone.now() - timedelta(minutes=10)
 
@@ -200,7 +218,7 @@ def submit_ticket_form(request):
                     email=email,
                     phone=phone,
                     payment_status="pending",
-                    amount=event.price,
+                    amount=final_amount,
                     device_type=device_type,
                     event=event,
                     ticket_number=active_orders + 1
@@ -1307,3 +1325,56 @@ def get_order_by_token(request):
         })
     except BotAccessToken.DoesNotExist:
         return JsonResponse({"error": "Invalid or inactive token"}, status=404)
+
+
+def generate_free_ticket(request):
+    """
+    Створює безкоштовний квиток (без WayForPay) і надсилає лист з QR.
+    """
+    name = request.GET.get("name", "Тест Користувач")
+    email = request.GET.get("email", "test@example.com")
+    phone = request.GET.get("phone", "+380000000000")
+
+    with transaction.atomic():
+        event = Event.objects.filter(is_active=True).first()
+        if not event:
+            return JsonResponse({"success": False, "error": "Подію не знайдено."}, status=400)
+
+        expiration_time = timezone.now() - timedelta(minutes=10)
+        expired_count = TicketOrder.objects.filter(
+            payment_status="pending",
+            created_at__lt=expiration_time
+        ).update(payment_status="expired")
+
+        active_orders = TicketOrder.objects.filter(
+            event=event,
+            payment_status__in=["success", "pending"],
+        ).exclude(
+            payment_status="pending",
+            created_at__lt=expiration_time
+        ).count()
+
+        order = TicketOrder.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            payment_status="success",  # ✅ одразу успішна
+            amount=event.price,        # або 0, якщо повністю безкоштовний
+            device_type="manual",
+            event=event,
+            ticket_number=active_orders + 1
+        )
+
+        logger.info(f"🎟️ Безкоштовний квиток створено #{order.id} для {name}")
+
+    # --- Надсилання квитка на пошту ---
+    try:
+        send_ticket_email_with_pdf(order)
+        logger.info(f"📩 Лист із квитком надіслано на {email}")
+    except Exception as e:
+        logger.error(f"❌ Помилка при відправці квитка: {e}")
+
+    return JsonResponse({
+        "success": True,
+        "message": f"Безкоштовний квиток #{order.id} створено і відправлено на {email}"
+    })

@@ -155,3 +155,7 @@ LOGGING = {
         },
     },
 }
+
+PROMO_CODE = os.getenv("PROMO_CODE", "").upper()
+PROMO_DISCOUNT = int(os.getenv("PROMO_DISCOUNT", 0))
+

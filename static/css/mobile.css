@@ -583,7 +583,7 @@ img {
   margin-top: -61px;
   padding: 61px 0 69px;
   background-size: contain;
-  height: 275px;
+  height: 300px;
   position: relative;
   width: 100%;
 }
@@ -595,7 +595,7 @@ img {
 }
 .form-group {
   text-align: left;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
 }
 .ticket-info-main{
   position: relative;
@@ -619,7 +619,14 @@ img {
   font-size: 14px;
   display: block;
   margin-bottom: 3px;
-  padding-left: 11px;
+  padding-left: 10px;
+}
+label {
+  color: #000; /* основний колір тексту */
+}
+
+label span.required {
+  color: red;
 }
 .form-group input {
   width: 100%;
@@ -634,7 +641,7 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 15px;
   gap: 10%;
 }
 .price-label {
@@ -679,9 +686,52 @@ img {
   border: 2px solid #00c851;
 }
 
+/* === Promo Code Field === */
+.promo-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.promo-group label {
+  font-weight: 500;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 6px;
+  color: #000;
+  width: 170px;
+}
+
+.promo-group input {
+  width: 100%;
+  height: 35px;
+  border-radius: 40px;
+  border: 1px dashed #000;
+  background-color: transparent;
+  padding: 0 18px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: border-color 0.3s ease;
+  text-align: center;
+}
+
+.promo-group input:focus {
+  border-color: #ff80b0;
+  outline: none;
+}
+
+.promo-group .error-message {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+  display: none;
+}
+
+
 /***************************button version 2********************************/
 .submit-button {
-  background: linear-gradient(90deg, #ff8c00, #ff0080);
+  background: #8d3648;
   color: #fff;
   border: none;
   border-radius: 40px;
@@ -691,22 +741,22 @@ img {
   cursor: pointer;
   position: relative;
   left: -24%;
-  top: 60px;
+  top: 50px;
   margin-bottom: 10px;
   transform: translateX(-50%);
   animation: pulse 2s infinite;
   transition: transform 0.2s ease;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0.5); }
-  70% { box-shadow: 0 0 0 15px rgba(255, 0, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0); }
-}
+/*@keyframes pulse {*/
+/*  0% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0.5); }*/
+/*  70% { box-shadow: 0 0 0 15px rgba(255, 0, 128, 0); }*/
+/*  100% { box-shadow: 0 0 0 0 rgba(255, 0, 128, 0); }*/
+/*}*/
 
-.submit-button:hover {
-  transform: translateX(-50%) scale(1.07);
-}
+/*.submit-button:hover {*/
+/*  transform: translateX(-50%) scale(1.07);*/
+/*}*/
 
 /* CSS from section:footer */
 .site-footer {
