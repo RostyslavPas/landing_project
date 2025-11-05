@@ -20,4 +20,6 @@ urlpatterns = [
     path("payment/subscription-callback/", views.wayforpay_subscription_callback, name="wayforpay_subscription_callback"),
     path("sold-out/", TemplateView.as_view(template_name="sold_out.html"), name="sold_out"),
     path("api/get_order_by_token/", get_order_by_token, name="get_order_by_token"),
+    path("generate-free-ticket/", views.generate_free_ticket, name="generate_free_ticket"),
+
 ]

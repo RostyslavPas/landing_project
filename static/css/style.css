@@ -769,6 +769,13 @@ h1, h2, h3, h4, h5, h6, p {
   left: 7%;
   top: -7px;
 }
+label {
+  color: #000; /* основний колір тексту */
+}
+
+label span.required {
+  color: red;
+}
 .form-group input {
   border: 1px solid #000000;
   border-radius: 50px;
@@ -779,9 +786,48 @@ h1, h2, h3, h4, h5, h6, p {
 }
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
 }
+
+
+.promo-group {
+  margin-top: 25px;
+}
+
+.promo-group label {
+  font-weight: 500;
+  font-size: 20px;
+  display: block;
+  margin-bottom: 0;
+}
+
+.promo-group input {
+  width: 100%;
+  height: 55px;
+  border-radius: 25px;
+  border: 1px dashed #000000;
+  background-color: transparent;
+  padding: 0 10px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: border-color 0.3s ease;
+}
+
+.promo-group input:focus {
+  border-color: #ff80b0;
+  outline: none;
+}
+
+.promo-group .error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 6px;
+  display: none;
+}
+
+
 .price-group {
   flex-direction: row;
   align-items: center;

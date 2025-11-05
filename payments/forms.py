@@ -42,6 +42,7 @@ class TicketOrderForm(forms.Form):
             'invalid': 'Введіть коректний номер телефону'
         }
     )
+    promo_code = forms.CharField(required=False, max_length=50)
 
     def clean_name(self):
         name = self.cleaned_data.get('name', '').strip()
