@@ -1327,13 +1327,22 @@ def get_order_by_token(request):
         return JsonResponse({"error": "Invalid or inactive token"}, status=404)
 
 
+@csrf_exempt
 def generate_free_ticket(request):
     """
-    Створює безкоштовний квиток (без WayForPay) і надсилає лист з QR.
+    Створює безкоштовний квиток (без WayForPay), надсилає лист з QR
+    і створює ліда в KeyCRM.
     """
     name = request.GET.get("name", "Тест Користувач")
     email = request.GET.get("email", "test@example.com")
     phone = request.GET.get("phone", "+380000000000")
+
+    # опційно — UTM-мітки, якщо будеш передавати їх у лінку
+    utm_source = request.GET.get("utm_source", "")
+    utm_medium = request.GET.get("utm_medium", "")
+    utm_campaign = request.GET.get("utm_campaign", "")
+    utm_term = request.GET.get("utm_term", "")
+    utm_content = request.GET.get("utm_content", "")
 
     with transaction.atomic():
         event = Event.objects.filter(is_active=True).first()
@@ -1354,12 +1363,15 @@ def generate_free_ticket(request):
             created_at__lt=expiration_time
         ).count()
 
+        # 💡 якщо хочеш повністю free — зроби amount = Decimal("0.00")
+        amount = event.price  # або Decimal("0.00") для 100% безкоштовного подарунка
+
         order = TicketOrder.objects.create(
             name=name,
             email=email,
             phone=phone,
-            payment_status="success",  # ✅ одразу успішна
-            amount=event.price,        # або 0, якщо повністю безкоштовний
+            payment_status="success",   # ✅ одразу успішна
+            amount=amount,
             device_type="manual",
             event=event,
             ticket_number=active_orders + 1
@@ -1367,14 +1379,76 @@ def generate_free_ticket(request):
 
         logger.info(f"🎟️ Безкоштовний квиток створено #{order.id} для {name}")
 
+        # --- Створюємо ліда в KeyCRM ---
+        if settings.KEYCRM_API_TOKEN and settings.KEYCRM_PIPELINE_ID and settings.KEYCRM_SOURCE_ID:
+            try:
+                keycrm = KeyCRMAPI()
+
+                product_name = f"Безкоштовний квиток на {event.title}"
+
+                lead_data = {
+                    "title": f"Безкоштовний квиток #{order.id}",
+                    "pipeline_id": settings.KEYCRM_PIPELINE_ID,
+                    "source_id": settings.KEYCRM_SOURCE_ID,
+                    "manager_comment": "Безкоштовний / подарунковий квиток (створено вручну)",
+                    "contact": {
+                        "full_name": name,
+                        "email": email,
+                        "phone": phone
+                    },
+                    "utm_source": utm_source,
+                    "utm_medium": utm_medium,
+                    "utm_campaign": utm_campaign,
+                    "utm_term": utm_term,
+                    "utm_content": utm_content,
+                    "products": [
+                        {
+                            "sku": f"free-ticket-{order.id}",
+                            "price": float(order.amount),  # може бути 0.0
+                            "quantity": 1,
+                            "unit_type": "шт",
+                            "name": product_name,
+                        }
+                    ],
+                    "custom_fields": [
+                        {"uuid": "device_type", "value": order.device_type},
+                        {"uuid": "order_id", "value": str(order.id)},
+                        {"uuid": "ticket_type", "value": "free"},
+                    ]
+                }
+
+                logger.info(f"📤 Відправка даних в KeyCRM для безкоштовного квитка #{order.id}")
+                lead = keycrm.create_pipeline_card(lead_data)
+
+                if lead and lead.get("id"):
+                    order.keycrm_lead_id = lead["id"]
+
+                    lead_response = lead.get("response", {})
+
+                    if lead_response.get("contact_id"):
+                        order.keycrm_contact_id = lead_response["contact_id"]
+
+                    order.save()
+                    logger.info(f"✅ Ліда {lead['id']} створено для безкоштовного замовлення {order.id}")
+                else:
+                    logger.warning(f"⚠️ Не вдалось створити ліда в KeyCRM для безкоштовного замовлення {order.id}")
+                    logger.warning(f"Відповідь KeyCRM: {lead}")
+
+            except Exception as e:
+                logger.error(f"❌ Помилка при створенні ліда в KeyCRM для безкоштовного квитка: {str(e)}")
+
     # --- Надсилання квитка на пошту ---
     try:
         send_ticket_email_with_pdf(order)
-        logger.info(f"📩 Лист із квитком надіслано на {email}")
+        order.email_status = "sent"  # ✅ ОНОВЛЮЄМО СТАТУС
+        order.save(update_fields=["email_status"])
+        logger.info(f"📩 Лист із безкоштовним квитком надіслано на {email}")
     except Exception as e:
         logger.error(f"❌ Помилка при відправці квитка: {e}")
 
     return JsonResponse({
         "success": True,
-        "message": f"Безкоштовний квиток #{order.id} створено і відправлено на {email}"
+        "message": f"Безкоштовний квиток #{order.id} створено, відправлено на {email} і додано в KeyCRM",
+        "order_id": order.id,
+        "keycrm_lead_id": getattr(order, "keycrm_lead_id", None),
     })
