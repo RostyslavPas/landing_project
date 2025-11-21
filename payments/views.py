@@ -830,7 +830,7 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
     recent_single = SubscriptionOrder.objects.filter(
         payment_status='pending',
         callback_processed=False,
-        created_at__gte=timezone.now() - timedelta(minutes=15)
+        created_at__gte=timezone.now() - timedelta(minutes=5)
     ).order_by('-created_at').first()
 
     if recent_single:
@@ -852,86 +852,25 @@ def update_keycrm_payment(subscription, wfp_data):
         return
 
     keycrm = KeyCRMAPI()
-    transaction_attached = False
-    callback_amount = float(wfp_data.get("amount", 0))
     callback_auth_code = wfp_data.get("authCode", "")
     order_reference = wfp_data.get("orderReference", "")
 
-    logger.info(f"📄 Пошук транзакції KeyCRM для subscription #{subscription.id}")
-
-    max_attempts = 3
-    wait_seconds = [2, 5, 10]
-
-    for attempt in range(max_attempts):
-        if transaction_attached:
-            break
-
-        if attempt > 0:
-            wait_time = wait_seconds[attempt - 1]
-            logger.info(f"⏳ Зачекаємо {wait_time} секунд перед спробою #{attempt + 1}")
-            import time as time_module
-            time_module.sleep(wait_time)
-
-        transactions_result = keycrm.get_external_transactions(limit=100)
-        transaction_list = transactions_result.get('data', transactions_result) if isinstance(transactions_result, dict) else transactions_result
-
-        if not transaction_list:
-            logger.warning(f"⚠️ Транзакцій не знайдено у спробі #{attempt + 1}")
-            continue
-
-        logger.info(f"📦 Отримано {len(transaction_list)} транзакцій у спробі #{attempt + 1}")
-
-        matching_transaction = None
-        for trans in transaction_list:
-            trans_amount = float(trans.get('amount', 0))
-            trans_desc = trans.get('description', '')
-            trans_uuid = trans.get('uuid', '')
-
-            matches_amount = abs(trans_amount - callback_amount) < 0.01
-            matches_auth_code = callback_auth_code and callback_auth_code in trans_desc
-            matches_order_ref = order_reference in trans_desc or order_reference in trans_uuid
-            matches_subscription_id = f"#{subscription.id}" in trans_desc
-
-            if matches_amount and (matches_auth_code or matches_order_ref):
-                matching_transaction = trans
-                logger.info(f"✅ Знайдено точну транзакцію: ID {trans.get('id')}")
-                break
-            elif matches_amount and matches_subscription_id and not matching_transaction:
-                matching_transaction = trans
-                logger.info(f"⚠️ Знайдено можливу відповідність по subscription.id")
-
-        if matching_transaction:
-            transaction_id = matching_transaction.get('id')
-            attach_result = keycrm.attach_external_transaction_by_id(
-                payment_id=subscription.keycrm_payment_id,
-                transaction_id=transaction_id
-            )
-            if attach_result:
-                logger.info(f"✅ Транзакцію {transaction_id} успішно прив'язано до платежу {subscription.keycrm_payment_id}")
-                transaction_attached = True
-                break
-            else:
-                logger.warning(f"⚠️ Не вдалось прив'язати транзакцію {transaction_id}")
-
-    if not transaction_attached:
-        logger.warning(f"⚠️ Транзакцію не знайдено після {max_attempts} спроб. Оновлюємо вручну.")
-        payment_description = (
-            f"Підписка #{order_reference}. "
-            f"Клієнт: {subscription.name or ''}, {subscription.phone or ''}, {subscription.email or ''}. "
-            f"AuthCode: {callback_auth_code}"
-        )
-        manual_update = keycrm.update_lead_payment_status(
-            lead_id=subscription.keycrm_lead_id,
-            payment_id=subscription.keycrm_payment_id,
-            status="paid",
-            description=payment_description
-        )
-        if manual_update:
-            logger.info(f"✅ Статус платежу {subscription.keycrm_payment_id} оновлено вручну на 'paid'")
-        else:
-            logger.error(f"❌ Не вдалось оновити статус платежу вручну")
+    logger.warning(f"⚠️Оновлюємо транзакцію вручну.")
+    payment_description = (
+        f"Підписка #{order_reference}. "
+        f"Клієнт: {subscription.name or ''}, {subscription.phone or ''}, {subscription.email or ''}. "
+        f"AuthCode: {callback_auth_code}"
+    )
+    manual_update = keycrm.update_lead_payment_status(
+        lead_id=subscription.keycrm_lead_id,
+        payment_id=subscription.keycrm_payment_id,
+        status="paid",
+        description=payment_description
+    )
+    if manual_update:
+        logger.info(f"✅ Статус платежу {subscription.keycrm_payment_id} оновлено вручну на 'paid'")
     else:
-        logger.info(f"🎉 Транзакцію успішно прив'язано! Статус платежу автоматично оновлено у KeyCRM")
+        logger.error(f"❌ Не вдалось оновити статус платежу вручну")
 
 
 @csrf_exempt
@@ -1056,19 +995,23 @@ def wayforpay_subscription_callback(request):
                     f"Лист буде відправлено на email з форми."
                 )
 
+            # ❗️ Телефон також НЕ оновлюємо — залишаємо з форми
             if client_phone:
-                subscription.phone = client_phone
+                form_phone_digits = ''.join(filter(str.isdigit, subscription.phone))
+                callback_phone_digits = ''.join(filter(str.isdigit, client_phone))
+
+                if form_phone_digits[-9:] != callback_phone_digits[-9:]:
+                    logger.info(
+                        f"ℹ️ Телефон з WayForPay ({client_phone}) "
+                        f"не збігається з телефоном з форми ({subscription.phone}). "
+                        f"Залишаємо телефон із форми."
+                    )
             
             subscription.save()
-
             logger.info(f"✅ Підписка #{subscription.id} позначена як оплачена")
 
             # Відправка email з підтвердженням
-            try:
-                send_subscription_confirmation_email(subscription)
-                logger.info(f"📧 Email підтвердження підписки відправлено для #{subscription.id}")
-            except Exception as e:
-                logger.error(f"❌ Помилка відправки email для підписки #{subscription.id}: {e}")
+            send_subscription_confirmation_email(subscription)
 
             # --- Оновлення KeyCRM ---
             update_keycrm_payment(subscription, data)
