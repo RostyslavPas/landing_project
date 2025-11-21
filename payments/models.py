@@ -298,3 +298,22 @@ class BotAccessToken(models.Model):
 
     def __str__(self):
         return f"{self.token} → {self.order.email} ({self.funnel_tag})"
+
+
+class SubscriptionBotAccessToken(models.Model):
+    token = models.CharField(
+        max_length=50,
+        unique=True,
+        default=uuid.uuid4,
+    )
+    subscription = models.ForeignKey(
+        'payments.SubscriptionOrder',
+        on_delete=models.CASCADE,
+        related_name='bot_tokens',
+    )
+    funnel_tag = models.CharField(max_length=100, default='subscription-default')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.token} → {self.subscription.email} ({self.funnel_tag})"
