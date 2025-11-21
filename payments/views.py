@@ -1176,7 +1176,7 @@ def send_subscription_confirmation_email(subscription):
         defaults={"token": uuid.uuid4().hex[:12]},
     )
 
-    bot_url = f"https://t.me/Pasue_club_bot?start={token_obj.token}"
+    bot_url = f"https://t.me/Pasue_club_bot?start=subscribe_{token_obj.token}"
 
     try:
         html_content = f"""
