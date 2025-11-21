@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -16,7 +17,7 @@ from .ticket_utils import send_ticket_email_with_pdf
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta
-from .models import BotAccessToken
+from .models import BotAccessToken, SubscriptionBotAccessToken
 
 
 logger = logging.getLogger(__name__)
@@ -1043,11 +1044,18 @@ def wayforpay_subscription_callback(request):
             subscription.callback_processed = True
             subscription.wayforpay_order_reference = order_reference
 
-            # Оновлюємо дані з callback (можуть бути точнішими)
+            # 🔄 Ім'я та телефон можемо оновити
             if data.get("clientFirstName"):
                 subscription.name = data.get("clientFirstName")
-            if client_email:
-                subscription.email = client_email
+
+            # ❗️Важливо: email НЕ оновлюємо, лишаємо той, що з форми
+            if client_email and client_email != subscription.email.lower():
+                logger.info(
+                    f"ℹ️ Email з WayForPay ({client_email}) "
+                    f"відрізняється від email форми ({subscription.email}). "
+                    f"Лист буде відправлено на email з форми."
+                )
+
             if client_phone:
                 subscription.phone = client_phone
             
@@ -1218,7 +1226,14 @@ def send_subscription_confirmation_email(subscription):
     """Відправка email після успішної оплати підписки"""
     from django.core.mail import EmailMultiAlternatives
 
-    bot_url = f"https://t.me/Pasue_club_bot?start={subscription.keycrm_lead_id}"
+    # 1️⃣ Генеруємо або отримуємо токен для цієї підписки
+    token_obj, _ = SubscriptionBotAccessToken.objects.get_or_create(
+        subscription=subscription,
+        funnel_tag="subscription-city",
+        defaults={"token": uuid.uuid4().hex[:12]},
+    )
+
+    bot_url = f"https://t.me/Pasue_club_bot?start={token_obj.token}"
 
     try:
         html_content = f"""
@@ -1233,7 +1248,6 @@ def send_subscription_confirmation_email(subscription):
 
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h3 style="margin-top: 0;">Деталі підписки:</h3>
-                    <p><strong>Номер підписки:</strong> #{subscription.id}</p>
                     <p><strong>Email:</strong> {subscription.email}</p>
                     <p><strong>Телефон:</strong> {subscription.phone}</p>
                     <p><strong>Статус:</strong> Активна</p>
@@ -1272,7 +1286,6 @@ def send_subscription_confirmation_email(subscription):
 
         Дякуємо за довіру! Твоя підписка PASUE City успішно активована.
 
-        Номер підписки: #{subscription.id}
         Email: {subscription.email}
         Телефон: {subscription.phone}
         Статус: Активна
@@ -1301,6 +1314,35 @@ def send_subscription_confirmation_email(subscription):
     except Exception as e:
         logger.error(f"Помилка відправки email підписки: {str(e)}")
         raise
+
+
+@csrf_exempt
+def get_subscription_by_token(request):
+    """API: отримання даних по токену для Telegram-бота (підписки)"""
+    token = request.GET.get("token")
+    if not token:
+        return JsonResponse({"error": "Missing token"}, status=400)
+
+    try:
+        token_obj = (
+            SubscriptionBotAccessToken.objects
+            .select_related('subscription')
+            .get(token=token, is_active=True)
+        )
+    except SubscriptionBotAccessToken.DoesNotExist:
+        return JsonResponse({"error": "Invalid or inactive token"}, status=404)
+
+    sub = token_obj.subscription
+
+    return JsonResponse({
+        "subscription_id": sub.id,
+        "lead_id": sub.keycrm_lead_id,
+        "name": sub.name,
+        "email": sub.email,
+        "phone": sub.phone,
+        "funnel": token_obj.funnel_tag,
+        "payment_status": sub.payment_status,
+    })
 
 
 @csrf_exempt
