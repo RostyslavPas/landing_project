@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASUE City — Підписка активована</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Montserrat Alternates', Arial, sans-serif; background-color: #fdfaf7;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #fdfaf7; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <table width="640" cellpadding="0" cellspacing="0" border="0" style="background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(180deg, #efe5da, #fff); text-align: center; padding: 25px 25px;">
+                            <img src="https://www.pasue.com.ua/static/images/main_logo.png" alt="PASUE Club" width="230" style="display: block; margin: 0 auto 15px;" />
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 30px; color: #333; line-height: 1.7; font-size: 16px;">
+
+                            <p style="margin-bottom: 15px;">Привіт, <strong>{{ subscription.name }}</strong> 💛</p>
+
+                            <p style="margin-bottom: 15px;">
+                                Дякуємо, що довірилась нам. Твоя підписка
+                                <strong style="color: #a27155;">PASUE City</strong>
+                                успішно активована — тепер ти з нами 💫
+                            </p>
+
+                            <p style="margin-bottom: 15px;">Ось твої деталі:</p>
+
+                            <!-- Details Box -->
+                            <table width="100%" cellpadding="15" cellspacing="0" border="0"
+                                   style="background: #faf6f1; border-left: 4px solid #c19a6b; border-radius: 10px; margin: 25px 0;">
+                                <tr>
+                                    <td style="font-size: 15px; line-height: 1.6; color: #333;">
+                                        <p style="margin: 5px 0;">✨ <strong style="color: #a27155;">Імʼя:</strong> {{ subscription.name }}</p>
+                                        <p style="margin: 5px 0;">✨ <strong style="color: #a27155;">Email:</strong> {{ subscription.email }}</p>
+                                        <p style="margin: 5px 0;">✨ <strong style="color: #a27155;">Телефон:</strong> {{ subscription.phone }}</p>
+                                        <p style="margin: 5px 0;">✨ <strong style="color: #a27155;">Статус:</strong> Активна</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin-bottom: 20px;">Що ти отримуєш з PASUE City:</p>
+
+                            <ul style="padding-left: 20px; margin-bottom: 25px; line-height: 1.7;">
+                                <li>🎉 Участь у всіх подіях PASUE City</li>
+                                <li>🎫 Пріоритетне бронювання квитків</li>
+                                <li>💛 Спеціальні знижки та бонуси</li>
+                                <li>🌸 Ексклюзивні запрошення на закриті зустрічі</li>
+                                <li>🎁 Персональні сюрпризи</li>
+                            </ul>
+
+                            <p style="margin-bottom: 25px;">
+                                Щоб керувати підпискою та отримувати нагадування — переходь у наш Telegram-бот:
+                            </p>
+
+                            <!-- Button -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ bot_url }}"
+                                           style="display: inline-block; margin: 10px auto 30px; background: #c19a6b; color: #fff; text-decoration: none; font-weight: 500; font-size: 16px; padding: 14px 28px; border-radius: 40px;">
+                                           Перейти у бот 💛
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="text-align: center; margin-bottom: 0;">
+                                Раді мати тебе в нашому ком'юніті ✨<br>
+                                Ласкаво просимо у PASUE City 💌
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: #faf6f1; text-align: center; padding: 20px 15px; font-size: 13px; color: #777;">
+                            <p style="margin: 0;">
+                                З любов'ю, команда <strong>PASUE Club</strong> 💛<br>
+                                Якщо маєш питання —
+                                <a href="mailto:pasue.club@gmail.com" style="color: #c19a6b; text-decoration: none;">
+                                    напиши нам
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
