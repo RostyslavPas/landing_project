@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pasue-v3'; // 👈 міняй номер версії при оновленні
+const CACHE_NAME = 'pasue-v4'; // 👈 міняй номер версії при оновленні
 const URLS_TO_CACHE = [
   '/',
   '/static/images/apple-touch-icon.png',
