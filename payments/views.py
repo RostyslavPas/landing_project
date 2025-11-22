@@ -1,6 +1,9 @@
 import uuid
 from decimal import Decimal
+
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -1167,9 +1170,7 @@ def submit_subscription_form(request):
 
 def send_subscription_confirmation_email(subscription):
     """Відправка email після успішної оплати підписки"""
-    from django.core.mail import EmailMultiAlternatives
 
-    # 1️⃣ Генеруємо або отримуємо токен для цієї підписки
     token_obj, _ = SubscriptionBotAccessToken.objects.get_or_create(
         subscription=subscription,
         funnel_tag="subscription-city",
@@ -1178,80 +1179,28 @@ def send_subscription_confirmation_email(subscription):
 
     bot_url = f"https://t.me/Pasue_club_bot?start=subscribe_{token_obj.token}"
 
+    # TXT
+    text_content = render_to_string(
+        "emails/subscription_confirmation.txt",
+        {"subscription": subscription, "bot_url": bot_url}
+    ).strip()
+
+    # HTML
+    html_content = render_to_string(
+        "emails/subscription_confirmation.html",
+        {"subscription": subscription, "bot_url": bot_url}
+    )
+
     try:
-        html_content = f"""
-        <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h1 style="color: #2c3e50;">Вітаємо з оформленням підписки PASUE City!</h1>
-
-                <p>Привіт, <strong>{subscription.name}</strong>!</p>
-
-                <p>Дякуємо за довіру! Твоя підписка PASUE City успішно активована.</p>
-
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="margin-top: 0;">Деталі підписки:</h3>
-                    <p><strong>Email:</strong> {subscription.email}</p>
-                    <p><strong>Телефон:</strong> {subscription.phone}</p>
-                    <p><strong>Статус:</strong> Активна</p>
-                </div>
-
-                <h3>Що тебе чекає:</h3>
-                <ul>
-                    <li>🎉 Доступ до всіх заходів PASUE City протягом періоду підписки</li>
-                    <li>🎫 Пріоритетне бронювання квитків</li>
-                    <li>💰 Спеціальні знижки для підписників</li>
-                    <li>📧 Ексклюзивні запрошення на закриті події</li>
-                    <li>🎁 Персональні пропозиції та сюрпризи</li>
-                </ul>
-
-                <p>Слідкуй за нашими анонсами в соціальних мережах та готуйся до незабутніх вечорів!</p>
-
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="{bot_url}" style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                        Приєднатися до Telegram
-                    </a>
-                </div>
-
-                <p style="color: #666; font-size: 14px;">
-                    З питаннями звертайся до нашої підтримки.<br>
-                    Команда PASUE City ❤️
-                </p>
-            </div>
-        </body>
-        </html>
-        """
-
-        text_content = f"""
-        Вітаємо з оформленням підписки PASUE City!
-
-        Привіт, {subscription.name}!
-
-        Дякуємо за довіру! Твоя підписка PASUE City успішно активована.
-
-        Email: {subscription.email}
-        Телефон: {subscription.phone}
-        Статус: Активна
-
-        Що тебе чекає:
-        - Доступ до всіх заходів PASUE City протягом року
-        - Пріоритетне бронювання квитків
-        - Спеціальні знижки для підписників
-        - Ексклюзивні запрошення на закриті події
-        - Персональні пропозиції та сюрпризи
-
-        Команда PASUE City ❤️
-        """
-
         email = EmailMultiAlternatives(
-            subject='🎉 Твоя підписка PASUE City активована!',
+            subject="🎉 Твоя підписка PASUE City активована!",
             body=text_content,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[subscription.email]
+            to=[subscription.email],
         )
-
         email.attach_alternative(html_content, "text/html")
         email.send(fail_silently=False)
+
         logger.info(f"Email підтвердження підписки відправлено для #{subscription.id}")
 
     except Exception as e:
