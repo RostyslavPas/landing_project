@@ -679,7 +679,7 @@ body {
   margin-bottom: 0;
 }
 .form-bg-image {
-    width: 593px;
+    width: 585px;
     height: 320px;
     position: relative;
     bottom: 50px;
@@ -1334,7 +1334,7 @@ body {
         padding: 20px 40px;
     }
     .form-bg-image {
-        left: -85%;
+        left: -81%;
     }
     .bow-1 {
         width: 66px;
@@ -1361,11 +1361,11 @@ body {
         top: -41px;
     }
 }
-@media (width: 402px) and (height: 874px) {
-    .form-bg-image {
-        left: -76%;
-    }
-}
+/*@media (width: 402px) and (height: 874px) {*/
+/*    .form-bg-image {*/
+/*        left: -76%;*/
+/*    }*/
+/*}*/
 @media (min-width: 411px) and (max-width: 427px) {
     .social-nav {
         transform: scale(0.9);
