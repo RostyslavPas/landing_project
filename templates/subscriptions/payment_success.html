@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата успішна — PASUE Club</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pasue-bg: linear-gradient(135deg, #FFF6DD 0%, #FFE3F5 40%, #FBE9FF 100%);
+            --pasue-yellow: #FFD45A;
+            --pasue-pink: #FF7BA5;
+            --pasue-dark: #271632;
+            --pasue-accent: #FF4D8A;
+            --pasue-radius-xl: 32px;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--pasue-bg);
+            font-family: "Montserrat Alternates", system-ui, sans-serif;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 620px;
+            background: #fffaf3;
+            padding: 44px 34px;
+            border-radius: var(--pasue-radius-xl);
+            border: 1px solid rgba(255, 161, 194, 0.45);
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card::before,
+        .card::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .card::before {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, #FFE07F 0%, rgba(255, 224, 127, 0) 70%);
+            top: -80px;
+            right: -40px;
+        }
+
+        .card::after {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #FF9BC5 0%, rgba(255, 155, 197, 0) 70%);
+            bottom: -60px;
+            left: -40px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 239, 188, 0.9);
+            border: 1px dashed rgba(255, 154, 191, 0.7);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--pasue-dark);
+            margin-bottom: 18px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--pasue-accent);
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 0 0 16px;
+            color: var(--pasue-dark);
+        }
+
+        .title-highlight {
+            background: var(--pasue-pink);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #5e435e;
+            margin: 0 auto 26px;
+            max-width: 520px;
+        }
+
+        .info-note {
+            font-size: 13px;
+            color: #7f6c88;
+            margin-bottom: 34px;
+        }
+
+        .info-note span {
+            color: var(--pasue-accent);
+            font-weight: 600;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            background: linear-gradient(90deg, var(--pasue-yellow), var(--pasue-pink));
+            color: #211021;
+            box-shadow: 0 12px 26px rgba(255, 122, 165, 0.35);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 32px rgba(255, 122, 165, 0.45);
+        }
+
+        .arrow {
+            margin-left: 6px;
+            font-size: 16px;
+        }
+    </style>
+
+<!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2342533109544263');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2342533109544263&ev=PageView&noscript=1"
+    /></noscript>
+<!-- End Meta Pixel Code -->
+
+<!-- Meta Pixel: Purchase -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof fbq === 'function') {
+          fbq('track', 'Purchase');
+          console.log("🔥 Meta Pixel: Purchase event sent");
+        }
+      });
+    </script>
+</head>
+
+<body>
+<div class="card">
+
+    <div class="badge">
+        <span class="badge-dot"></span>
+        Оплата успішна
+    </div>
+
+    <h1 class="title">
+        Ти тепер у <span class="title-highlight">PASUE</span> 💗
+    </h1>
+
+    <p class="subtitle">
+        Дякуємо за оплату підписки до <strong>PASUE Club</strong>.
+        <br>Лист із підтвердженням та наступними кроками вже на твоїй пошті.
+    </p>
+
+    <p class="info-note">
+        Якщо листа немає — перевір <span>Спам</span> або вкладку <span>Промоакції</span>.
+    </p>
+
+    <a href="{% url 'subscription' %}" class="primary-btn">
+        Повернутися на сайт
+        <span class="arrow">↩</span>
+    </a>
+</div>
+</body>
+</html>
