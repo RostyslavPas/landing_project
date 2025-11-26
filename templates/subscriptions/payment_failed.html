@@ -2,167 +2,104 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата не пройшла — PASUE Club</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --pasue-bg: linear-gradient(135deg, #FFF6DD 0%, #FFE3F5 40%, #FBE9FF 100%);
-            --pasue-yellow: #FFD45A;
-            --pasue-pink: #FF7BA5;
-            --pasue-dark: #271632;
-            --pasue-accent: #FF4D8A;
-            --pasue-radius-xl: 32px;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            padding: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--pasue-bg);
-            font-family: "Montserrat Alternates", system-ui, sans-serif;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 760px;
-            background: #fffaf3;
-            padding: 36px 32px;
-            border-radius: var(--pasue-radius-xl);
-            border: 1px solid rgba(255, 161, 194, 0.45);
-            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before,
-        .card::after {
-            content: "";
-            position: absolute;
-            border-radius: 999px;
-            opacity: 0.35;
-            pointer-events: none;
-        }
-
-        .card::before {
-            width: 260px;
-            height: 260px;
-            background: radial-gradient(circle, #FFE07F 0%, rgba(255, 224, 127, 0) 70%);
-            top: -80px;
-            right: -40px;
-        }
-
-        .card::after {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, #FF9BC5 0%, rgba(255, 155, 197, 0) 70%);
-            bottom: -60px;
-            left: -40px;
-        }
-
-        .inner {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: 999px;
-            background: rgba(255, 221, 221, 0.9);
-            border: 1px dashed rgba(255, 154, 154, 0.7);
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            color: #5A1E1E;
-        }
-
-        .badge-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ff4d4d;
-        }
-
-        .title {
-            font-size: 26px;
-            font-weight: 700;
-            margin: 0 0 10px;
-            color: var(--pasue-dark);
-        }
-
-        @media (min-width: 768px) {
-            .title {
-                font-size: 30px;
-            }
-        }
-
-        .subtitle {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #5e435e;
-            max-width: 580px;
-            margin: 0 auto 20px;
-        }
-
-        .primary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 26px;
-            margin-top: 14px;
-            border-radius: 999px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            background: linear-gradient(90deg, var(--pasue-yellow), var(--pasue-pink));
-            color: #211021;
-            box-shadow: 0 12px 26px rgba(255, 122, 165, 0.35);
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
-        }
-
-        .primary-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 16px 32px rgba(255, 122, 165, 0.45);
-        }
-
-        .arrow {
-            margin-left: 6px;
-            font-size: 16px;
-        }
-    </style>
 </head>
 
-<body>
-<div class="card">
-    <div class="inner">
-        <div class="badge">
-            <span class="badge-dot"></span>
-            Оплата не пройшла
-        </div>
+<body style="margin:0; padding:0; font-family:'Montserrat Alternates', Arial, sans-serif; background-color:#fff7fb;">
 
-        <h1 class="title">На жаль, транзакцію не вдалося виконати</h1>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fff7fb; padding:40px 0;">
+    <tr>
+      <td align="center">
 
-        <p class="subtitle">
-            Спробуй, будь ласка, ще раз.
-            Якщо проблема повторюється — можеш обрати іншу карту або звернутися до свого банку.
-        </p>
+        <table width="640" cellpadding="0" cellspacing="0" border="0"
+               style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.08);">
 
-        <a href="{% url 'subscription' %}" class="primary-btn">
-            Спробувати ще раз
-            <span class="arrow">↩</span>
-        </a>
-    </div>
-</div>
+          <!-- HEADER -->
+          <tr>
+            <td style="background:linear-gradient(180deg,#fbe4ef 0%,#fff7fb 100%); text-align:center; padding:25px;">
+              <img src="https://www.pasue.com.ua/static/images/main_logo.png"
+                   alt="PASUE Club" width="230"
+                   style="display:block; margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- BODY -->
+          <tr>
+            <td style="padding:30px 28px 34px; color:#3b2b32; line-height:1.7; font-size:16px; text-align:center;">
+
+              <!-- badge -->
+              <div style="
+                   display:inline-block;
+                   padding:6px 16px;
+                   font-size:12px;
+                   text-transform:uppercase;
+                   background:#ffe4e4;
+                   border-radius:999px;
+                   border:1px solid #f2b9b9;
+                   color:#7a2d2d;
+                   margin-bottom:18px;">
+                • оплата не пройшла
+              </div>
+
+              <!-- title -->
+              <h1 style="margin:0 0 15px; font-size:26px; font-weight:700; color:#3b2b32;">
+                На жаль, транзакцію не вдалося виконати
+              </h1>
+
+              <!-- text -->
+              <p style="margin:0 0 24px; max-width:520px; line-height:1.65; color:#6b546d; font-size:15px; margin-left:auto; margin-right:auto;">
+                Спробуй, будь ласка, ще раз.<br>
+                Якщо проблема повторюється — можеш обрати іншу карту або звернутися до свого банку.
+              </p>
+
+              <!-- button -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0 8px;">
+                <tr>
+                  <td align="center">
+                    <a href="{% url 'subscription' %}"
+                       style="
+                          display:inline-block;
+                          padding:14px 34px;
+                          font-size:15px;
+                          font-weight:600;
+                          color:#8d3648;
+                          text-decoration:none;
+                          border-radius:40px;
+                          border:1px solid #7c2537;
+                          background:linear-gradient(180deg,#ffffff 22%,#f4d3dc 100%);
+                          box-shadow:0 6px 14px rgba(228,121,170,0.35);
+                       ">
+                      Спробувати ще раз
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background:#fdebf3; text-align:center; padding:16px 15px; font-size:13px; color:#8b6b79;">
+              <p style="margin:0;">
+                Якщо маєш питання — напиши нам<br>
+                <a href="mailto:pasue.club@gmail.com" style="color:#bf375c; text-decoration:none; font-weight:600;">
+                    pasue.club@gmail.com
+                </a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>
