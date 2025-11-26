@@ -1208,6 +1208,52 @@ def send_subscription_confirmation_email(subscription):
         raise
 
 
+def subscription_payment_result(request):
+    status = request.GET.get("transactionStatus")
+    order_reference = request.GET.get("orderReference")
+
+    subscription = None
+
+    # 1) Спочатку шукаємо по orderReference
+    if order_reference:
+        subscription = (
+            SubscriptionOrder.objects
+            .filter(wayforpay_order_reference=order_reference)
+            .first()
+        )
+
+    # 2) Якщо не знайшли — fallback (email або phone з cookies)
+    if not subscription:
+        email = request.COOKIES.get("last_sub_email")
+        phone = request.COOKIES.get("last_sub_phone")
+
+        if email or phone:
+            subscription = (
+                SubscriptionOrder.objects
+                .filter(email=email)
+                .order_by('-created_at')
+                .first()
+            ) or (
+                SubscriptionOrder.objects
+                .filter(phone=phone)
+                .order_by('-created_at')
+                .first()
+            )
+
+    # 3) Обираємо шаблон
+    template_name = (
+        "subscriptions/payment_success.html"
+        if status in ["Approved", None]
+        else "subscriptions/payment_failed.html"
+    )
+
+    return render(request, template_name, {
+        "order_reference": order_reference,
+        "transaction_status": status,
+        "subscription": subscription,
+    })
+
+
 @csrf_exempt
 def get_subscription_by_token(request):
     """API: отримання даних по токену для Telegram-бота (підписки)"""

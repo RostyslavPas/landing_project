@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата не пройшла — PASUE Club</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pasue-bg: linear-gradient(135deg, #FFF6DD 0%, #FFE3F5 40%, #FBE9FF 100%);
+            --pasue-yellow: #FFD45A;
+            --pasue-pink: #FF7BA5;
+            --pasue-dark: #271632;
+            --pasue-accent: #FF4D8A;
+            --pasue-radius-xl: 32px;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--pasue-bg);
+            font-family: "Montserrat Alternates", system-ui, sans-serif;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 760px;
+            background: #fffaf3;
+            padding: 36px 32px;
+            border-radius: var(--pasue-radius-xl);
+            border: 1px solid rgba(255, 161, 194, 0.45);
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before,
+        .card::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .card::before {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, #FFE07F 0%, rgba(255, 224, 127, 0) 70%);
+            top: -80px;
+            right: -40px;
+        }
+
+        .card::after {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #FF9BC5 0%, rgba(255, 155, 197, 0) 70%);
+            bottom: -60px;
+            left: -40px;
+        }
+
+        .inner {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 221, 221, 0.9);
+            border: 1px dashed rgba(255, 154, 154, 0.7);
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            color: #5A1E1E;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4d4d;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            color: var(--pasue-dark);
+        }
+
+        @media (min-width: 768px) {
+            .title {
+                font-size: 30px;
+            }
+        }
+
+        .subtitle {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #5e435e;
+            max-width: 580px;
+            margin: 0 auto 20px;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 26px;
+            margin-top: 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            background: linear-gradient(90deg, var(--pasue-yellow), var(--pasue-pink));
+            color: #211021;
+            box-shadow: 0 12px 26px rgba(255, 122, 165, 0.35);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 32px rgba(255, 122, 165, 0.45);
+        }
+
+        .arrow {
+            margin-left: 6px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="card">
+    <div class="inner">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            Оплата не пройшла
+        </div>
+
+        <h1 class="title">На жаль, транзакцію не вдалося виконати</h1>
+
+        <p class="subtitle">
+            Спробуй, будь ласка, ще раз.
+            Якщо проблема повторюється — можеш обрати іншу карту або звернутися до свого банку.
+        </p>
+
+        <a href="{% url 'subscription' %}" class="primary-btn">
+            Спробувати ще раз
+            <span class="arrow">↩</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('verify-ticket/<int:ticket_id>/', views.verify_ticket_page, name='verify_ticket'),
     path('submit-subscription/', views.submit_subscription_form, name='submit_subscription'),
     path("payment/subscription-callback/", views.wayforpay_subscription_callback, name="wayforpay_subscription_callback"),
+    path("payment/subscription-result/", views.subscription_payment_result, name="subscription_payment_result"),
     path("sold-out/", TemplateView.as_view(template_name="sold_out.html"), name="sold_out"),
     path("api/get_order_by_token/", get_order_by_token, name="get_order_by_token"),
     path("api/bot/subscription-by-token/", get_subscription_by_token, name="get_subscription_by_token"),
