@@ -14,11 +14,11 @@ def mobile_home(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", home, name="home"),
+    # path("", home, name="home"),
     path("mobile/", mobile_home, name="mobile"),
 
     # ✅ шлях до сторінки підписки
-    path("subscription/", views.subscription, name="subscription"),
+    path("", views.subscription, name="subscription"),
 
     # ✅ залишай include в кінці — Django читає зверху вниз
     path("", include("payments.urls")),
