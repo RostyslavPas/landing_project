@@ -7,8 +7,12 @@ from .views import get_order_by_token, get_subscription_by_token
 urlpatterns = [
     path('', views.subscription, name='subscription_home'),
     path('subscription/', RedirectView.as_view(pattern_name='subscription_home', permanent=True)),
-    path('opening/', views.opening, name='opening'),
-    path('opening/mobile/', views.opening_mobile, name='opening_mobile'),
+    # 301-редирект з /opening/ на головну
+    path('opening/', RedirectView.as_view(pattern_name='subscription_home', permanent=True)),
+
+    # 301-редирект з /opening/mobile/ на головну
+    path('opening/mobile/', RedirectView.as_view(pattern_name='subscription_home', permanent=True)),
+
     path('submit-ticket/', views.submit_ticket_form, name='submit_ticket'),
     path('submit-ticket-form/', views.submit_ticket_form, name='submit_ticket_form'),
     path("payment/result/", views.payment_result, name="payment_result"),
