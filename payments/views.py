@@ -1109,7 +1109,7 @@ def submit_subscription_form(request):
                         "products": [
                             {
                                 "sku": f"subscription-{subscription.id}",
-                                "price": 1.00,
+                                "price": 350.00,
                                 "quantity": 1,
                                 "unit_type": "шт",
                                 "name": "Місячна підписка PASUE City"
@@ -1118,7 +1118,7 @@ def submit_subscription_form(request):
                         "payments": [
                             {
                                 "payment_method": "WayForPay",
-                                "amount": 1.00,
+                                "amount": 350.00,
                                 "description": "Очікування оплати",
                                 "status": "not_paid"
                             }
