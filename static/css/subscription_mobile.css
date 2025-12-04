@@ -31,7 +31,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 12px 12px;
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
@@ -527,6 +527,87 @@ body {
     line-height: 1.2;
     margin: 0 0 3px;
 }
+
+.month-schedule {
+  margin: 0 -15px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.month-schedule-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fae6ed;
+  border-radius: 28px;
+  padding: 24px 20px 28px;
+  border: 2px solid #fdd9e5;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.month-schedule-subtitle {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b08a9a;
+  margin-bottom: 8px;
+}
+
+.month-schedule-title {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 22px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.month-schedule-tagline {
+  font-size: 15px;
+  font-weight: 500;
+  color: #8d3648;
+  margin: 0 0 18px;
+}
+
+.month-schedule-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.month-schedule-list li {
+  border-radius: 50px;
+  border: 1px dashed #f1c5d3;
+  padding: 14px 14px;
+  font-size: 13px;
+  background: #fff9fb;
+}
+
+.month-schedule-bonus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.month-schedule-bonus-label {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8d3648;
+}
+
+.month-schedule-bonus-text {
+  font-size: 13px;
+}
+
+.month-schedule-btn {
+  width: 100%;
+  justify-content: center;
+}
+
 .community-deco {
     width: 88px;
     height: 97px;
@@ -725,7 +806,7 @@ body {
 }
 
 .form-section .cta-button img {
-    width: 42px;
+    width: auto;
     height: 42px;
 }
 .error-message {
