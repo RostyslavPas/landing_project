@@ -18,7 +18,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Katibeh&family=Kaushan+Script&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
 
     <!-- Open Graph / Telegram Preview -->
     <meta property="og:title" content="PASUE Club - закрите жіноче комʼюніті." />
@@ -439,7 +438,8 @@
           if (input) input.value = utms[name];
         });
       }
-      fillUTMInForm();
+      saveUTMToCookies();  // зберегти UTM з URL у cookies
+      fillUTMInForm();     // підставити в hidden-поля форми
     });
     </script>
     <script>

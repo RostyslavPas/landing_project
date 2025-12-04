@@ -489,6 +489,8 @@
           if (input) input.value = utms[name];
         });
       }
+      saveUTMToCookies();  // зберегти UTM з URL у cookies
+      fillUTMInForm();     // підставити в hidden-поля форми
     });
     </script>
     <script>
