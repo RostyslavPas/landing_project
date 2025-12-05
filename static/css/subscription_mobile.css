@@ -579,13 +579,6 @@ body {
   gap: 8px;
 }
 
-/*.month-schedule-list li {*/
-/*  border-radius: 50px;*/
-/*  border: 1px dashed #f1c5d3;*/
-/*  padding: 14px 14px;*/
-/*  font-size: 13px;*/
-/*  background: #fff9fb;*/
-/*}*/
 .month-schedule-list li {
   display: flex;
   align-items: center;
@@ -626,7 +619,7 @@ body {
   height: 9%;
   justify-content: center;
   position: relative;
-  bottom: 2%;
+  bottom: 3%;
 }
 
 .community-deco {
