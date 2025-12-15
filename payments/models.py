@@ -276,6 +276,43 @@ class SubscriptionOrder(models.Model):
         default=False,
         help_text="Чи оброблено callback від WayForPay"
     )
+
+    # ✅ UTM мітки
+    utm_source = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        verbose_name='UTM Source',
+        help_text='Джерело трафіку'
+    )
+    utm_medium = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        verbose_name='UTM Medium',
+        help_text='Канал трафіку'
+    )
+    utm_campaign = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        verbose_name='UTM Campaign',
+        help_text='Назва кампанії'
+    )
+    utm_term = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        verbose_name='UTM Term',
+        help_text='Ключове слово'
+    )
+    utm_content = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        verbose_name='UTM Content',
+        help_text='Варіант оголошення'
+    )
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

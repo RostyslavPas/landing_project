@@ -1083,6 +1083,11 @@ def submit_subscription_form(request):
                 phone=phone,
                 payment_status="pending",
                 device_type=device_type,
+                utm_source=utm_source,
+                utm_medium=utm_medium,
+                utm_campaign=utm_campaign,
+                utm_term=utm_term,
+                utm_content=utm_content
             )
 
             logger.info(f"🎫 Створено замовлення підписки #{subscription.id}")

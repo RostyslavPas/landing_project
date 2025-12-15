@@ -116,8 +116,61 @@ class TicketScanLogAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionOrder)
 class SubscriptionOrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'email', 'phone', 'payment_status', 'device_type', 'created_at']
-    list_filter = ['payment_status', 'device_type', 'created_at']
-    search_fields = ['name', 'email', 'phone', 'wayforpay_order_reference']
-    readonly_fields = ['created_at', 'updated_at']
+    list_display = [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'payment_status',
+        'device_type',
+        'utm_source',
+        'created_at'
+    ]
+    list_filter = [
+        'payment_status',
+        'device_type',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'created_at'
+    ]
+    search_fields = [
+        'name',
+        'email',
+        'phone',
+        'wayforpay_order_reference',
+        'utm_source',
+        'utm_campaign',
+    ]
+    readonly_fields = [
+        'created_at',
+        'updated_at',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+    ]
     ordering = ['-created_at']
+
+    # ✅ Групування полів
+    fieldsets = (
+        ('Контактна інформація', {
+            'fields': ('name', 'email', 'phone', 'device_type')
+        }),
+        ('Статус', {
+            'fields': ('payment_status', 'wayforpay_order_reference')
+        }),
+        ('UTM мітки', {
+            'fields': ('utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'),
+            'classes': ('collapse',)
+        }),
+        ('KeyCRM', {
+            'fields': ('keycrm_lead_id', 'keycrm_payment_id', 'keycrm_contact_id'),
+            'classes': ('collapse',)
+        }),
+        ('Системна інформація', {
+            'fields': ('created_at', 'updated_at', 'callback_processed'),
+            'classes': ('collapse',)
+        }),
+    )
