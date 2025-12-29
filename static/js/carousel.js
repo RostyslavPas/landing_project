@@ -1,31 +1,5 @@
 const { useState } = React;
 
-const ChevronLeft = () => (
-    React.createElement('svg', {
-        width: "24",
-        height: "24",
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "2"
-    },
-        React.createElement('polyline', { points: "15 18 9 12 15 6" })
-    )
-);
-
-const ChevronRight = () => (
-    React.createElement('svg', {
-        width: "24",
-        height: "24",
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "2"
-    },
-        React.createElement('polyline', { points: "9 18 15 12 9 6" })
-    )
-);
-
 const Heart = () => (
   React.createElement('img', {
     src: 'static/images/btn-heart-1.png',
@@ -68,6 +42,9 @@ const MonthlyScheduleCarousel = ({ initialSlide = null }) => {
     };
 
     const [currentSlide, setCurrentSlide] = useState(getInitialSlide());
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
 
     const schedules = [
         {
@@ -127,16 +104,33 @@ const MonthlyScheduleCarousel = ({ initialSlide = null }) => {
         }
     ];
 
-    const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % schedules.length);
+    // Swipe handlers
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e) => {
+        setTouchEnd(0);
+        setTouchStart(e.targetTouches[0].clientX);
+        setIsDragging(true);
     };
 
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + schedules.length) % schedules.length);
+    const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
     };
 
-    const goToSlide = (index) => {
-        setCurrentSlide(index);
+    const onTouchEnd = () => {
+        setIsDragging(false);
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) {
+            setCurrentSlide((prev) => (prev + 1) % schedules.length);
+        }
+        if (isRightSwipe) {
+            setCurrentSlide((prev) => (prev - 1 + schedules.length) % schedules.length);
+        }
     };
 
     // Стилі для контейнера
@@ -149,13 +143,15 @@ const MonthlyScheduleCarousel = ({ initialSlide = null }) => {
 
     // Стилі для обгортки слайдів
     const sliderWrapperStyle = {
-        position: 'relative'
+        position: 'relative',
+        touchAction: 'pan-y pinch-zoom'
     };
 
-    // Стилі дляoverflow контейнера
+    // Стилі для overflow контейнера
     const overflowContainerStyle = {
         overflow: 'hidden',
-        borderRadius: '24px'
+        borderRadius: '24px',
+        cursor: isDragging ? 'grabbing' : 'grab'
     };
 
     // Стилі для треку слайдів
@@ -258,53 +254,34 @@ const MonthlyScheduleCarousel = ({ initialSlide = null }) => {
         marginBottom: '30px'
     };
 
-    // Стилі для кнопок навігації
-    const navButtonStyle = {
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        background: 'white',
-        borderRadius: '50%',
-        padding: '8px',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'background-color 200ms',
-        zIndex: 10
-    };
-
-    const prevButtonStyle = {
-        ...navButtonStyle,
-        left: '-16px'
-    };
-
-    const nextButtonStyle = {
-        ...navButtonStyle,
-        right: '-16px'
-    };
-
-    // Стилі для dots
+    // Стилі для dots (Instagram-style indicators)
     const dotsContainerStyle = {
         display: 'flex',
         justifyContent: 'center',
-        gap: '8px',
-        marginTop: '24px'
+        gap: '6px',
+        marginTop: '16px'
     };
 
     const dotStyle = (isActive) => ({
-        height: '8px',
-        width: isActive ? '32px' : '8px',
-        borderRadius: '9999px',
+        height: '6px',
+        width: '6px',
+        borderRadius: '50%',
         background: isActive ? '#be185d' : '#fbcfe8',
         border: 'none',
         cursor: 'pointer',
-        transition: 'all 200ms',
-        padding: 0
+        transition: 'all 300ms ease',
+        padding: 0,
+        opacity: isActive ? 1 : 0.5
     });
 
     return React.createElement('div', { style: containerStyle },
         React.createElement('div', { style: sliderWrapperStyle },
-            React.createElement('div', { style: overflowContainerStyle },
+            React.createElement('div', {
+                style: overflowContainerStyle,
+                onTouchStart: onTouchStart,
+                onTouchMove: onTouchMove,
+                onTouchEnd: onTouchEnd
+            },
                 React.createElement('div', { style: slidesTrackStyle },
                     schedules.map((schedule, index) =>
                         React.createElement('div', { key: index, style: slideStyle },
@@ -338,36 +315,15 @@ const MonthlyScheduleCarousel = ({ initialSlide = null }) => {
                         )
                     )
                 )
-            ),
-            React.createElement('button', {
-                onClick: prevSlide,
-                style: prevButtonStyle,
-                onMouseEnter: (e) => e.target.style.background = '#fdf2f8',
-                onMouseLeave: (e) => e.target.style.background = 'white'
-            }, React.createElement(ChevronLeft)),
-            React.createElement('button', {
-                onClick: nextSlide,
-                style: nextButtonStyle,
-                onMouseEnter: (e) => e.target.style.background = '#fdf2f8',
-                onMouseLeave: (e) => e.target.style.background = 'white'
-            }, React.createElement(ChevronRight))
+            )
         ),
         React.createElement('div', { style: dotsContainerStyle },
             schedules.map((_, index) =>
                 React.createElement('button', {
                     key: index,
-                    onClick: () => goToSlide(index),
+                    onClick: () => setCurrentSlide(index),
                     style: dotStyle(index === currentSlide),
-                    onMouseEnter: (e) => {
-                        if (index !== currentSlide) {
-                            e.target.style.background = '#f9a8d4';
-                        }
-                    },
-                    onMouseLeave: (e) => {
-                        if (index !== currentSlide) {
-                            e.target.style.background = '#fbcfe8';
-                        }
-                    }
+                    'aria-label': `Слайд ${index + 1}`
                 })
             )
         )
