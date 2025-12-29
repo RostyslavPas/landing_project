@@ -251,45 +251,7 @@
           <h2 class="community-intro-title">Це контент, який хочеться не гортати, а проживати</h2>
           <p class="community-intro-text">Тут ти не просто читаєш — ти впливаєш: ділишся результатами та думками, обираєш теми, можеш ініціювати рубрику або стати голосом каналу</p>
           <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="community-deco" id="city-contacts">
-
-          <div class="month-schedule">
-            <div class="month-schedule-card">
-              <p class="month-schedule-subtitle">Кожного місяця нова тема</p>
-              <h3 class="month-schedule-title">РОЗКЛАД НА ГРУДЕНЬ</h3>
-              <p class="month-schedule-tagline">Підсумки року з турботою про себе</p>
-
-              <ul class="month-schedule-list">
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    12 тренувань зі стрейчингу з поясненням кожної вправи</li>
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    4 психологічні сесії з практичними завданнями</li>
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    4 астрологічні прогнози на тиждень</li>
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    2 гороскопи на новолуння та повнолуння</li>
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    Готовий план харчування на тиждень</li>
-                <li>
-                    <img class="month-schedule-icon" src="{% static 'images/btn-heart-1.png' %}" alt="icon">
-                    Різдвяне меню: 12 корисних страв для святкового столу</li>
-                  <div class="month-schedule-bonus">
-                    <p class="month-schedule-bonus-label">Бонусне відео грудня:</p>
-                  </div>
-                <p class="month-schedule-tagline">Визначаємо свій Асцендент і розбираємо для кожного знака Зодіака</p>
-              </ul>
-
-              <a href="#form" class="cta-button cta-button--primary month-schedule-btn">
-                <span>Купити підписку на місяць</span>
-{#                <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">#}
-              </a>
-            </div>
-          </div>
-
+          <div id="carousel-root"></div>
           <p class="community-talent-text">А ще в PASUE City існує унікальне місце, де мешканки діляться своїми талантами, справами та контактами, щоб знаходити одна одну не лише за інтересами, а й за потребами</p>
         </div>
 
@@ -357,7 +319,6 @@
       <div class="page-wrapper">
         <p class="form-quote text-center">Іноді достатньо опинитись у<br> правильному місці - і все починає<br> змінюватись</p>
         <div class="form-container">
-{#            <img src="{% static 'images/form-background.png' %}" alt="Form background" class="form-bg-image">#}
               <form class="subscription-form" method="post">
                 {% csrf_token %}
                 <div class="form-group">
@@ -419,27 +380,48 @@
         </nav>
         <div class="popup" id="popup-terms">
           <div class="popup-content mobile">
-            <h2>Правила та умови</h2>
-            <p><b>Опис послуги:</b></p>
-              <ul>Цей сайт є офіційною онлайн-<br>платформою PASUE Club, де Ви можете<br> придбати квитки на заходи клубу.</ul>
-            <p><b>Умови замовлення:</b></p>
-              <li>Покупець зобов'язується надати<br> достовірну контактну інформацію.</li>
-              <li>Замовлення вважається дійсним<br> лише після підтвердження успішної<br> оплати на email покупця.</li>
-            <p><b>Оплата:</b><br></p>
-              <li>Оплата здійснюється онлайн за<br> допомогою платіжної системи<br> WayForPay.</li>
-              <li>Валюта платежу — гривня (UAH).</li>
-            <p><b>Доставка:</b><br></p>
-              <li>Електронні квитки надсилаються<br> на email одразу після підтвердження<br> оплати.</li>
-            <span class="popup-close">✕</span>
-          </div>
+              <h2>Правила та умови</h2>
+
+              <p><b>Опис послуги:</b></p>
+              <p>
+                Цей сайт є офіційною онлайн-платформою PASUE Club, який надає доступ до клубного контенту, сервісів та матеріалів на умовах платної підписки.
+              </p>
+
+              <p><b>Умови оформлення підписки:</b></p>
+              <ul>
+                <li>Користувач зобов’язується надати достовірну контактну інформацію під час оформлення підписки.</li>
+                <li>Підписка вважається активною лише після підтвердження успішної оплати. Підтвердження надсилається на email, вказаний користувачем.</li>
+              </ul>
+
+              <p><b>Період, автоматичне продовження та скасування:</b></p>
+              <ul>
+                <li>Підписка оформлюється строком на 1 (один) календарний місяць.</li>
+                <li>Після завершення оплаченого періоду підписка автоматично продовжується на наступний місяць, якщо користувач не скасував її.</li>
+                <li>Скасувати підписку користувач може самостійно в особистому кабінеті платіжної системи WayForPay.</li>
+              </ul>
+
+              <p><b>Оплата:</b></p>
+              <ul>
+                <li>Оплата здійснюється онлайн за допомогою платіжної системи WayForPay.</li>
+                <li>Валюта платежу — гривня (UAH).</li>
+              </ul>
+
+              <p><b>Надання доступу:</b></p>
+              <ul>
+                <li>Доступ до матеріалів та сервісів PASUE Club надається в електронному вигляді одразу після підтвердження оплати або автоматичного продовження підписки.</li>
+              </ul>
+
+              <span class="popup-close">✕</span>
+            </div>
         </div>
         <div class="popup" id="popup-refund">
           <div class="popup-content mobile">
             <h2>Політика повернення коштів</h2>
             <ol>
-              <li>Повернення коштів за електронні<br> квитки на події не передбачене,<br> окрім випадків скасування заходу з<br> ініціативи організатора.</li>
-              <li>Якщо подія перенесена, квиток<br> залишається дійсним. У разі<br> неможливості відвідування —<br> прохання повідомити на email.</li>
-              <li>Замовлення можна скасувати до<br> моменту оплати.</li>
+              <li>Повернення коштів за оформлену підписку не передбачене після підтвердження оплати, за винятком випадків технічної помилки з боку сервісу.</li>
+              <li>Підписка надає доступ до контенту та сервісів сайту протягом обраного періоду. У разі оновлення або змін формату доступу підписка залишається дійсною до завершення оплаченого терміну.</li>
+              <li>Скасування оформлення підписки можливе до моменту оплати.</li>
+              <li>З питань, пов’язаних із доступом або оплатою, будь ласка, звертайтеся на email служби підтримки.</li>
             </ol>
             <span class="popup-close">✕</span>
           </div>
@@ -449,6 +431,12 @@
     </footer>
     <script src="{% static 'js/subscription.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    <!-- React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Ваш компонент каруселі -->
+    <script src="{% static 'js/carousel.js' %}"></script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
       function saveUTMToCookies() {
