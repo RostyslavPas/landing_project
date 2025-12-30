@@ -2,6 +2,23 @@ html, body {
   overflow-x: hidden;
   width: 100%;
 }
+#snow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+}
+/*.santa-hat {*/
+/*    width: 130px;*/
+/*    height: auto;*/
+/*    top: -4%;*/
+/*    left: 35%;*/
+/*    transform: translateX(50%);*/
+/*    z-index: 0;*/
+/*}*/
 
 body {
   margin: 0;
@@ -286,6 +303,7 @@ body {
     left: 98px;
     width: 196px;
     height: 120px;
+    z-index: 4;
 }
 
 .hero-content {
