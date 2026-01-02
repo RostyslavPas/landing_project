@@ -802,7 +802,7 @@ def find_subscription_by_callback(order_reference, client_email, client_phone):
     from datetime import timedelta
 
     if client_email or client_phone:
-        time_threshold = timezone.now() - timedelta(minutes=15)  # Збільшено до 15 хв
+        time_threshold = timezone.now() - timedelta(minutes=5)  # Збільшено до 15 хв
 
         recent_subscriptions = SubscriptionOrder.objects.filter(
             payment_status='pending',
