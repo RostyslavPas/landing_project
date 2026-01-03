@@ -354,3 +354,73 @@ class SubscriptionBotAccessToken(models.Model):
 
     def __str__(self):
         return f"{self.token} → {self.subscription.email} ({self.funnel_tag})"
+
+
+class Subscription(models.Model):
+    """Актуальний стан регулярної підписки (синхронізується з WayForPay)."""
+
+    STATUS_CHOICES = [
+        ('created', 'Created'),
+        ('active', 'Active'),
+        ('suspended', 'Suspended'),
+        ('removed', 'Removed'),
+        ('completed', 'Completed'),
+        ('unknown', 'Unknown'),
+    ]
+
+    order_reference = models.CharField(
+        max_length=100,
+        unique=True,
+        db_index=True,
+        help_text="OrderReference першого платежу, під яким створена регулярка в WayForPay",
+        verbose_name="WayForPay OrderReference",
+    )
+
+    source_order = models.ForeignKey(
+        'payments.SubscriptionOrder',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='subscriptions',
+        verbose_name="Початкове замовлення",
+    )
+
+    name = models.CharField(max_length=100, blank=True, default='', verbose_name="Імʼя")
+    email = models.EmailField(blank=True, default='', verbose_name="Email")
+    phone = models.CharField(max_length=20, blank=True, default='', verbose_name="Телефон")
+
+    mode = models.CharField(max_length=32, blank=True, default='', verbose_name="Regular mode")
+    amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, verbose_name="Сума")
+    currency = models.CharField(max_length=8, blank=True, default='', verbose_name="Валюта")
+
+    status = models.CharField(
+        max_length=16,
+        choices=STATUS_CHOICES,
+        default='unknown',
+        db_index=True,
+        verbose_name="Статус",
+    )
+
+    date_begin = models.DateTimeField(null=True, blank=True, verbose_name="Початок")
+    date_end = models.DateTimeField(null=True, blank=True, verbose_name="Завершення")
+    last_payed_date = models.DateTimeField(null=True, blank=True, verbose_name="Останній платіж")
+    last_payed_status = models.CharField(max_length=64, blank=True, default='', verbose_name="Статус останнього платежу")
+    next_payment_date = models.DateTimeField(null=True, blank=True, verbose_name="Наступний платіж")
+
+    last_reason = models.CharField(max_length=255, blank=True, default='', verbose_name="Причина/повідомлення")
+    last_reason_code = models.IntegerField(null=True, blank=True, verbose_name="Reason code")
+
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Остання синхронізація")
+    last_sync_raw = models.JSONField(null=True, blank=True, verbose_name="Остання відповідь WayForPay (raw)")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Підписка"
+        verbose_name_plural = "Підписки"
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        label = self.email or self.phone or self.order_reference
+        return f"{label} — {self.get_status_display()}"

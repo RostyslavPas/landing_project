@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TicketScanLog, SubscriptionOrder, Event, TicketOrder
+from .models import TicketScanLog, SubscriptionOrder, Subscription, Event, TicketOrder
 from django.utils.html import format_html
 
 
@@ -174,3 +174,22 @@ class SubscriptionOrderAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'email',
+        'phone',
+        'status',
+        'mode',
+        'next_payment_date',
+        'last_payed_date',
+        'date_end',
+        'last_sync_at',
+    ]
+    list_filter = ['status', 'mode', 'currency', 'last_sync_at']
+    search_fields = ['email', 'phone', 'order_reference']
+    readonly_fields = ['order_reference', 'created_at', 'updated_at', 'last_sync_at', 'last_sync_raw']
+    ordering = ['-updated_at']
