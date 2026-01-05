@@ -29,5 +29,8 @@ urlpatterns = [
     path("api/get_order_by_token/", get_order_by_token, name="get_order_by_token"),
     path("api/bot/subscription-by-token/", get_subscription_by_token, name="get_subscription_by_token"),
     path("generate-free-ticket/", views.generate_free_ticket, name="generate_free_ticket"),
+    path("api/internal/subscription-orders/<path:order_reference>/",
+         views.subscription_order_by_reference, name="subscription_order_by_reference",
+    ),
 
 ]
