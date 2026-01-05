@@ -1,6 +1,5 @@
 import uuid
 from decimal import Decimal
-
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
@@ -15,12 +14,14 @@ from .keycrm_api import KeyCRMAPI
 from .forms import TicketOrderForm, SubscriptionOrderForm
 import logging
 from django.shortcuts import render
-from .models import TicketOrder, SubscriptionOrder, Event
+from .models import TicketOrder, SubscriptionOrder, Event, Subscription
 from .ticket_utils import send_ticket_email_with_pdf
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta
 from .models import BotAccessToken, SubscriptionBotAccessToken
+from functools import wraps
+from django.views.decorators.http import require_GET
 
 
 logger = logging.getLogger(__name__)
@@ -1437,3 +1438,69 @@ def generate_free_ticket(request):
         "order_id": order.id,
         "keycrm_lead_id": getattr(order, "keycrm_lead_id", None),
     })
+
+
+def require_internal_api_key(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        expected = getattr(settings, "INTERNAL_API_KEY", "")
+        provided = request.headers.get("X-API-Key") or request.GET.get("api_key")
+
+        if not expected:
+            return JsonResponse({"detail": "Server misconfigured: INTERNAL_API_KEY not set"}, status=500)
+
+        if not provided or provided != expected:
+            return JsonResponse({"detail": "Unauthorized"}, status=401)
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped
+
+
+@require_GET
+@require_internal_api_key
+def subscription_order_by_reference(request, order_reference: str):
+    order = (
+        SubscriptionOrder.objects
+        .filter(wayforpay_order_reference=order_reference)
+        .values(
+            # Контактна інформація
+            "id", "name", "email", "phone", "device_type",
+
+            # Статус
+            "payment_status", "wayforpay_order_reference",
+
+            # UTM
+            "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+
+            # KeyCRM
+            "keycrm_lead_id", "keycrm_payment_id", "keycrm_contact_id",
+
+            # Системна інформація
+            "created_at", "updated_at", "callback_processed",
+        )
+        .first()
+    )
+
+    if not order:
+        return JsonResponse({"detail": "Not found"}, status=404, json_dumps_params={"ensure_ascii": False})
+
+    # (Опційно, але дуже корисно для бота) підтягнути “живий” статус підписки з таблиці Subscription
+    sub = (
+        Subscription.objects
+        .filter(order_reference=order_reference)
+        .values(
+            "status", "mode", "amount", "currency",
+            "date_begin", "date_end",
+            "last_payed_date", "last_payed_status",
+            "next_payment_date",
+            "last_reason", "last_reason_code",
+            "last_sync_at",
+        )
+        .first()
+    )
+
+    return JsonResponse(
+        {"data": order, "subscription": sub},
+        json_dumps_params={"ensure_ascii": False},
+    )
