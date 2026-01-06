@@ -1,7 +1,8 @@
+import os
 import uuid
 from decimal import Decimal
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
@@ -10,6 +11,7 @@ import hmac
 import time
 import hashlib
 import json
+from urllib.parse import urlencode
 from .keycrm_api import KeyCRMAPI
 from .forms import TicketOrderForm, SubscriptionOrderForm
 import logging
@@ -22,6 +24,7 @@ from datetime import timedelta
 from .models import BotAccessToken, SubscriptionBotAccessToken
 from functools import wraps
 from django.views.decorators.http import require_GET
+import requests
 
 
 logger = logging.getLogger(__name__)
@@ -1504,3 +1507,142 @@ def subscription_order_by_reference(request, order_reference: str):
         {"data": order, "subscription": sub},
         json_dumps_params={"ensure_ascii": False},
     )
+
+
+def _get_strava_config():
+    client_id = os.getenv("STRAVA_CLIENT_ID") or getattr(settings, "STRAVA_CLIENT_ID", None)
+    client_secret = os.getenv("STRAVA_CLIENT_SECRET") or getattr(settings, "STRAVA_CLIENT_SECRET", None)
+    deep_link = os.getenv("STRAVA_DEEP_LINK") or getattr(settings, "STRAVA_DEEP_LINK", None) or "velpas://oauth/strava"
+    return client_id, client_secret, deep_link
+
+
+def _exchange_strava_code(code: str):
+    client_id, client_secret, _ = _get_strava_config()
+    if not client_id or not client_secret:
+        raise ValueError("STRAVA_CLIENT_ID or STRAVA_CLIENT_SECRET not configured")
+
+    response = requests.post(
+        "https://www.strava.com/oauth/token",
+        data={
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "code": code,
+            "grant_type": "authorization_code",
+        },
+        timeout=15,
+    )
+    if response.status_code >= 400:
+        raise ValueError(f"Strava token exchange failed: {response.text}")
+    return response.json()
+
+
+def _refresh_strava_token(refresh_token: str):
+    client_id, client_secret, _ = _get_strava_config()
+    if not client_id or not client_secret:
+        raise ValueError("STRAVA_CLIENT_ID or STRAVA_CLIENT_SECRET not configured")
+
+    response = requests.post(
+        "https://www.strava.com/oauth/token",
+        data={
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
+        },
+        timeout=15,
+    )
+    if response.status_code >= 400:
+        raise ValueError(f"Strava refresh failed: {response.text}")
+    return response.json()
+
+
+@require_GET
+def strava_callback(request):
+    error = request.GET.get("error")
+    error_description = request.GET.get("error_description")
+    code = request.GET.get("code")
+    state = request.GET.get("state")
+
+    _, _, deep_link = _get_strava_config()
+
+    if error:
+        params = {"error": error}
+        if error_description:
+            params["error_description"] = error_description
+        if state:
+            params["state"] = state
+        return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+
+    if not code:
+        return HttpResponseBadRequest("Missing code")
+
+    try:
+        token_data = _exchange_strava_code(code)
+    except Exception:
+        params = {"error": "token_exchange_failed"}
+        if state:
+            params["state"] = state
+        return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+
+    params = {
+        "access_token": token_data.get("access_token", ""),
+        "refresh_token": token_data.get("refresh_token", ""),
+        "expires_at": str(token_data.get("expires_at", "")),
+    }
+    athlete = token_data.get("athlete") or {}
+    if athlete.get("id") is not None:
+        params["athlete_id"] = str(athlete.get("id"))
+    if state:
+        params["state"] = state
+
+    return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def strava_exchange(request):
+    code = request.POST.get("code")
+
+    if not code and request.body:
+        try:
+            payload = json.loads(request.body.decode("utf-8"))
+            code = payload.get("code")
+        except json.JSONDecodeError:
+            code = None
+
+    if not code:
+        return JsonResponse({"detail": "Missing code"}, status=400)
+
+    try:
+        token_data = _exchange_strava_code(code)
+    except ValueError as exc:
+        return JsonResponse({"detail": str(exc)}, status=400)
+    except Exception:
+        return JsonResponse({"detail": "Token exchange failed"}, status=400)
+
+    return JsonResponse(token_data, status=200)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def strava_refresh(request):
+    refresh_token = request.POST.get("refresh_token")
+
+    if not refresh_token and request.body:
+        try:
+            payload = json.loads(request.body.decode("utf-8"))
+            refresh_token = payload.get("refresh_token")
+        except json.JSONDecodeError:
+            refresh_token = None
+
+    if not refresh_token:
+        return JsonResponse({"detail": "Missing refresh_token"}, status=400)
+
+    try:
+        token_data = _refresh_strava_token(refresh_token)
+    except ValueError as exc:
+        return JsonResponse({"detail": str(exc)}, status=400)
+    except Exception:
+        return JsonResponse({"detail": "Token refresh failed"}, status=400)
+
+    return JsonResponse(token_data, status=200)

@@ -162,3 +162,6 @@ LOGGING = {
 PROMO_CODE = os.getenv("PROMO_CODE", "").upper()
 PROMO_DISCOUNT = int(os.getenv("PROMO_DISCOUNT", 0))
 
+STRAVA_CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
+STRAVA_CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
+
