@@ -1536,6 +1536,12 @@ def _exchange_strava_code(code: str):
     return response.json()
 
 
+def _redirect_deep_link(target_url: str):
+    response = HttpResponse(status=302)
+    response["Location"] = target_url
+    return response
+
+
 def _refresh_strava_token(refresh_token: str):
     client_id, client_secret, _ = _get_strava_config()
     if not client_id or not client_secret:
@@ -1571,7 +1577,7 @@ def strava_callback(request):
             params["error_description"] = error_description
         if state:
             params["state"] = state
-        return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+        return _redirect_deep_link(f"{deep_link}?{urlencode(params)}")
 
     if not code:
         return HttpResponseBadRequest("Missing code")
@@ -1582,7 +1588,7 @@ def strava_callback(request):
         params = {"error": "token_exchange_failed"}
         if state:
             params["state"] = state
-        return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+        return _redirect_deep_link(f"{deep_link}?{urlencode(params)}")
 
     params = {
         "access_token": token_data.get("access_token", ""),
@@ -1595,7 +1601,7 @@ def strava_callback(request):
     if state:
         params["state"] = state
 
-    return HttpResponseRedirect(f"{deep_link}?{urlencode(params)}")
+    return _redirect_deep_link(f"{deep_link}?{urlencode(params)}")
 
 
 @csrf_exempt
