@@ -1,14 +1,16 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <title>PASUE Club - Жіночий клуб, який тобі пасує</title>
     <meta
       name="description"
-      content="PASUE Club - закрите жіноче комʼюніті. Жіночий клуб, який тобі пасує"
+      content="PASUE Club — закрите жіноче комʼюніті для підтримки, натхнення й розвитку. Щоденний контент, живі події та тепле коло своїх."
     />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.pasue.com.ua/" />
     <link rel="icon" type="image/png" href="{% static 'images/pasue_favicon.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/subscription_mobile.css' %}">
@@ -21,19 +23,64 @@
 
     <!-- Open Graph / Telegram Preview -->
     <meta property="og:title" content="PASUE Club - закрите жіноче комʼюніті." />
-    <meta property="og:description" content="PASUE Club - закрите жіноче комʼюніті. Жіночий клуб, який тобі пасує." />
+    <meta property="og:description" content="Жіноче комʼюніті для підтримки, натхнення й розвитку. Щоденний контент, живі події та коло своїх." />
     <meta property="og:image" content="https://www.pasue.com.ua/static/images/graph_preview.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PASUE Club — жіноче комʼюніті" />
     <meta property="og:url" content="https://www.pasue.com.ua" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="uk_UA" />
     <meta property="og:site_name" content="PASUE Club" />
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PASUE Club - закрите жіноче комʼюніті." />
-    <meta name="twitter:description" content="Це простір, де ти — головна героїня свого життя. Тут усе, що ти любиш: глибокі розмови, естетика, підтримка, натхнення та трохи магії." />
+    <meta name="twitter:description" content="Жіноче комʼюніті для підтримки, натхнення й розвитку. Щоденний контент, живі події та коло своїх." />
     <meta name="twitter:image" content="https://www.pasue.com.ua/static/images/graph_preview.png" />
+    <meta name="twitter:image:alt" content="PASUE Club — жіноче комʼюніті" />
+    <meta name="theme-color" content="#fce7ef">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "PASUE Club",
+            "url": "https://www.pasue.com.ua/",
+            "logo": "https://www.pasue.com.ua/static/images/pasue-club-logo.png",
+            "sameAs": ["https://instagram.com/pasue.club"]
+          },
+          {
+            "@type": "WebSite",
+            "name": "PASUE Club",
+            "url": "https://www.pasue.com.ua/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.pasue.com.ua/?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Product",
+            "name": "Підписка PASUE Club",
+            "description": "Доступ до жіночого комʼюніті, щоденного контенту та подій PASUE Club.",
+            "brand": {
+              "@type": "Brand",
+              "name": "PASUE Club"
+            },
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "UAH",
+              "price": "350.00",
+              "url": "https://www.pasue.com.ua/",
+              "availability": "https://schema.org/InStock"
+            }
+          }
+        ]
+      }
+    </script>
 
     <!-- Meta Pixel Code -->
     <script>
@@ -63,7 +110,7 @@
       <div class="page-wrapper">
         <header class="hero-header">
           <nav class="social-nav">
-            <a href="#" id="menu-toggle">
+            <a href="#" id="menu-toggle" aria-label="Відкрити меню" aria-controls="dropdownMenu" aria-expanded="false">
                 <img src="{% static 'images/menu_header_icon.png' %}" alt="Menu" class="icon-menu">
               </a>
               <a href="https://instagram.com/pasue.club" target="_blank">
@@ -77,7 +124,7 @@
               </a>
           </nav>
 
-          <div class="pink-menu" id="dropdownMenu">
+          <div class="pink-menu" id="dropdownMenu" aria-hidden="true">
               <div class="menu-header">
                 <button id="closeMenu" aria-label="Закрити меню">×</button>
                 <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="menu-brand-logo">
@@ -86,10 +133,10 @@
               <div class="menu-divider divider-top"></div>
 
               <ul class="menu-links">
-                <li><a href="#features">Про клуб</a></li>
-                <li><a href="#city">PASUE City</a></li>
-                <li><a href="#city-contacts">PASUE Contacts</a></li>
-                <li><a href="#events">PASUE Events</a></li>
+                <li><a href="#benefits">Переваги</a></li>
+                <li><a href="#how-it-works">Як це працює</a></li>
+                <li><a href="#pricing">Підписка</a></li>
+                <li><a href="#events">Події</a></li>
                 <li><a href="#form">Приєднатися</a></li>
               </ul>
 
@@ -133,65 +180,150 @@
         <div class="hero-banner">
           <!--merged image-->
           <div class="hero-image-stack">
-            <img src="{% static 'images/pink_frame.png' %}" alt="Pink Frame" class="hero-frame">
-            <img src="{% static 'images/women-laughing.png' %}" alt="Collage of women" class="hero-collage">
-            <img src="{% static 'images/pasue-club-logo.png' %}" alt="PASUE Club Logo" class="hero-logo">
+            <picture>
+              <source type="image/webp" srcset="{% static 'images/pink_frame-712.webp' %} 712w, {% static 'images/pink_frame-1426.webp' %} 1426w" sizes="(max-width: 480px) 90vw, 713px">
+              <img src="{% static 'images/pink_frame.png' %}" alt="Pink Frame" class="hero-frame" decoding="async">
+            </picture>
+            <picture>
+              <source type="image/webp" srcset="{% static 'images/women-laughing-640.webp' %} 640w, {% static 'images/women-laughing-950.webp' %} 950w" sizes="(max-width: 480px) 90vw, 475px">
+              <img src="{% static 'images/women-laughing.png' %}" alt="Collage of women" class="hero-collage" decoding="async" loading="eager" fetchpriority="high">
+            </picture>
+            <img src="{% static 'images/pasue-club-logo.png' %}" alt="PASUE Club Logo" class="hero-logo" decoding="async">
 {#              <img src="{% static 'images/santa.png' %}" alt="Santa Hat" class="santa-hat">#}
           </div>
         </div>
 
         <div class="hero-content text-center">
-          <h1 class="hero-title">Жіночий клуб, який тобі пасує</h1>
-          <p class="hero-subtitle">Це простір, де ти — головна героїня свого життя. Тут усе, що ти любиш: глибокі розмови, естетика, підтримка, натхнення та трохи магії</p>
-          <a href="#form" class="cta-button cta-button--primary">
-            <span>Приєднатися до клубу</span>
-            <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
-          </a>
+          <p class="hero-kicker">PASUE Club</p>
+          <h1 class="hero-title">Жіноче комʼюніті, де ти відчуваєш підтримку щодня</h1>
+          <p class="hero-subtitle">Для жінок, які хочуть тепла, натхнення й кола своїх. Щоденний контент, живі події та простір для проявлення.</p>
+          <div class="hero-cta-group">
+            <a href="#form" class="cta-button cta-button--primary">
+              <span>Приєднатися до клубу</span>
+              <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon" loading="lazy" decoding="async">
+            </a>
+            <a href="#benefits" class="cta-button cta-button--ghost">Дивитися переваги</a>
+          </div>
+          <p class="hero-proof">Комʼюніті для різних міст України • Щоденний контент • Знижка 10% на події</p>
         </div>
       </div>
     </section>
 
-    <section id="features" class="features-section section-padding text-center">
+    <section id="benefits" class="features-section section-padding text-center">
       <div class="page-wrapper">
-        <h2 class="features-intro-text">Що на тебе чекає у</h2>
-        <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="features-logo">
+        <h2 class="features-intro-text">Переваги PASUE Club</h2>
+        <img src="{% static 'images/pasue-club-logo-2.png' %}" alt="PASUE Club Logo" class="features-logo" loading="lazy" decoding="async">
+        <p class="benefits-subtitle">Те, що відчуваєш уже з перших днів у клубі</p>
 
         <div class="features-grid">
           <div class="feature-card-wrapper">
-            <img src="{% static 'images/bow-1.png' %}" alt="" class="deco-bow bow-1">
+            <img src="{% static 'images/bow-1.png' %}" alt="" class="deco-bow bow-1" loading="lazy" decoding="async">
             <div class="card feature-card">
-              <h3>Канал, який надихає</h3>
-              <p>Теми в телеграм, які хочеться зберігати та перечитувати від таких експертів, як: психологиня, астрологиня, нутриціологиня, тренерка, та інших</p>
+              <div class="benefit-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+              <h3>Підтримка, яку відчуваєш</h3>
+              <p>Коло жінок, де тебе бачать і чують, а турбота стає опорою.</p>
             </div>
           </div>
           <div class="feature-card-wrapper">
-            <img src="{% static 'images/bow-2.png' %}" alt="" class="deco-bow bow-2">
+            <img src="{% static 'images/bow-2.png' %}" alt="" class="deco-bow bow-2" loading="lazy" decoding="async">
             <div class="card feature-card">
-              <h3>Події, що не залишають байдужою</h3>
-              <p>Камерні зустрічі, глибокі розмови, тепла атмосфера — кожен івент наче м'яка пауза в потоці життя, де ти можеш зупинитись і побути собою</p>
+              <div class="benefit-icon"><i class="fa-solid fa-lightbulb"></i></div>
+              <h3>Натхнення без шуму</h3>
+              <p>Щоденний контент, який хочеться прожити, а не просто перегорнути.</p>
             </div>
           </div>
           <div class="feature-card-wrapper">
-            <img src="{% static 'images/bow-3.png' %}" alt="" class="deco-bow bow-3">
+            <img src="{% static 'images/bow-3.png' %}" alt="" class="deco-bow bow-3" loading="lazy" decoding="async">
             <div class="card feature-card">
-              <h3>Середовище, що підтримує</h3>
-              <p>Тут не змагаються — тут надихають. Тебе не оцінюють — тебе розуміють. Це коло, де тебе підтримає кожна — навіть якщо ви щойно познайомились</p>
+              <div class="benefit-icon"><i class="fa-solid fa-people-group"></i></div>
+              <h3>Коло своїх</h3>
+              <p>Знайомства, які перетворюються на дружбу, партнерство та підтримку.</p>
             </div>
           </div>
           <div class="feature-card-wrapper">
-            <img src="{% static 'images/bow-4.png' %}" alt="" class="deco-bow bow-4">
+            <img src="{% static 'images/bow-4.png' %}" alt="" class="deco-bow bow-4" loading="lazy" decoding="async">
             <div class="card feature-card">
-              <h3>Формати, де ти можеш звучати</h3>
-              <p>PASUE Club — це не лише слухати, а й говорити. Ти можеш стати ведучою, спікеркою, або просто поділитися своєю справою, яка тебе надихає</p>
+              <div class="benefit-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+              <h3>Сміливо проявляєшся</h3>
+              <p>Можеш стати спікеркою, ведучою або розповісти про свою справу.</p>
             </div>
           </div>
           <div class="feature-card-wrapper">
-            <img src="{% static 'images/bow-5.png' %}" alt="" class="deco-bow bow-5">
+            <img src="{% static 'images/bow-5.png' %}" alt="" class="deco-bow bow-5" loading="lazy" decoding="async">
             <div class="card feature-card">
-              <h3>Простір трансформацій</h3>
-              <p>Неважливо, на якому ти етапі - в пошуку, у паузі або на піку. PASUE Club приймає тебе всю. З твоїми питаннями, сумнівами, мріями й силами</p>
+              <div class="benefit-icon"><i class="fa-solid fa-calendar-check"></i></div>
+              <h3>Події, що заряджають</h3>
+              <p>Камерні зустрічі та івенти, після яких відчуваєш легкість і енергію.</p>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="how-section section-padding">
+      <div class="page-wrapper">
+        <h2 class="section-title">Як це працює</h2>
+        <p class="section-subtitle">Три прості кроки, щоб опинитись у правильному колі</p>
+        <div class="how-steps">
+          <div class="how-step">
+            <span class="step-number">1</span>
+            <h3>Заповнюєш форму</h3>
+            <p>Короткі дані для підписки — імʼя, телефон та email.</p>
+          </div>
+          <div class="how-step">
+            <span class="step-number">2</span>
+            <h3>Оплачуєш безпечно</h3>
+            <p>WayForPay, прозорі умови, скасування будь-коли.</p>
+          </div>
+          <div class="how-step">
+            <span class="step-number">3</span>
+            <h3>Отримуєш доступ</h3>
+            <p>Лист на email → бот у Telegram → паспорт мешканки → PASUE City.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing-section section-padding">
+      <div class="page-wrapper">
+        <h2 class="section-title">Підписка та ціна</h2>
+        <p class="section-subtitle">Один план, одна ціна — все включено</p>
+        <div class="plan-card recommended">
+          <h3>Підписка PASUE Club</h3>
+          <p class="plan-price"><span class="price-main">350 грн</span><span class="price-period">/місяць</span></p>
+          <ul class="plan-features">
+            <li>Доступ до PASUE City у Telegram</li>
+            <li>Щоденний контент та практики</li>
+            <li>10% знижка на події PASUE Events</li>
+          </ul>
+          <a href="#form" class="cta-button cta-button--secondary plan-cta">Оформити підписку</a>
+          <p class="plan-note"><a href="#" data-popup="refund">Політика повернення коштів</a></p>
+        </div>
+        <div class="pricing-trust">
+          <div class="trust-item"><i class="fa-solid fa-lock"></i> Безпечна оплата WayForPay</div>
+          <div class="trust-item"><i class="fa-solid fa-rotate-left"></i> Скасування будь-коли</div>
+          <div class="trust-item"><i class="fa-solid fa-comments"></i> Підтримка команди</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="testimonials-section section-padding">
+      <div class="page-wrapper">
+        <h2 class="section-title">Відгуки учасниць</h2>
+{#        <p class="section-subtitle">Блок готовий для заміни на реальні відгуки з адмінки.</p>#}
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <p class="testimonial-text">«Контент дуже живий, а спільнота реально допомагає рухатися вперед у своєму темпі».</p>
+            <p class="testimonial-name">Аліна, 28 • Дніпро</p>
+          </article>
+          <article class="testimonial-card">
+            <p class="testimonial-text">«Події PASUE стали моїм маленьким святом. Знайомства, натхнення і підтримка».</p>
+            <p class="testimonial-name">Ірина, 33 • Львів</p>
+          </article>
+          <article class="testimonial-card">
+            <p class="testimonial-text">«Тут я вперше відчула, що мене чують без оцінок. Це мʼяка сила, яка повертає до себе».</p>
+            <p class="testimonial-name">Марія, 30 • Київ</p>
+          </article>
         </div>
       </div>
     </section>
@@ -200,47 +332,47 @@
       <div class="page-wrapper">
         <div class="city-title-container text-center">
           <span class="styled-welcome">Welcome to</span>
-          <img src="{% static 'images/pasue-2.png' %}" alt="PASUE" class="styled-title">
+          <img src="{% static 'images/pasue-2.png' %}" alt="PASUE" class="styled-title" loading="lazy" decoding="async">
           <span class="styled-subtitle">City</span>
         </div>
         <div class="city-banner">
           <p class="city-banner-subtitle">це місто, в якому хочеться залишитись</p>
-          <img src="{% static 'images/pink-airplane.png' %}" alt="Pink airplane" class="city-plane">
+          <img src="{% static 'images/pink-airplane.png' %}" alt="Pink airplane" class="city-plane" loading="lazy" decoding="async">
           <p class="city-banner-text">Усе починається з твого "так".<br> Перед приєднанням до каналу Telegram,<br> ти отримаєш паспорт мешканки<br> PASUE City — з ним усе змінюється.<br> Ти частина простору, який відчуває,<br> приймає і розвиває</p>
         </div>
         <div class="city-journey-intro">
-          <img src="{% static 'images/city-passport.png' %}" alt="Passport icon" class="city-passport">
+          <img src="{% static 'images/city-passport.png' %}" alt="Passport icon" class="city-passport" loading="lazy" decoding="async">
           <p>А далі — подорож вулицями унікального жіночого міста:</p>
         </div>
 
         <div class="city-streets">
           <div class="street-card street-card--right">
             <div class="street-title-box">
-              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin">
+              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin" loading="lazy" decoding="async">
               <h3>Stretch & Shine Street</h3>
             </div>
             <p>заходь сюди тричі на тиждень на заняття зі стрейчингу, а також отримуй корисні поради від нутриціологині</p>
           </div>
           <div class="street-card street-card--left">
             <div class="street-title-box">
-              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin">
+              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin" loading="lazy" decoding="async">
               <h3>Astro Boulevard</h3>
             </div>
             <p>тут на тебе чекають щотижневі гороскопи, розбір впливу планет і глибокі інсайти про себе</p>
           </div>
           <div class="street-card street-card--right">
             <div class="street-title-box">
-              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin">
+              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin" loading="lazy" decoding="async">
               <h3>Soul Therapy Square</h3>
             </div>
             <p>щотижнева відео практика із психологом на тему місяця і завдання у форматі челенджів</p>
           </div>
           <div class="street-card street-card--left">
             <div class="street-title-box">
-              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin">
+              <img src="{% static 'images/map-3.png' %}" alt="Map pin" class="street-pin" loading="lazy" decoding="async">
               <h3>Beauty & Mood Station</h3>
             </div>
-            <p>місце, щоб обрати фільм на вечір, музику для настрою, або образ, який надихає. Переглядай рекомендації, або рекомендуй сама</p>
+            <p>місце, щоб обрати фільм на вечір, музику для настрою, або образ, який надихає</p>
           </div>
         </div>
       </div>
@@ -251,15 +383,15 @@
         <div class="community-intro text-center">
           <h2 class="community-intro-title">Це контент, який хочеться не гортати, а проживати</h2>
           <p class="community-intro-text">Тут ти не просто читаєш — ти впливаєш: ділишся результатами та думками, обираєш теми, можеш ініціювати рубрику або стати голосом каналу</p>
-          <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="community-deco" id="city-contacts">
+          <img src="{% static 'images/flier-de-liss.png' %}" alt="Decorative graphic" class="community-deco" id="city-contacts" loading="lazy" decoding="async">
           <div id="carousel-root"></div>
           <p class="community-talent-text">А ще в PASUE City існує унікальне місце, де мешканки діляться своїми талантами, справами та контактами, щоб знаходити одна одну не лише за інтересами, а й за потребами</p>
         </div>
 
         <div class="community-contacts">
           <div class="contacts-title-container">
-            <img src="{% static 'images/pasue-contacts-mob-1.png' %}" alt="PASUE" class="styled-title contacts-title-1">
-            <img src="{% static 'images/pasue-contacts-mob-2.png' %}" alt="CONTACTS" class="styled-title contacts-title-2">
+            <img src="{% static 'images/pasue-contacts-mob-1.png' %}" alt="PASUE" class="styled-title contacts-title-1" loading="lazy" decoding="async">
+            <img src="{% static 'images/pasue-contacts-mob-2.png' %}" alt="CONTACTS" class="styled-title contacts-title-2" loading="lazy" decoding="async">
           </div>
           <div class="card-contacts contacts-card">
             <p>Хтось — кондитерка й залишає посилання на свої десерти. Хтось — фотографиня, яку можна запросити на сімейну зйомку. Хтось шиє сумки або веде масажну практику. Кожна з нас може представити себе, і бути знайденою. Це не реклама, це <strong>жіноча підтримка у форматі спільноти, де твоя сусідка по каналу стає клієнткою, партнеркою або подругою</strong></p>
@@ -268,7 +400,7 @@
 
         <a href="#form" class="cta-button cta-button--primary">
           <span>Приєднатися до клубу</span>
-          <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon">
+          <img src="{% static 'images/btn-heart-1.png' %}" alt="Heart icon" loading="lazy" decoding="async">
         </a>
       </div>
     </section>
@@ -277,7 +409,7 @@
       <div class="page-wrapper">
         <div class="city-title-container text-center">
           <span class="styled-welcome">Welcome to</span>
-          <img src="{% static 'images/pasue-2.png' %}" alt="PASUE" class="styled-title">
+          <img src="{% static 'images/pasue-2.png' %}" alt="PASUE" class="styled-title" loading="lazy" decoding="async">
           <span class="styled-subtitle">Events</span>
         </div>
         <div class="events-intro text-center">
@@ -290,24 +422,33 @@
         <div class="events-list">
           <div class="event-item">
             <div class="event-image-container">
-              <img src="{% static 'images/edition-illustration.png' %}" alt="Group of women laughing" class="event-image">
-              <img src="{% static 'images/kiss-2.png' %}" alt="" class="deco-kiss kiss-1">
+              <picture>
+                <source type="image/webp" srcset="{% static 'images/edition-illustration-376.webp' %} 376w, {% static 'images/edition-illustration-752.webp' %} 752w" sizes="(max-width: 480px) 80vw, 376px">
+                <img src="{% static 'images/edition-illustration.png' %}" alt="Group of women laughing" class="event-image" loading="lazy" decoding="async">
+              </picture>
+              <img src="{% static 'images/kiss-2.png' %}" alt="" class="deco-kiss kiss-1" loading="lazy" decoding="async">
             </div>
             <h3>PASUE Edition</h3>
             <p>вечори з інтерактивами, подарунками,<br> цікавими гостями та естетикою в<br> деталях. Тут хочеться бути у красивому,<br> сміятись і зберігати кожну мить</p>
           </div>
           <div class="event-item">
             <div class="event-image-container">
-              <img src="{% static 'images/circle-illustration.png' %}" alt="Two women whispering" class="event-image">
-              <img src="{% static 'images/kiss-2.png' %}" alt="" class="deco-kiss kiss-2">
+              <picture>
+                <source type="image/webp" srcset="{% static 'images/circle-illustration-376.webp' %} 376w, {% static 'images/circle-illustration-752.webp' %} 752w" sizes="(max-width: 480px) 80vw, 376px">
+                <img src="{% static 'images/circle-illustration.png' %}" alt="Two women whispering" class="event-image" loading="lazy" decoding="async">
+              </picture>
+              <img src="{% static 'images/kiss-2.png' %}" alt="" class="deco-kiss kiss-2" loading="lazy" decoding="async">
             </div>
             <h3>PASUE Circle</h3>
             <p>камерні зустрічі з арт-терапією,<br> бажаннями та історіями. Атмосфера, яка надихає, відкриває в тобі нові грані й ти проявляєшся в колі підтримки</p>
           </div>
           <div class="event-item">
             <div class="event-image-container">
-              <img src="{% static 'images/reset-illustration.png' %}" alt="Three women in white dresses" class="event-image">
-              <img src="{% static 'images/kiss.png' %}" alt="" class="deco-kiss kiss-3">
+              <picture>
+                <source type="image/webp" srcset="{% static 'images/reset-illustration-376.webp' %} 376w, {% static 'images/reset-illustration-752.webp' %} 752w" sizes="(max-width: 480px) 80vw, 376px">
+                <img src="{% static 'images/reset-illustration.png' %}" alt="Three women in white dresses" class="event-image" loading="lazy" decoding="async">
+              </picture>
+              <img src="{% static 'images/kiss.png' %}" alt="" class="deco-kiss kiss-3" loading="lazy" decoding="async">
             </div>
             <h3>PASUE Reset</h3>
             <p>виїзди, ретріти, сповільнення,<br> де тіло й душа видихають. Коли хочеться відключити шум міста, скинути темп і<br> згадати себе справжню</p>
@@ -318,7 +459,8 @@
 
     <section id="form" class="form-section section-padding">
       <div class="page-wrapper">
-        <p class="form-quote text-center">Іноді достатньо опинитись у<br> правильному місці - і все починає<br> змінюватись</p>
+        <p class="form-quote text-center">Оформити підписку та отримати доступ сьогодні</p>
+        <p class="form-subtitle text-center">Заповни коротку форму — і ми відкриємо тобі PASUE City.</p>
         <div class="form-container">
               <form class="subscription-form" method="post">
                 {% csrf_token %}
@@ -344,26 +486,36 @@
                 <input type="hidden" id="utm_term" name="utm_term">
                 <input type="hidden" id="utm_content" name="utm_content">
 
-                <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" class="cta-button cta-button--secondary">
+                <a href="https://secure.wayforpay.com/button/b10c8f0d51c48" class="cta-button cta-button--secondary" aria-label="Оформити підписку за 350 гривень на місяць">
                     <span>Оформити підписку за</span>
-                    <img src="{% static 'images/350uah.png' %}" alt="Heart icon">
+                    <img src="{% static 'images/350uah.png' %}" alt="350 гривень" loading="lazy" decoding="async">
                 </a>
+                <p class="form-note">Безпечна оплата WayForPay <br>Скасування будь-коли</p>
             </form>
         </div>
       </div>
     </section>
     <section id="faq" class="faq-section section-padding">
       <div class="page-wrapper">
-        <img src="{% static 'images/faq-1.png' %}" alt="FAQ" class="faq-title">
+        <img src="{% static 'images/faq-1.png' %}" alt="FAQ" class="faq-title" loading="lazy" decoding="async">
         <div class="faq-list">
           <div class="card faq-item">
-            <p><strong><br>Що я отримую одразу після оплати?</strong><br>Лист на email з посиланням на чат-бот → авторизація → паспорт мешканки → доступ у PASUE CITY<br></p>
+            <p><strong><br>Що таке PASUE Club?</strong><br>Це закрите жіноче комʼюніті з контентом, подіями та простором підтримки у Telegram<br></p>
           </div>
           <div class="card faq-item">
-            <p><strong>Скільки коштує підписка?</strong><br>350 грн / місяць.<br> Підписку можна скасувати будь-коли</p>
+            <p><strong>Коли відкривається доступ?</strong><br>Одразу після оплати: лист → чат-бот → паспорт мешканки → PASUE City</p>
           </div>
           <div class="card faq-item">
-            <p><strong>Як часто виходить контент на каналі?</strong><br>Кожного дня.<br> У форматі листів, відео, аудіо та мудбордів<br></p>
+            <p><strong>Скільки коштує підписка і як її скасувати?</strong><br>350 грн / місяць. Скасування будь-коли у кабінеті WayForPay<br></p>
+          </div>
+          <div class="card faq-item">
+            <p><strong>Кому підійде клуб?</strong><br>Тим, хто шукає підтримку, натхнення, нові знайомства та хоче дбати про себе</p>
+          </div>
+          <div class="card faq-item">
+            <p><strong>Як проходить оплата?</strong><br>Оплата через WayForPay із автоматичним продовженням підписки</p>
+          </div>
+          <div class="card faq-item">
+            <p><strong>Чи можна повернути кошти?</strong><br>Повернення після оплати не передбачене. <a href="#" data-popup="refund">Деталі в політиці</a></p>
           </div>
         </div>
       </div>
@@ -371,9 +523,9 @@
     <footer id="footer" class="site-footer">
       <div class="container footer-container">
         <div class="social-links">
-          <a href="https://instagram.com/pasue.club" aria-label="Instagram"><img src="{% static 'images/instagram-icon.png' %}" alt="Instagram"></a>
-          <a href="https://t.me/+380684437882" aria-label="Telegram"><img src="{% static 'images/telegram-icon.png' %}" alt="Telegram"></a>
-          <a href="mailto:pasue.club@gmail.com" aria-label="Email"><img src="{% static 'images/email-icon.png' %}" alt="Email"></a>
+          <a href="https://instagram.com/pasue.club" aria-label="Instagram"><img src="{% static 'images/instagram-icon.png' %}" alt="Instagram" loading="lazy" decoding="async"></a>
+          <a href="https://t.me/+380684437882" aria-label="Telegram"><img src="{% static 'images/telegram-icon.png' %}" alt="Telegram" loading="lazy" decoding="async"></a>
+          <a href="mailto:pasue.club@gmail.com" aria-label="Email"><img src="{% static 'images/email-icon.png' %}" alt="Email" loading="lazy" decoding="async"></a>
         </div>
         <nav class="footer-nav">
           <a href="#" data-popup="terms">Правила та умови</a>
@@ -430,6 +582,15 @@
         <p class="copyright">Усі права захищені</p>
       </div>
     </footer>
+    <div class="sticky-cta" role="region" aria-label="Швидка підписка">
+      <div class="sticky-cta-content">
+        <div class="sticky-cta-text">
+          <span class="sticky-cta-price">350 грн/міс</span>
+          <span class="sticky-cta-note">Доступ до PASUE Club</span>
+        </div>
+        <a href="#form" class="sticky-cta-button" aria-label="Перейти до форми підписки">Приєднатися</a>
+      </div>
+    </div>
     <script src="{% static 'js/subscription.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
     <!-- React -->
@@ -687,17 +848,23 @@
       menuToggle.addEventListener("click", (e) => {
         e.preventDefault();
         dropdownMenu.classList.add("active");
+        menuToggle.setAttribute("aria-expanded", "true");
+        dropdownMenu.setAttribute("aria-hidden", "false");
       });
 
       // Закрити меню
       closeMenu.addEventListener("click", () => {
         dropdownMenu.classList.remove("active");
+        menuToggle.setAttribute("aria-expanded", "false");
+        dropdownMenu.setAttribute("aria-hidden", "true");
       });
 
       // Закривати при кліку на пункт
       dropdownMenu.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", () => {
           dropdownMenu.classList.remove("active");
+          menuToggle.setAttribute("aria-expanded", "false");
+          dropdownMenu.setAttribute("aria-hidden", "true");
         });
       });
     </script>
