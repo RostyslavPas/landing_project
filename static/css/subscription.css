@@ -342,6 +342,9 @@ body {
     height: 513px;
     margin-top: -50px;
 }
+.hero-image-container picture {
+    display: block;
+}
 .hero-frame {
     position: absolute;
     top: 30px;
@@ -370,30 +373,55 @@ body {
     max-width: 830px;
     margin-top: 20px;
 }
+.hero-kicker {
+    font-size: 16px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #8d3648;
+    margin: 0 0 12px;
+}
 .hero-subtitle {
-    font-size: 27px;
+    font-size: 32px;
     font-weight: 600;
     margin: 15px 0 15px 0;
 }
 .hero-description {
     font-size: 20px;
     line-height: 1.5;
-    margin: 0;
+    margin: 0 auto;
+    max-width: 760px;
+}
+.hero-cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
 }
 .hero-cta {
-    width: 674px;
-    max-width: 90%;
-    height: 84px;
+    width: auto;
+    min-height: 70px;
 }
 .hero-cta img {
     width: 48px;
     height: 48px;
 }
+.hero-cta--secondary {
+    padding: 18px 28px;
+}
+.hero-proof {
+    margin: 18px 0 0;
+    font-size: 16px;
+    color: #6b2b3c;
+}
 
-#about {
+#benefits {
     position: relative;
-    padding: 50px 20px;
+    padding: 70px 20px 60px;
     text-align: center;
+}
+.benefits-section {
+    background: linear-gradient(180deg, rgba(255, 250, 252, 0.9) 0%, rgba(255, 231, 238, 0.7) 100%);
 }
 .about-intro {
     margin-bottom: 35px;
@@ -401,10 +429,16 @@ body {
 .about-intro h2 {
     font-size: 26px;
     font-weight: 600;
-    margin: -50px 0 -50px 0;
+    margin: 0 0 10px;
 }
 .about-logo {
     width: 361px;
+}
+.benefits-subtitle {
+    margin: 10px auto 0;
+    font-size: 18px;
+    color: #6b2b3c;
+    max-width: 600px;
 }
 .features-grid {
     display: grid;
@@ -413,12 +447,32 @@ body {
     max-width: 1650px;
     margin: 0 auto;
 }
+.benefits-grid {
+    margin-top: 40px;
+}
 .feature-card {
     position: relative;
     border: 1px dashed #8d3648;
     border-radius: 30px;
     padding: 40px 30px 40px;
     text-align: center;
+}
+.benefit-card {
+    background: #fff5f8;
+    border: 1px solid #e7b8c5;
+    box-shadow: 0 22px 48px rgba(141, 54, 72, 0.12);
+}
+.benefit-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #f4d3dc;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #7c2537;
+    font-size: 22px;
 }
 
 .features-grid > .feature-card:nth-child(1) {
@@ -450,12 +504,12 @@ body {
 }
 /* Позиції бантиків */
 .feature-bow-1 {
-    top: 36%;
+    top: 39%;
     left: 30.4%;
 }
 
 .feature-bow-2 {
-    top: 36%;
+    top: 39%;
     left: 63%;
 }
 
@@ -741,6 +795,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 .event-card h3 {
     font-size: 24px;
@@ -757,76 +812,79 @@ body {
     padding: 50px 20px;
 }
 .join-form-section {
-    text-align: left;
+    text-align: center;
     margin-bottom: 100px;
 }
 .join-form-title {
     font-size: 28px;
     font-weight: 600;
     max-width: 1240px;
-    margin: -60px auto 50px;
+    margin: 0 auto 14px;
+    text-align: center;
 }
 .form-container {
     position: relative;
-    max-width: 1085px;
+    max-width: 960px;
     margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #f0c6d3;
+    border-radius: 32px;
+    box-shadow: 0 28px 60px rgba(141, 54, 72, 0.15);
+    padding: 60px 40px;
 }
 .form-bg-image {
-    width: 100%;
-    height: auto;
+    display: none;
 }
 .subscription-form {
-    position: absolute;
-    top: 50px;
-    left: 0;
+    position: static;
     width: 100%;
-    height: 77%;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 60px;
-    padding-top: 200px;
+    gap: 26px;
+    padding-top: 0;
 }
 .form-field {
-    width: 495px;
-    max-width: 80%;
+    width: 100%;
+    max-width: 520px;
     position: relative;
+    text-align: left;
 }
 .form-field label {
-    position: absolute;
-    left: 25px;
-    top: -35%;
-    transform: translateY(-50%);
-    font-size: 20px;
+    position: static;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
     font-weight: 500;
-    color: #000000;
-    pointer-events: none;
+    color: #4b1f2e;
 }
 .form-field input {
     width: 100%;
-    height: 55px;
-    border-radius: 50px;
-    border: 1px dashed #000000;
-    background-color: transparent;
-    padding: 0 25px;
-    font-size: 20px;
+    height: 56px;
+    border-radius: 16px;
+    border: 1px solid #d8b6c2;
+    background-color: #ffffff;
+    padding: 0 20px;
+    font-size: 18px;
 }
 .form-submit-btn {
-    width: 674px;
-    max-width: 80%;
-    height: 84px;
-    margin-top: 20px;
-    position: relative;
-    top: 40%;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    margin-top: 8px;
+    position: static;
 }
 .form-submit-btn img {
     width: 48px;
     height: 48px;
 }
 .form-submit-btn span {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
 }
 .form-submit-btn:hover {
     background-color: #8d3648;
@@ -842,22 +900,22 @@ body {
     margin-top: 5px;
     display: none;
     position: relative;
-    left: 5%;
+    left: 0;
 }
 .subscription-form input:valid {
-  border: 1px solid #2ecc71; /* Зелений border */
+  border: 1px solid #2ecc71;
   box-shadow: 0 0 8px rgba(46, 204, 113, 0.25);
 }
 
 /* Якщо поле порожнє або некоректне */
 .subscription-form input:invalid {
-  border: 1px dashed #ff4d6d;
+  border: 1px solid #ff4d6d;
   box-shadow: 0 0 8px rgba(255, 77, 109, 0.25);
 }
 
 /* Щоб зелений колір не з'являвся до першої взаємодії */
 .subscription-form input:placeholder-shown {
-  border: 1px dashed #000000;
+  border: 1px solid #d8b6c2;
   box-shadow: none;
 }
 
@@ -1118,4 +1176,271 @@ html, body {
 .input-error {
   border: 2px solid red !important;
   outline: none;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #7c2537;
+  color: #7c2537;
+}
+
+.btn-outline:hover {
+  background: #f4d3dc;
+}
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid #8d3648;
+  outline-offset: 3px;
+}
+
+input:focus {
+  border-color: #8d3648;
+  box-shadow: 0 0 0 3px rgba(141, 54, 72, 0.2);
+}
+
+.how-section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.how-intro h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.how-intro p {
+  font-size: 18px;
+  margin: 0 0 32px;
+  color: #6b2b3c;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.how-step {
+  background: #ffffff;
+  border: 1px solid #f0c6d3;
+  border-radius: 26px;
+  padding: 28px;
+  text-align: left;
+  box-shadow: 0 18px 40px rgba(141, 54, 72, 0.1);
+}
+
+.how-step h3 {
+  margin: 12px 0 10px;
+  font-size: 22px;
+}
+
+.how-step p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #8d3648;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.pricing-section {
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.pricing-header h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.pricing-header p {
+  font-size: 18px;
+  margin: 0 0 30px;
+  color: #6b2b3c;
+}
+
+.pricing-grid {
+  display: flex;
+  justify-content: center;
+}
+
+.plan-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #7c2537;
+  border-radius: 30px;
+  padding: 36px 40px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 30px 60px rgba(141, 54, 72, 0.15);
+}
+
+.plan-badge {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #7c2537;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.plan-price {
+  margin: 18px 0 12px;
+  font-size: 36px;
+  color: #7c2537;
+}
+
+.price-main {
+  font-weight: 700;
+}
+
+.price-period {
+  font-size: 18px;
+  margin-left: 8px;
+  color: #6b2b3c;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 26px;
+  text-align: left;
+}
+
+.plan-features li {
+  margin: 10px 0;
+  padding-left: 26px;
+  position: relative;
+  font-size: 18px;
+}
+
+.plan-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #8d3648;
+  font-weight: 600;
+}
+
+.plan-cta {
+  width: 100%;
+}
+
+.plan-note {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.plan-note a {
+  color: #7c2537;
+  text-decoration: underline;
+}
+
+.pricing-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #fff5f8;
+  border: 1px solid #f0c6d3;
+  font-size: 16px;
+  color: #6b2b3c;
+}
+
+.testimonials-section {
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.testimonials-header h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.testimonials-header p {
+  font-size: 18px;
+  margin: 0 0 30px;
+  color: #6b2b3c;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  background: #fff5f8;
+  border: 1px solid #f0c6d3;
+  border-radius: 24px;
+  padding: 28px;
+  text-align: left;
+  box-shadow: 0 18px 36px rgba(141, 54, 72, 0.12);
+}
+
+.testimonial-text {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.testimonial-name {
+  margin: 0;
+  font-weight: 600;
+  color: #6b2b3c;
+}
+
+.join-form-subtitle {
+  font-size: 18px;
+  margin: 10px auto 30px;
+  color: #6b2b3c;
+  max-width: 640px;
+  text-align: center;
+}
+
+.form-note {
+  font-size: 16px;
+  margin: 12px 0 0;
+  text-align: center;
+  color: #6b2b3c;
+}
+
+@media (max-width: 1200px) {
+  .how-steps,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-trust {
+    flex-direction: column;
+  }
 }
