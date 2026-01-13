@@ -16,6 +16,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # path("", home, name="home"),
     path("mobile/", mobile_home, name="mobile"),
+    path("robots.txt", views.robots_txt),
 
     # ✅ шлях до сторінки підписки
     path("", views.subscription, name="subscription"),

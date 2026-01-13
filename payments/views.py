@@ -42,14 +42,9 @@ def mobile(request):
     return render(request, 'mobile.html')
 
 
-# def opening(request):
-#     """Сторінка Grand Opening Party (колишня index)"""
-#     return render(request, "opening.html")
-
-
-# def opening_mobile(request):
-#     """Мобільна сторінка Grand Opening Party (колишня mobile)"""
-#     return render(request, "opening_mobile.html")
+def robots_txt(request):
+    content = "User-agent: *\nDisallow: /admin/\nAllow: /\n"
+    return HttpResponse(content, content_type="text/plain")
 
 
 def subscription(request):
