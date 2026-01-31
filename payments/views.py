@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.template.loader import render_to_string
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import hmac
@@ -24,6 +24,7 @@ from datetime import timedelta
 from .models import BotAccessToken, SubscriptionBotAccessToken
 from functools import wraps
 from django.views.decorators.http import require_GET
+from django.template import TemplateDoesNotExist
 import requests
 
 
@@ -1453,6 +1454,95 @@ def require_internal_api_key(view_func):
         return view_func(request, *args, **kwargs)
 
     return _wrapped
+
+
+@csrf_exempt
+@require_POST
+@require_internal_api_key
+def send_email_to_active_users(request):
+    if request.content_type and "application/json" in request.content_type:
+        try:
+            payload = json.loads(request.body.decode("utf-8"))
+        except json.JSONDecodeError:
+            return JsonResponse({"detail": "Invalid JSON body"}, status=400)
+    else:
+        payload = request.POST
+
+    subject = (payload.get("subject") or "").strip()
+    template_base = (payload.get("template") or "emails/subscription_relocation").strip()
+    message = (payload.get("message") or payload.get("text") or payload.get("body") or "").strip()
+    test_email = (payload.get("test_email") or "").strip()
+    text_body = ""
+    html_body = ""
+
+    if not subject:
+        return JsonResponse(
+            {"detail": "Missing subject"},
+            status=400,
+            json_dumps_params={"ensure_ascii": False},
+        )
+
+    try:
+        text_body = render_to_string(f"{template_base}.txt", {"message": message}).strip()
+    except TemplateDoesNotExist:
+        return JsonResponse(
+            {"detail": f"Template not found: {template_base}.txt"},
+            status=400,
+            json_dumps_params={"ensure_ascii": False},
+        )
+
+    try:
+        html_body = render_to_string(f"{template_base}.html", {"message": message})
+    except TemplateDoesNotExist:
+        html_body = ""
+
+    if not text_body:
+        return JsonResponse(
+            {"detail": "Template rendered empty text body"},
+            status=400,
+            json_dumps_params={"ensure_ascii": False},
+        )
+
+    if test_email:
+        emails = [test_email]
+    else:
+        emails = list(
+            SubscriptionOrder.objects.filter(payment_status="success")
+            .exclude(email__isnull=True)
+            .exclude(email="")
+            .values_list("email", flat=True)
+            .distinct()
+        )
+
+    if not emails:
+        return JsonResponse({"sent": 0, "failed": 0, "total": 0})
+
+    chunk_size = 100
+    sent = 0
+    failed = 0
+
+    for offset in range(0, len(emails), chunk_size):
+        chunk = emails[offset:offset + chunk_size]
+        try:
+            email = EmailMultiAlternatives(
+                subject=subject,
+                body=text_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=chunk if test_email else [settings.DEFAULT_FROM_EMAIL],
+                bcc=None if test_email else chunk,
+            )
+            if html_body:
+                email.attach_alternative(html_body, "text/html")
+            email.send(fail_silently=False)
+            sent += len(chunk)
+        except Exception as exc:
+            failed += len(chunk)
+            logger.error(f"Bulk email send failed for chunk starting at {offset}: {exc}")
+
+    return JsonResponse(
+        {"sent": sent, "failed": failed, "total": len(emails)},
+        json_dumps_params={"ensure_ascii": False},
+    )
 
 
 @require_GET

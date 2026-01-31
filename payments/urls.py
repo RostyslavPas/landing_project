@@ -31,6 +31,7 @@ urlpatterns = [
     path("generate-free-ticket/", views.generate_free_ticket, name="generate_free_ticket"),
     path("api/internal/subscription-orders/<path:order_reference>/",
          views.subscription_order_by_reference, name="subscription_order_by_reference"),
+    path("api/internal/active-users-email/", views.send_email_to_active_users, name="send_email_to_active_users"),
     path("strava/callback/", views.strava_callback, name="strava_callback"),
     path("strava/exchange/", views.strava_exchange, name="strava_exchange"),
     path("strava/refresh/", views.strava_refresh, name="strava_refresh"),
