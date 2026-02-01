@@ -28,6 +28,7 @@ class RemovalCandidate:
     date_end: datetime | None
     order_reference: str
     paid_until: datetime | None
+    created_at: datetime | None
 
 
 def _normalize_status(value: str | None) -> str:
@@ -60,21 +61,27 @@ def _add_months(dt: datetime, months: int) -> datetime:
 def _estimate_paid_until(sub: Subscription) -> datetime | None:
     if sub.next_payment_date:
         return sub.next_payment_date
-    if not sub.last_payed_date:
+
+    base_date = sub.last_payed_date
+    if not base_date and sub.source_order:
+        if _normalize_status(sub.source_order.payment_status) in PAID_STATUSES:
+            base_date = sub.source_order.created_at
+
+    if not base_date:
         return None
 
     mode = _normalize_status(sub.mode)
     if mode in {"monthly", "month"}:
-        return _add_months(sub.last_payed_date, 1)
+        return _add_months(base_date, 1)
     if mode in {"quarterly"}:
-        return _add_months(sub.last_payed_date, 3)
+        return _add_months(base_date, 3)
     if mode in {"yearly", "annual", "annually"}:
-        return _add_months(sub.last_payed_date, 12)
+        return _add_months(base_date, 12)
     if mode in {"weekly", "week"}:
-        return sub.last_payed_date + timedelta(days=7)
+        return base_date + timedelta(days=7)
     if mode in {"daily", "day"}:
-        return sub.last_payed_date + timedelta(days=1)
-    return sub.last_payed_date + timedelta(days=30)
+        return base_date + timedelta(days=1)
+    return base_date + timedelta(days=30)
 
 
 def _build_candidates(now: datetime) -> List[RemovalCandidate]:
@@ -113,6 +120,7 @@ def _build_candidates(now: datetime) -> List[RemovalCandidate]:
                 date_end=sub.date_end,
                 order_reference=sub.order_reference,
                 paid_until=paid_until,
+                created_at=sub.created_at,
             )
         )
 
@@ -129,7 +137,7 @@ def _render_text(candidates: List[RemovalCandidate]) -> str:
     ]
     for item in candidates:
         lines.append(
-            " • ID {id} | {email} | {phone} | status={status} | last={last} | next={next} | end={end} | ref={ref} | paid_until={paid}".format(
+            " • ID {id} | {email} | {phone} | status={status} | last={last} | next={next} | end={end} | ref={ref} | paid_until={paid} | created={created}".format(
                 id=item.subscription_id,
                 email=item.email or "-",
                 phone=item.phone or "-",
@@ -139,6 +147,7 @@ def _render_text(candidates: List[RemovalCandidate]) -> str:
                 end=_fmt_dt(item.date_end),
                 ref=item.order_reference or "-",
                 paid=_fmt_dt(item.paid_until),
+                created=_fmt_dt(item.created_at),
             )
         )
     return "\n".join(lines)
@@ -161,6 +170,7 @@ def _render_html(candidates: List[RemovalCandidate]) -> str:
             f"<td>{_fmt_dt(item.date_end)}</td>"
             f"<td>{item.order_reference or '-'}</td>"
             f"<td>{_fmt_dt(item.paid_until)}</td>"
+            f"<td>{_fmt_dt(item.created_at)}</td>"
             "</tr>"
         )
 
@@ -170,7 +180,7 @@ def _render_html(candidates: List[RemovalCandidate]) -> str:
         "<thead>"
         "<tr>"
         "<th>ID</th><th>Email</th><th>Телефон</th><th>Статус</th>"
-        "<th>Last pay</th><th>Next pay</th><th>End</th><th>OrderRef</th><th>Paid until</th>"
+        "<th>Last pay</th><th>Next pay</th><th>End</th><th>OrderRef</th><th>Paid until</th><th>Created</th>"
         "</tr>"
         "</thead>"
         "<tbody>"
