@@ -29,6 +29,7 @@ class RemovalCandidate:
     order_reference: str
     paid_until: datetime | None
     created_at: datetime | None
+    purchase_date: datetime | None
 
 
 def _normalize_status(value: str | None) -> str:
@@ -51,6 +52,12 @@ def _pick_contact(sub: Subscription) -> tuple[str, str]:
     return email, phone
 
 
+def _get_purchase_date(sub: Subscription) -> datetime | None:
+    if sub.source_order and sub.source_order.created_at:
+        return sub.source_order.created_at
+    return None
+
+
 def _add_months(dt: datetime, months: int) -> datetime:
     year = dt.year + (dt.month - 1 + months) // 12
     month = (dt.month - 1 + months) % 12 + 1
@@ -66,6 +73,8 @@ def _estimate_paid_until(sub: Subscription) -> datetime | None:
     if not base_date and sub.source_order:
         if _normalize_status(sub.source_order.payment_status) in PAID_STATUSES:
             base_date = sub.source_order.created_at
+    if not base_date and sub.date_begin:
+        base_date = sub.date_begin
 
     if not base_date:
         return None
@@ -109,6 +118,7 @@ def _build_candidates(now: datetime) -> List[RemovalCandidate]:
             continue
 
         email, phone = _pick_contact(sub)
+        purchase_date = _get_purchase_date(sub)
         candidates.append(
             RemovalCandidate(
                 subscription_id=sub.id,
@@ -121,6 +131,7 @@ def _build_candidates(now: datetime) -> List[RemovalCandidate]:
                 order_reference=sub.order_reference,
                 paid_until=paid_until,
                 created_at=sub.created_at,
+                purchase_date=purchase_date,
             )
         )
 
@@ -137,7 +148,7 @@ def _render_text(candidates: List[RemovalCandidate]) -> str:
     ]
     for item in candidates:
         lines.append(
-            " • ID {id} | {email} | {phone} | status={status} | last={last} | next={next} | end={end} | ref={ref} | paid_until={paid} | created={created}".format(
+            " • ID {id} | {email} | {phone} | status={status} | last={last} | next={next} | end={end} | ref={ref} | paid_until={paid} | purchase={purchase} | created={created}".format(
                 id=item.subscription_id,
                 email=item.email or "-",
                 phone=item.phone or "-",
@@ -147,6 +158,7 @@ def _render_text(candidates: List[RemovalCandidate]) -> str:
                 end=_fmt_dt(item.date_end),
                 ref=item.order_reference or "-",
                 paid=_fmt_dt(item.paid_until),
+                purchase=_fmt_dt(item.purchase_date),
                 created=_fmt_dt(item.created_at),
             )
         )
@@ -170,6 +182,7 @@ def _render_html(candidates: List[RemovalCandidate]) -> str:
             f"<td>{_fmt_dt(item.date_end)}</td>"
             f"<td>{item.order_reference or '-'}</td>"
             f"<td>{_fmt_dt(item.paid_until)}</td>"
+            f"<td>{_fmt_dt(item.purchase_date)}</td>"
             f"<td>{_fmt_dt(item.created_at)}</td>"
             "</tr>"
         )
@@ -180,7 +193,7 @@ def _render_html(candidates: List[RemovalCandidate]) -> str:
         "<thead>"
         "<tr>"
         "<th>ID</th><th>Email</th><th>Телефон</th><th>Статус</th>"
-        "<th>Last pay</th><th>Next pay</th><th>End</th><th>OrderRef</th><th>Paid until</th><th>Created</th>"
+        "<th>Last pay</th><th>Next pay</th><th>End</th><th>OrderRef</th><th>Paid until</th><th>Purchase</th><th>Created</th>"
         "</tr>"
         "</thead>"
         "<tbody>"

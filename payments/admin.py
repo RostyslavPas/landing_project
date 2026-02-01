@@ -182,6 +182,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         'id',
         'email',
         'phone',
+        'purchase_date',
         'status',
         'mode',
         'next_payment_date',
@@ -193,3 +194,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = ['email', 'phone', 'order_reference']
     readonly_fields = ['order_reference', 'created_at', 'updated_at', 'last_sync_at', 'last_sync_raw']
     ordering = ['-updated_at']
+
+    @admin.display(description="Оплата (Created)", ordering="source_order__created_at")
+    def purchase_date(self, obj):
+        if obj.source_order and obj.source_order.created_at:
+            return obj.source_order.created_at
+        return None
