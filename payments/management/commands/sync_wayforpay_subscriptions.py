@@ -22,14 +22,25 @@ def _dt_from_unix(ts: Any) -> Optional[datetime]:
 
     # unix timestamp (int/str)
     try:
-        return datetime.fromtimestamp(int(ts), tz=dj_timezone.get_current_timezone())
+        ts_int = int(ts)
+        # WayForPay інколи повертає мілісекунди
+        if ts_int > 10**11:
+            ts_int = ts_int // 1000
+        return datetime.fromtimestamp(ts_int, tz=dj_timezone.get_current_timezone())
     except Exception:
         pass
 
-    # dd.mm.yyyy
+    # dd.mm.yyyy / dd-mm-yyyy / yyyy-mm-dd
     if isinstance(ts, str):
         s = ts.strip()
-        for fmt in ("%d.%m.%Y", "%d.%m.%Y %H:%M"):
+        for fmt in (
+            "%d.%m.%Y",
+            "%d.%m.%Y %H:%M",
+            "%d-%m-%Y",
+            "%d-%m-%Y %H:%M",
+            "%Y-%m-%d",
+            "%Y-%m-%d %H:%M",
+        ):
             try:
                 dt = datetime.strptime(s, fmt)
                 return dj_timezone.make_aware(dt, dj_timezone.get_current_timezone())
@@ -71,7 +82,21 @@ def _has_meaningful_status_payload(data: dict) -> bool:
     """
     return any(
         k in data and data.get(k) not in (None, "", 0)
-        for k in ("status", "mode", "nextPaymentDate", "dateEnd", "dateBegin")
+        for k in (
+            "status",
+            "regularStatus",
+            "regular_status",
+            "mode",
+            "regularMode",
+            "regular_mode",
+            "nextPaymentDate",
+            "dateEnd",
+            "dateBegin",
+            "regularDateEnd",
+            "regularDateBegin",
+            "lastPayedDate",
+            "lastPayedStatus",
+        )
     )
 
 
@@ -202,8 +227,6 @@ class Command(BaseCommand):
 
                 sub.date_begin = _dt_from_unix(data.get("dateBegin") or data.get("regularDateBegin"))
                 sub.date_end = _dt_from_unix(data.get("dateEnd") or data.get("regularDateEnd"))
-                sub.last_payed_date = _dt_from_unix(data.get("lastPayedDate"))
-                sub.last_payed_status = (data.get("lastPayedStatus") or "").strip()
 
                 # nextPaymentDate інколи є навіть для Removed — це може плутати в UI.
                 next_dt = _dt_from_unix(data.get("nextPaymentDate"))
@@ -215,6 +238,12 @@ class Command(BaseCommand):
             else:
                 # payload не містить корисних статусних полів — лишимо unknown
                 sub.status = sub.status or "unknown"
+
+            # ✅ оновлюємо lastPayed* навіть якщо немає інших полів
+            if data.get("lastPayedDate") not in (None, "", 0):
+                sub.last_payed_date = _dt_from_unix(data.get("lastPayedDate"))
+            if data.get("lastPayedStatus") not in (None, ""):
+                sub.last_payed_status = (data.get("lastPayedStatus") or "").strip()
 
             # ✅ завжди зберігаємо reason/reasonCode/raw + sync time
             sub.last_reason_code = reason_code
