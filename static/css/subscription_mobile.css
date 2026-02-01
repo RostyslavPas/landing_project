@@ -1190,6 +1190,10 @@ body {
     .community-map-welcome {
         top: -47px;
     }
+    .community-map-card {
+        display: grid;
+        grid-template-columns: 73px 1fr;
+    }
     .hero-banner {
         margin: 0 32px;
     }
