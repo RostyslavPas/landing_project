@@ -186,7 +186,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         'mode',
         'next_payment_date',
         'last_payed_date',
-        'date_end',
+        'created_at',
         'last_sync_at',
     ]
     list_filter = ['status', 'mode', 'currency', 'last_sync_at']
