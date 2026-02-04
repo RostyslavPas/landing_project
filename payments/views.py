@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 from decimal import Decimal
 from django.core.mail import EmailMultiAlternatives
@@ -859,10 +860,19 @@ def update_keycrm_payment(subscription, wfp_data):
     order_reference = wfp_data.get("orderReference", "")
 
     logger.warning(f"⚠️Оновлюємо транзакцію вручну.")
+    extra_parts = []
+    if subscription.wfp_email and subscription.wfp_email != subscription.email:
+        extra_parts.append(f"email={subscription.wfp_email}")
+    if subscription.wfp_phone and subscription.wfp_phone != subscription.phone:
+        extra_parts.append(f"phone={subscription.wfp_phone}")
+    if subscription.wfp_name and subscription.wfp_name != subscription.name:
+        extra_parts.append(f"name={subscription.wfp_name}")
+    extra_wfp = f" WayForPay({', '.join(extra_parts)})." if extra_parts else ""
+
     payment_description = (
         f"Підписка #{order_reference}. "
-        f"Клієнт: {subscription.name or ''}, {subscription.phone or ''}, {subscription.email or ''}. "
-        f"AuthCode: {callback_auth_code}"
+        f"Клієнт: {subscription.name or ''}, {subscription.phone or ''}, {subscription.email or ''}."
+        f"{extra_wfp} AuthCode: {callback_auth_code}"
     )
     manual_update = keycrm.update_lead_payment_status(
         lead_id=subscription.keycrm_lead_id,
@@ -986,9 +996,14 @@ def wayforpay_subscription_callback(request):
             subscription.callback_processed = True
             subscription.wayforpay_order_reference = order_reference
 
-            # 🔄 Ім'я та телефон можемо оновити
-            if data.get("clientFirstName"):
-                subscription.name = data.get("clientFirstName")
+            client_name = (data.get("clientFirstName") or data.get("clientName") or "").strip()
+            if client_name:
+                normalized_name = re.sub(r"\s+", " ", client_name).strip().lower()
+                if normalized_name not in {"noclient name", "no client name", "noclientname"}:
+                    subscription.name = client_name
+                    subscription.wfp_name = client_name
+                else:
+                    logger.info("ℹ️ WayForPay повернув placeholder clientName, залишаємо імʼя з форми.")
 
             # ❗️Важливо: email НЕ оновлюємо, лишаємо той, що з форми
             if client_email and client_email != subscription.email.lower():
@@ -997,6 +1012,8 @@ def wayforpay_subscription_callback(request):
                     f"відрізняється від email форми ({subscription.email}). "
                     f"Лист буде відправлено на email з форми."
                 )
+            if client_email:
+                subscription.wfp_email = client_email
 
             # ❗️ Телефон також НЕ оновлюємо — залишаємо з форми
             if client_phone:
@@ -1009,6 +1026,7 @@ def wayforpay_subscription_callback(request):
                         f"не збігається з телефоном з форми ({subscription.phone}). "
                         f"Залишаємо телефон із форми."
                     )
+                subscription.wfp_phone = client_phone
             
             subscription.save()
             logger.info(f"✅ Підписка #{subscription.id} позначена як оплачена")

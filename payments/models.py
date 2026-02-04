@@ -276,6 +276,23 @@ class SubscriptionOrder(models.Model):
         default=False,
         help_text="Чи оброблено callback від WayForPay"
     )
+    wfp_email = models.EmailField(
+        blank=True,
+        default='',
+        verbose_name="Email (WayForPay)"
+    )
+    wfp_phone = models.CharField(
+        max_length=20,
+        blank=True,
+        default='',
+        verbose_name="Телефон (WayForPay)"
+    )
+    wfp_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='',
+        verbose_name="Імʼя (WayForPay)"
+    )
 
     # ✅ UTM мітки
     utm_source = models.CharField(
