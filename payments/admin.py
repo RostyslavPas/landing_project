@@ -120,6 +120,7 @@ class SubscriptionOrderAdmin(admin.ModelAdmin):
         'id',
         'name',
         'email',
+        'wfp_email',
         'phone',
         'payment_status',
         'device_type',
@@ -150,6 +151,9 @@ class SubscriptionOrderAdmin(admin.ModelAdmin):
         'utm_campaign',
         'utm_term',
         'utm_content',
+        'wfp_name',
+        'wfp_email',
+        'wfp_phone',
     ]
     ordering = ['-created_at']
 
@@ -160,6 +164,10 @@ class SubscriptionOrderAdmin(admin.ModelAdmin):
         }),
         ('Статус', {
             'fields': ('payment_status', 'wayforpay_order_reference')
+        }),
+        ('WayForPay контакт', {
+            'fields': ('wfp_name', 'wfp_email', 'wfp_phone'),
+            'classes': ('collapse',)
         }),
         ('UTM мітки', {
             'fields': ('utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'),
