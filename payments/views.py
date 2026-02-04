@@ -1282,6 +1282,7 @@ def get_subscription_by_token(request):
         "lead_id": sub.keycrm_lead_id,
         "name": sub.name,
         "email": sub.email,
+        "wfp_email": getattr(sub, "wfp_email", ""),
         "phone": sub.phone,
         "funnel": token_obj.funnel_tag,
         "payment_status": sub.payment_status,
