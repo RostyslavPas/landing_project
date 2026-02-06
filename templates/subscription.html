@@ -230,9 +230,18 @@
 
         <section id="join" class="main-container">
             <div class="join-form-section">
-                <h2 class="join-form-title" id="get-subscription">Оформити підписку та отримати доступ сьогодні</h2>
-                <p class="join-form-subtitle">Заповни коротку форму — і ми відкриємо тобі PASUE City. Чекай лист з доступом на пошті</p>
+<!--                <h2 class="join-form-title" id="get-subscription">Оформити підписку та отримати доступ сьогодні</h2>-->
+                <h2 class="join-form-title" id="get-subscription">Натискай на кнопку та приєднуйся до нашого комʼюніті вже сьогодні</h2>
+<!--                <p class="join-form-subtitle">Заповни коротку форму — і ми відкриємо тобі PASUE City. Чекай лист з доступом на пошті</p>-->
                 <div class="form-container">
+                    <div class="subscription-cta">
+                        <a href="https://t.me/+H3RepvkrsyMzM2Vi" class="btn btn-dark form-submit-btn">
+                            <span>Отримати безкоштовний доступ</span>
+                            <img src="{% static 'images/btn-heart-1.png' %}" alt="heart" loading="lazy" decoding="async">
+                        </a>
+<!--                        <p class="form-note">Безпечна оплата WayForPay <br>Скасування будь-коли</p>-->
+                    </div>
+                    <!--
                     <form class="subscription-form" method="post">
                         {% csrf_token %}
                         <div class="form-field">
@@ -263,6 +272,7 @@
                         </a>
                         <p class="form-note">Безпечна оплата WayForPay <br>Скасування будь-коли</p>
                     </form>
+                    -->
                 </div>
             </div>
         </section>
@@ -621,7 +631,7 @@
     <script>
       function openTelegram(e) {
         e.preventDefault();
-        window.open("https://t.me/+-9rBwNiXjiFjNWRi", "_blank");
+        window.open("https://t.me/+H3RepvkrsyMzM2Vi", "_blank");
       }
     </script>
   </body>
