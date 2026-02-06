@@ -77,14 +77,14 @@ body {
 }
 .pink-menu img {
     position: relative;
-    top: 12px;
+    top: 11px;
     background: rgb(223 176 187);
 }
 
 .pink-menu a:hover {
     /*color: #c13f73;*/
     color: #fff;
-    letter-spacing: 1.4px;
+    letter-spacing: 0,5px;
 }
 
 /* Для красивої появи */
@@ -543,7 +543,7 @@ body {
     margin: -33px auto 14px;
     text-align: center;
 }
-.form-container {
+.form-container_commented {
     position: relative;
     max-width: 960px;
     margin: 0 auto;
@@ -551,6 +551,9 @@ body {
     border: 1px solid #f0c6d3;
     border-radius: 32px;
     box-shadow: 0 28px 60px rgba(141, 54, 72, 0.15);
+    padding: 60px 40px;
+}
+.form-container {
     padding: 60px 40px;
 }
 .form-bg-image {
@@ -591,6 +594,13 @@ body {
     font-size: 18px;
 }
 .form-submit-btn {
+    width: 40%;
+    height: auto;
+    margin-top: 8px;
+    position: static;
+    border: 1px solid #7c2537;
+}
+.form-submit-btn_commented {
     width: 100%;
     max-width: 520px;
     height: auto;

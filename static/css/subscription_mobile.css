@@ -57,13 +57,22 @@ body {
   color: #15222E;
 }
 
-.cta-button--secondary {
+.cta-button--secondary_commented {
     background-color: #FDE6F3;
     border: 1px solid #7c2537;
     color: #000000;
     box-shadow: none;
     padding: 18px 10px;
     margin-top: 8px;
+    font-size: 15px;
+}
+.cta-button--secondary {
+    background-color: #FDE6F3;
+    border: 1px solid #7c2537;
+    color: #000000;
+    box-shadow: none;
+    padding: 18px 10px;
+    margin-top: -23px;
     font-size: 15px;
 }
 
@@ -509,6 +518,9 @@ body {
 }
 
 .form-container {
+  padding: 40px 10px;
+}
+.form-container_commented {
   width: calc(100% - 15px);
   max-width: 520px;
   box-sizing: border-box;
@@ -517,7 +529,7 @@ body {
   margin: 23px auto;
   background: #ffffff;
   border-radius: 32px;
-  padding: 40px 24px;
+  padding: 40px 15px;
   border: 1px solid #f0c6d3;
   box-shadow: 0 28px 60px rgba(141, 54, 72, 0.15);
 }
@@ -886,8 +898,17 @@ body {
         left: -94%;
         width: 545px;
     }
+    .form-container {
+        padding: 40px 3px;
+    }
+    .form-quote {
+        margin: 6px 16px 18px 16px;
+    }
     .hero-banner {
         margin: 0 -4px;
+    }
+    .community-map-section {
+        padding: 28px 1px 0;
     }
 }
 @media (min-width: 370px) and (max-width: 375px) {
@@ -946,6 +967,9 @@ body {
     .hero-banner {
         margin: 0 3px;
     }
+    .community-map-section {
+        padding: 28px 9px 0px;
+    }
 }
 @media (min-width: 376px) and (max-width: 383px) {
     .social-nav {
@@ -959,6 +983,9 @@ body {
 @media (min-width: 384px) and (max-width: 388px) {
     .social-nav {
         transform: scale(0.8);
+    }
+    .community-map-section {
+        padding: 28px 7px 0;
     }
 
     .menu-links {
