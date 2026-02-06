@@ -611,6 +611,15 @@ body {
     width: auto;
     height: 48px;
 }
+.form-submit-btn .btn-icon--tg {
+    display: none;
+}
+.form-submit-btn:hover .btn-icon--heart {
+    display: none;
+}
+.form-submit-btn:hover .btn-icon--tg {
+    display: inline-block;
+}
 .form-submit-btn span {
     font-size: 20px;
     font-weight: 600;
