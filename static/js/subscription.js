@@ -176,61 +176,69 @@ document.addEventListener('DOMContentLoaded', () => {
         scalePage();
     }
 });
-//snow
+// valentine hearts
 const canvas = document.getElementById('snow');
-const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const heartColors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ff5c8a', '#f72585'];
+    const heartCount = 120;
+    let angle = 0;
+    let hearts = [];
 
-let flakes = [];
-
-for (let i = 0; i < 150; i++) {
-  flakes.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 3 + 1,
-    d: Math.random() + 1
-  });
-}
-
-function drawSnow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
-  ctx.beginPath();
-
-  for (let i = 0; i < flakes.length; i++) {
-    const f = flakes[i];
-    ctx.moveTo(f.x, f.y);
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
-  }
-
-  ctx.fill();
-  moveSnow();
-}
-
-let angle = 0;
-function moveSnow() {
-  angle += 0.01;
-  for (let i = 0; i < flakes.length; i++) {
-    const f = flakes[i];
-    f.y += Math.pow(f.d, 2) + 1;
-    f.x += Math.sin(angle) * 0.5;
-
-    if (f.y > canvas.height) {
-      flakes[i] = {
-        x: Math.random() * canvas.width,
-        y: 0,
-        r: f.r,
-        d: f.d
-      };
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
-  }
+
+    function createHeart(y = Math.random() * canvas.height) {
+        return {
+            x: Math.random() * canvas.width,
+            y,
+            size: Math.random() * 7 + 6,
+            speed: Math.random() * 1.2 + 0.8,
+            drift: Math.random() * 1.4 - 0.7,
+            wobble: Math.random() * Math.PI * 2,
+            color: heartColors[Math.floor(Math.random() * heartColors.length)]
+        };
+    }
+
+    function drawHeart(x, y, size, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y + size * 0.3);
+        ctx.bezierCurveTo(x, y, x - size * 0.5, y, x - size * 0.5, y + size * 0.3);
+        ctx.bezierCurveTo(x - size * 0.5, y + size * 0.7, x, y + size, x, y + size * 1.2);
+        ctx.bezierCurveTo(x, y + size, x + size * 0.5, y + size * 0.7, x + size * 0.5, y + size * 0.3);
+        ctx.bezierCurveTo(x + size * 0.5, y, x, y, x, y + size * 0.3);
+        ctx.fill();
+    }
+
+    function animateHearts() {
+        angle += 0.01;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < hearts.length; i++) {
+            const heart = hearts[i];
+            heart.y += heart.speed;
+            heart.x += Math.sin(angle + heart.wobble) * 0.5 + heart.drift * 0.3;
+
+            drawHeart(heart.x, heart.y, heart.size, heart.color);
+
+            if (heart.y > canvas.height + heart.size || heart.x < -heart.size || heart.x > canvas.width + heart.size) {
+                hearts[i] = createHeart(-heart.size);
+            }
+        }
+
+        requestAnimationFrame(animateHearts);
+    }
+
+    resizeCanvas();
+    hearts = Array.from({ length: heartCount }, () => createHeart());
+    animateHearts();
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        hearts = Array.from({ length: heartCount }, () => createHeart());
+    });
 }
-
-setInterval(drawSnow, 25);
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
