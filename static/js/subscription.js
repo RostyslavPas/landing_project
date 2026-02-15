@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scalePage();
     }
 });
+/*
 // valentine hearts
 const canvas = document.getElementById('snow');
 
@@ -242,3 +243,4 @@ if (canvas) {
         hearts = Array.from({ length: heartCount }, () => createHeart());
     });
 }
+*/
