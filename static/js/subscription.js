@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Telegram функція ---
     window.openTelegram = function(event) {
         event.preventDefault();
-        window.open('https://t.me/+H3RepvkrsyMzM2Vi', '_blank');
+        window.open('https://t.me/Manager_Pasue', '_blank');
     };
 
     // --- Плавна прокрутка для CTA кнопок ---
