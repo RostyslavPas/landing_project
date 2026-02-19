@@ -915,6 +915,15 @@ input:focus {
   color: #7C2537;
 }
 
+.access-note {
+  max-width: 860px;
+  margin: 18px auto 0;
+  font-size: 20px;
+  line-height: 1.45;
+  text-align: center;
+  color: #7C2537;
+}
+
 @media (max-width: 980px) {
   .community-map-card {
     grid-template-columns: 1fr;
@@ -936,6 +945,10 @@ input:focus {
 
   .community-map-city {
     font-size: 52px;
+  }
+
+  .access-note {
+    font-size: 17px;
   }
 }
 
